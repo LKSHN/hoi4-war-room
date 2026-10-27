@@ -216,10 +216,15 @@ label.item.done .fd{color:var(--green-ink)}
 .lg.avail{background:linear-gradient(#444,#2a2a2a)}
 .lg.locked{background:linear-gradient(#5a4430,#33271b)}
 .lg.off{background:#2a2a2a;opacity:.45}
+.lg.ex{background:linear-gradient(#4a2a26,#2a1816);border-color:#6e3a32;opacity:.6}
 .treeview{position:relative;height:calc(100vh - 230px);min-height:420px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;
   background:#1c1d1b radial-gradient(ellipse at 50% 0%,#2a2b27,#1c1d1b 70%);box-shadow:inset 0 2px 8px rgba(0,0,0,.7)}
 .treeview.panning{cursor:grabbing}
-.treeview.guide-only .fn.off,.treeview.guide-only #treeLines path:not(.g),.treeview.guide-only .fx.off{display:none}
+.treeview.hide-ex .fn.ex,.treeview.hide-ex #treeLines path.ex,.treeview.hide-ex .fx.ex{display:none}
+.fn[data-state="excluded"]{opacity:.32}
+.fn[data-state="excluded"] .fn-name{background:linear-gradient(180deg,#4a2a26,#2a1816);border-color:#6e3a32;color:#c9a9a0;text-decoration:line-through;text-decoration-color:rgba(224,120,100,.6)}
+.fn[data-state="excluded"] .fn-ico{filter:grayscale(.8)}
+#treeLines path.ex{opacity:.15}
 .treecanvas{position:absolute;left:0;top:0;transform-origin:0 0}
 #treeLines{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
 #treeLines path{fill:none;stroke:#6a8bab;stroke-width:2.2;opacity:.3}
@@ -379,7 +384,7 @@ label.item.done .fd{color:var(--green-ink)}
           <button type="button" id="treeAll" aria-pressed="true">Complete tree</button>
           <button type="button" id="treeFit">Fit</button>
           <button type="button" id="treeNext">Go to next focus</button>
-          <span class="legend-tree"><i class="lg done"></i>Done <i class="lg next"></i>Next <i class="lg avail"></i>Available <i class="lg locked"></i>Locked <i class="lg off"></i>Not in guide</span>
+          <span class="legend-tree"><i class="lg done"></i>Done <i class="lg next"></i>Next <i class="lg avail"></i>Available <i class="lg locked"></i>Locked <i class="lg off"></i>Not in guide <i class="lg ex"></i>Ruled out</span>
         </div>
         <div class="next" id="treeNote"></div>
       </div>
@@ -764,14 +769,35 @@ function projectFocuses(){
 }
 
 const doneF = id => !!(STEP_OF[id] && store.ticks[STEP_OF[id]]);
+const EX = {};   // focus id -> {by: guide focus that excludes it} or {via: ruled-out focus it can only be reached through}
+
+/* what the guide's choices rule out: mutually exclusive with a guide focus, then anything only reachable through those */
+function computeExcluded(){
+  const T = TREE.byId;
+  TREE.focuses.forEach(f => {
+    if (STEP_OF[f.id]) return;
+    const g = (f.mx || []).find(m => STEP_OF[m]) || ORDER.find(id => (T[id].mx || []).includes(f.id));
+    if (g) EX[f.id] = {by: g};
+  });
+  let changed = true;
+  while (changed){
+    changed = false;
+    TREE.focuses.forEach(f => {
+      if (EX[f.id] || STEP_OF[f.id] || !f.pre) return;
+      const dead = f.pre.find(grp => grp.every(p => EX[p]));
+      if (dead){ EX[f.id] = {via: dead[0]}; changed = true; }
+    });
+  }
+}
 
 function buildTree(){
   if (!TREE) return;
   document.querySelector('[data-tab="tree"]').hidden = false;
   const canvas = document.getElementById("treeCanvas"), svg = document.getElementById("treeLines");
+  computeExcluded();
   let W = 0, H = 0;
   TREE.focuses.forEach(f => {
-    const i = ORDER.indexOf(f.id), n = el("div", "fn " + (i >= 0 ? "guide" : "off"));
+    const i = ORDER.indexOf(f.id), n = el("div", "fn " + (i >= 0 ? "guide" : "off") + (EX[f.id] ? " ex" : ""));
     n._cx = f.x * UX + UX; n._top = f.y * UY + 24; n._f = f;
     n.style.left = (n._cx - NW/2) + "px"; n.style.top = n._top + "px";
     n.innerHTML = '<span class="fn-ico"></span><span class="fn-name"></span><span class="fn-days"></span>';
@@ -792,7 +818,7 @@ function buildTree(){
   TREE.focuses.forEach(f => (f.pre || []).forEach(grp => grp.forEach(p => {
     const a = FNODE[p], b = FNODE[f.id]; if (!a) return;
     const my = b._top - 14;
-    d += `<path class="ln${grp.length > 1 ? " or" : ""}${STEP_OF[p] && STEP_OF[f.id] ? " g" : ""}" d="M${a._cx},${a._top + NB}V${my}H${b._cx}V${b._top + 2}"/>`;
+    d += `<path class="ln${grp.length > 1 ? " or" : ""}${STEP_OF[p] && STEP_OF[f.id] ? " g" : ""}${EX[p] || EX[f.id] ? " ex" : ""}" d="M${a._cx},${a._top + NB}V${my}H${b._cx}V${b._top + 2}"/>`;
     LINES.push(p);
   })));
   svg.setAttribute("width", W); svg.setAttribute("height", H); svg.innerHTML = d;
@@ -802,11 +828,11 @@ function buildTree(){
   TREE.focuses.forEach(f => (f.mx || []).forEach(m => {
     const k = [f.id, m].sort().join("|"), a = FNODE[f.id], b = FNODE[m];
     if (seen.has(k) || !b || a._top !== b._top || Math.abs(a._cx - b._cx) > 6 * UX) return; seen.add(k);
-    const x = el("span", "fx" + (STEP_OF[f.id] && STEP_OF[m] ? "" : " off"), "!"); x.style.left = ((a._cx + b._cx) / 2 - 9) + "px"; x.style.top = (a._top + 54) + "px";
+    const x = el("span", "fx" + (EX[f.id] || EX[m] ? " ex" : ""), "!"); x.style.left = ((a._cx + b._cx) / 2 - 9) + "px"; x.style.top = (a._top + 54) + "px";
     canvas.appendChild(x);
   }));
   canvas.style.width = W + "px"; canvas.style.height = H + "px"; canvas._w = W; canvas._h = H;
-  document.getElementById("treeMeta").textContent = "Patch " + TREE.patch + " · " + TREE.focuses.length + " focuses";
+  document.getElementById("treeMeta").textContent = "Patch " + TREE.patch + " · " + TREE.focuses.length + " focuses · " + Object.keys(EX).length + " ruled out by the guide";
   treeBuilt = true;
   updateTree();
 }
@@ -816,7 +842,7 @@ function updateTree(){
   const nextId = ORDER.find(id => !doneF(id));
   TREE.focuses.forEach(f => {
     const n = FNODE[f.id], guide = !!STEP_OF[f.id];
-    let st = doneF(f.id) ? "done" : f.id === nextId ? "next" : "avail";
+    let st = EX[f.id] ? "excluded" : doneF(f.id) ? "done" : f.id === nextId ? "next" : "avail";
     if (st === "avail"){
       // a guide focus only waits on prerequisites the guide itself takes (the rest are assumed bypassed)
       const unmet = (f.pre || []).some(grp => !grp.some(doneF) && (!guide || grp.some(p => STEP_OF[p])));
@@ -841,9 +867,13 @@ function treeTipHtml(f){
   if (i >= 0){
     const pj = PROJ[STEP_OF[f.id]];
     h += "<br>Guide focus <b class='k'>#" + (i+1) + "</b> · done ≈ " + fmtDate(pj.by) + " back to back";
-  } else h += "<br>Not taken in this guide";
+  } else if (EX[f.id]) {
+    const x = EX[f.id];
+    h += "<br><b class='r'>Ruled out by the guide</b>: " + (x.by ? "it excludes " + nm(x.by) + " (guide focus #" + (ORDER.indexOf(x.by) + 1) + ")" : "only reachable through " + nm(x.via) + ", which is ruled out");
+  } else h += "<br>Not taken in this guide, still possible";
   if (f.pre) h += "<br>Needs " + f.pre.map(g => f.pre.length > 1 && g.length > 1 ? "(" + grp(g) + ")" : grp(g)).join(" and ");
-  if (f.mx) h += "<br><b class='r'>Excludes</b> " + f.mx.map(nm).join(", ");
+  const mx = (f.mx || []).filter(m => !EX[f.id] || m !== EX[f.id].by);   // the ruled-out line already names it
+  if (mx.length) h += "<br><b class='r'>Excludes</b> " + mx.map(nm).join(", ");
   if (f.bypass) h += "<br>Can be bypassed";
   if (i >= 0){
     const skipped = (f.pre || []).filter(g => !g.some(p => { const j = ORDER.indexOf(p); return j >= 0 && j < i; }));
@@ -867,8 +897,8 @@ function centerOn(id, s){
   applyView();
 }
 function fitTree(){
-  // fit whatever is shown: every focus, or only the guide's path
-  const ns = Object.values(FNODE).filter(n => !prefs.treeGuideOnly || STEP_OF[n._f.id]);
+  // fit whatever is shown: every focus, or only what the guide leaves possible
+  const ns = Object.values(FNODE).filter(n => !prefs.treeHideEx || !EX[n._f.id]);
   const x0 = Math.min(...ns.map(n => n._cx)) - NW/2 - 24, x1 = Math.max(...ns.map(n => n._cx)) + NW/2 + 24;
   const y0 = Math.min(...ns.map(n => n._top)) - 24, y1 = Math.max(...ns.map(n => n._top)) + NB + 40;
   view.s = Math.min(1.2, tv.clientWidth / (x1 - x0), tv.clientHeight / (y1 - y0));
@@ -877,10 +907,11 @@ function fitTree(){
 }
 const allBtn = document.getElementById("treeAll");
 function applyTreeMode(){
-  tv.classList.toggle("guide-only", !!prefs.treeGuideOnly);
-  allBtn.setAttribute("aria-pressed", !prefs.treeGuideOnly);
+  tv.classList.toggle("hide-ex", !!prefs.treeHideEx);
+  allBtn.setAttribute("aria-pressed", !prefs.treeHideEx);
+  allBtn.title = prefs.treeHideEx ? "Show focuses the guide rules out" : "Hide focuses the guide rules out";
 }
-allBtn.addEventListener("click", () => { prefs.treeGuideOnly = !prefs.treeGuideOnly; savePrefs(); applyTreeMode(); hideTip(); });
+allBtn.addEventListener("click", () => { prefs.treeHideEx = !prefs.treeHideEx; savePrefs(); applyTreeMode(); hideTip(); });
 applyTreeMode();
 function treeShown(){
   if (!treeBuilt || treeViewed || !tv.clientWidth) return;

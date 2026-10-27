@@ -33,19 +33,36 @@ Known weak spots:
 - Most Germany phase dates are estimates (`approx: true`, shown with ≈). Only a few are anchored by the guide (see `meta.datesNote`).
 - The focus tree is from patch 1.19.1, likely newer than the video. Five guide focuses have prerequisites the guide never takes (Sea Lion, Tannenbaum, Reintegrate Luxemburg, Loyalty to the Führer, Autarky Achieved); the tree assumes they were bypassed and says so in the tooltip.
 
-## Roadmap (in this order)
+## Done
 
-1. **Split content from the tool.** Move each guide into its own data file (e.g. `guides/germany-blitzkrieg.json`): metadata (title, author, video URL, game patch), phases, steps with stable IDs, optional in-game dates, tags, screenshot refs and timestamps, plus the focus/research lists and the Builds content. The page becomes a player that loads a guide. Add a guide picker. Migrate existing saved ticks from the positional keys so current progress isn't lost.
-2. **HoI4-style reskin.** Dark steel/olive panels, thin brass-gold borders with a slight bevel, a top bar styled like the in-game resource bar, steps styled like focus nodes (grey pending, gold next, green done), dark tooltips with coloured keywords, side-menu style tabs. Recreate the feel in CSS. Don't copy Paradox's textures, icons or logo. The user's own gameplay screenshots are fine.
-3. **Date tracker.** The user enters the current in-game date. Show what should be done by then, flag what's behind, highlight what's next. Needs dates on steps (from step 1).
-4. **Glossary tooltips.** Short definitions on hover for terms like SPG, F1/C1, "UP" techs (= next tech in that line), Political Loyalty, MIO, support companies.
-5. **Later:** focus tree drawn as a tree with 70-day timing, save slots per playthrough plus notes, political power and factory planners (these need game numbers that change with patches, so keep them in data files with a patch tag).
+Guide split into data files with stable IDs and a picker, HoI4-style reskin, date tracker, glossary tooltips, focus tree (full 1.19.1 tree, effects, requirements, conditions), hosted on GitHub Pages at https://lkshn.github.io/hoi4-war-room/.
 
-Host on GitHub Pages once the split is done. Keep it static.
+## Todo (work through in this order)
+
+From the user's list (2026-10-28). Each item is its own branch and commit. Shared rules for all of them:
+- **In-game look.** Rebuild the in-game screens (research tree, MIO tree, production, construction, division designer, tank/plane designer) as closely as possible in HTML/CSS, using our own drawn icons. Never copy Paradox's textures, icons or text art.
+- **Game data comes from the user's game files** (`E:\Games\Hearts.of.Iron.IV.v1.19.1\game`) through Python extractors in `tools/`, stored in patch-tagged files under `guides/`. Facts only (names, numbers, positions, links), no flavour text.
+- **Everything the guide chooses must be editable** (see item 1), so every new view is built on editable guide data, not hard-coded.
+
+1. **Editable guide (foundation).** Every choice in the guide can be edited in the page: steps, focus order, research order, builds, and later every item below. The site is static, so edits are saved in the browser as a layer on top of the guide file, with "reset to original" and export/import as a JSON file (and a way to turn an export into a new guide file). Edit controls must fit the in-game style.
+2. **Research tree.** Draw the research tree like the in-game one (folders by category, tech positions, years, links), with our own icons, the guide's research order numbered on it, tickable like the focus tree. Replace "UP" entries with the actual tech they stand for (the next tech in that line, worked out from the order), so every entry shows its real name. Data from `common/technologies` and the tech tree GUI positions.
+3. **Equipment designer.** A list of the guide's equipment designs (tanks, planes, ships) shown in a designer like the in-game one: chassis/airframe/hull, module slots, resulting stats, editable. Show which battalions use each design. Data from `common/units/equipment` and its modules. The current SPG1, Flammpanzer, F2 and C2 cards become designs here.
+4. **Division training, in 2 tabs.**
+   - *Training plan:* which divisions to train and when (dated like the game plan).
+   - *Templates:* the guide's templates, shown like the in-game division designer (support column plus combat grid), viewable and editable, with stats from `common/units`. Uses item 3's designs. The MARK template card becomes a template here.
+5. **Military factories.** Production shown like the in-game production screen. Production is a series of states over time: the left panel shows the state before, the right panel the next state, with what changed highlighted (lines added or removed, factory counts up or down). The current "Production" screenshots and the "Production later on" card become these states.
+6. **Civilian factories.** Several construction lists, each tied to a moment in the guide (date or step), shown like the in-game construction queue (state, building, count). The current construction screenshots become these lists.
+7. **Military Industrial Organisations.** Each MIO's trait tree like in game (positions, links, exclusive traits), the guide's trait order numbered, and which equipment type to assign it to. Data from `common/military_industrial_organization`. The Alkett MIO screenshot becomes a real tree.
+8. **Special projects.** The list of special projects, the guide's recommended ones highlighted. Data from the game's special project files.
+
+Still open from the old roadmap, after the list above: save slots per playthrough plus notes, political power planner, progress that follows the user between PCs.
+
+Keep the site static; host on GitHub Pages.
 
 ## Conventions
 
 - Conventional Commits (`feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `style:`). When asking the user to commit and push, always give them the commit message.
+- The user merges and pushes each finished branch themselves. Before committing, check the branch and start a new one from `master` if needed.
 - Never add Claude as author or co-author: no `Co-Authored-By` trailers, no "Generated with Claude" lines in commits or PRs.
 - Prefer targeted, scoped edits over rewrites. Don't over-deliver beyond the step being worked on.
 - Keep it working without a build step unless there's a clear reason to add one, and discuss that first.

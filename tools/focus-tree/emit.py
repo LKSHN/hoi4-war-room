@@ -8,7 +8,8 @@ head = f"""/* German national focus tree, facts only (names, positions, duration
    Extracted from the HoI4 {patch} game files (common/national_focus/germany.txt + English localisation).
    Assumes every DLC is enabled and default game rules, as seen at game start. Durations change between patches.
    Focus: id, name, x/y (grid units), days, pre (list of groups: all groups needed, any focus within a group),
-   mx (mutually exclusive), bypass (1 = can be bypassed), tags (search filters). */
+   mx (mutually exclusive), bypass (1 = can be bypassed), tags (search filters), ic (our emblem theme),
+   fx (effects summarised in our own words by tools/focus-tree/effects.py, as for Germany at peace with all DLC). */
 registerTree({{
   "id": "GER",
   "patch": "{patch}",

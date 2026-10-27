@@ -141,13 +141,13 @@ def clean(s, depth=0):
     s = re.sub(r"\$(\w+)\$", lambda m: clean(loc.get(m.group(1), ""), depth + 1), s)
     def sub(m):
         inner = m.group(1)
-        c = re.match(r"(\w{3})\.GetName$", inner)
+        c = re.match(r"(\w{3})\.GetName(?:DefCap|Def|WithFlag)?$", inner)
         if c:
             return loc.get(c.group(1), c.group(1))
         key = scripted.get(inner) or scripted.get(inner.split(".")[-1])   # [GER.GetTheUSSRName] -> GetTheUSSRName
         return clean(loc.get(key, ""), depth + 1) if key else ""
     s = re.sub(r"\[([^\]]*)\]", sub, s)
-    s = re.sub(r"Â§.|Â£\w+", "", s)
+    s = re.sub(r"§.|£\w+|\\n", " ", s)
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -192,6 +192,10 @@ def icon_theme(icon_name, fid, filters):
 
 # names the game picks at runtime from world state; use the historical one
 NAME_OVERRIDES = {"GER_molotov_ribbentrop_pact": "Molotov-Ribbentrop Pact"}
+from effects import Summariser
+summ = Summariser(game, loc, clean)
+RAW = {first(f, "id"): f for f in raw}
+
 kept = [k for k in F if k not in hidden]
 res = []
 for k in kept:
@@ -207,6 +211,8 @@ for k in kept:
     fl = [FILTER_SHORT.get(f, f) for f in v["filters"]]
     if fl: o["tags"] = fl
     o["ic"] = icon_theme(v["icon"], k, fl)
+    fx = summ.summarise(first(RAW[k], "completion_reward", []))
+    if fx: o["fx"] = fx
     res.append(o)
 
 json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False)
@@ -218,3 +224,4 @@ print("unknown triggers", unknown.most_common(10))
 dup = collections.Counter((r["x"], r["y"]) for r in res)
 print("overlaps", [p for p, n in dup.items() if n > 1][:20])
 print("icons", collections.Counter(r["ic"] for r in res).most_common())
+print("effects: none for", sum(1 for r in res if not r.get("fx")), "focuses; avg lines", round(sum(len(r.get("fx", [])) for r in res) / len(res), 1))

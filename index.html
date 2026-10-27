@@ -204,7 +204,15 @@ label.item.done .shotbtn{opacity:.6}
 .foot{font-size:12.5px;color:var(--muted);max-width:75ch;margin:0}
 .loadmsg{padding:14px;font-size:14px;margin:0}
 /* focus tree, after the in-game look: charcoal board, round emblem over a rounded name plate, steel-blue elbow lines */
-.fd{display:block;font:500 11px var(--f-mono);color:var(--muted);margin-top:1px}
+.fd{display:table;font:500 11px var(--f-mono);color:var(--muted);margin-top:1px;cursor:help;text-decoration:underline dotted rgba(240,213,138,.45);text-underline-offset:3px}
+.fd:hover,.fd[aria-describedby]{color:var(--brass-lt)}
+.tip-fx{margin:6px 0;padding:6px 0 6px 14px;border-top:1px solid #3a3a2b;border-bottom:1px solid #3a3a2b;display:flex;flex-direction:column;gap:2px}
+.tip-fx li{font-size:13px}
+.tip-fx li::marker{color:var(--brass)}
+.tip-fx li.up{color:#8fd16a}
+.tip-fx li.down{color:#ff8a6e}
+.tip-fx + br{display:none}
+.tip-none{margin:6px 0;font-size:12.5px;font-style:italic;color:var(--muted)}
 label.item.done .fd{color:var(--green-ink)}
 .treecol .colhead{position:static}
 .treebar{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -270,7 +278,7 @@ label.item.done .fd{color:var(--green-ink)}
 .gl{text-decoration:underline dotted rgba(240,213,138,.6);text-underline-offset:3px;cursor:help;border-radius:2px}
 .gl:hover,.gl[aria-describedby]{color:var(--brass-lt);text-decoration-style:solid}
 .gl:focus-visible{outline:2px solid var(--brass-lt);outline-offset:1px}
-.tip{position:fixed;z-index:60;max-width:min(340px,calc(100vw - 16px));padding:8px 11px 9px;font:13.5px/1.45 var(--f-body);color:#ddd7bd;
+.tip{position:fixed;z-index:60;max-width:min(380px,calc(100vw - 16px));padding:8px 11px 9px;font:13.5px/1.45 var(--f-body);color:#ddd7bd;
   background:linear-gradient(180deg,rgba(26,28,21,.97),rgba(13,14,10,.97));border:1px solid var(--brass-dk);
   box-shadow:inset 0 1px 0 rgba(240,213,138,.15),0 0 0 1px #000,0 6px 18px rgba(0,0,0,.7);pointer-events:none}
 .tip-h{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--brass-lt);margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid #3a3a2b}
@@ -530,7 +538,7 @@ function build(colId, groups){
       if (pj){
         label._by = pj.by; label._from = pj.from;
         const fd = el("span", "fd"); fd.textContent = pj.days + " days · done ≈ " + fmtDate(pj.by);
-        fd.title = "Taking the guide's focuses back to back from 1 Jan 1936, patch " + TREE.patch + " durations";
+        fd.dataset.focus = o.focus; fd.tabIndex = 0;   // hover or tap for what the focus does
         txt.appendChild(fd);
       }
       const cb = li.querySelector("input");
@@ -714,6 +722,7 @@ let tipFor = null;
 const fmtDef = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b class="k">$1</b>').replace(/\{\+(.+?)\}/g, '<b class="g">$1</b>').replace(/\{-(.+?)\}/g, '<b class="r">$1</b>');
 function showTip(g){
   if (g.classList.contains("fn")){ if (!panning) openTip(g, g._f.name, treeTipHtml(g._f)); return; }
+  if (g.dataset.focus){ const f = TREE.byId[g.dataset.focus]; if (f) openTip(g, f.name, treeTipHtml(f)); return; }
   const e = GLOSS[g.dataset.term]; if (!e) return;
   openTip(g, e.term, '<div class="tip-b">' + fmtDef(e.def) + "</div>" + (e.patch ? '<div class="tip-f">May differ between game patches.</div>' : ""));
 }
@@ -734,13 +743,13 @@ function placeTip(){
   tip.style.top = top + "px";
 }
 function hideTip(){ if (tipFor) tipFor.removeAttribute("aria-describedby"); tip.hidden = true; tipFor = null; }
-document.addEventListener("mouseover", e => { const g = e.target.closest(".gl,.fn"); if (g) showTip(g); });
-document.addEventListener("mouseout", e => { const g = e.target.closest(".gl,.fn"); if (g && !g.contains(e.relatedTarget) && document.activeElement !== g) hideTip(); });
-document.addEventListener("focusin", e => { const g = e.target.closest(".gl,.fn"); if (g) showTip(g); else hideTip(); });
-document.addEventListener("focusout", e => { if (e.target.closest(".gl,.fn")) hideTip(); });
+document.addEventListener("mouseover", e => { const g = e.target.closest(".gl,.fn,.fd[data-focus]"); if (g) showTip(g); });
+document.addEventListener("mouseout", e => { const g = e.target.closest(".gl,.fn,.fd[data-focus]"); if (g && !g.contains(e.relatedTarget) && document.activeElement !== g) hideTip(); });
+document.addEventListener("focusin", e => { const g = e.target.closest(".gl,.fn,.fd[data-focus]"); if (g) showTip(g); else hideTip(); });
+document.addEventListener("focusout", e => { if (e.target.closest(".gl,.fn,.fd[data-focus]")) hideTip(); });
 document.addEventListener("click", e => {
-  const g = e.target.closest(".gl");
-  if (g){ e.preventDefault(); e.stopPropagation(); showTip(g); }   // don't tick the step when tapping a term
+  const g = e.target.closest(".gl,.fd[data-focus]");
+  if (g){ e.preventDefault(); e.stopPropagation(); showTip(g); }   // don't tick the step when tapping a term or focus details
   else if (!tip.hidden) hideTip();
 }, true);
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !tip.hidden) hideTip(); });
@@ -871,7 +880,14 @@ function treeTipHtml(f){
     const x = EX[f.id];
     h += "<br><b class='r'>Ruled out by the guide</b>: " + (x.by ? "it excludes " + nm(x.by) + " (guide focus #" + (ORDER.indexOf(x.by) + 1) + ")" : "only reachable through " + nm(x.via) + ", which is ruled out");
   } else h += "<br>Not taken in this guide, still possible";
-  if (f.pre) h += "<br>Needs " + f.pre.map(g => f.pre.length > 1 && g.length > 1 ? "(" + grp(g) + ")" : grp(g)).join(" and ");
+  if (f.fx){
+    // effects, summarised from the game files; signed numbers get coloured like the game (tension is the exception)
+    h += '<ul class="tip-fx">' + f.fx.map(l => {
+      const s = esc(l), m = /^([+-])/.exec(l), bad = /tension/i.test(l);
+      return "<li" + (m ? ' class="' + ((m[1] === "+") !== bad ? "up" : "down") + '"' : "") + ">" + s + "</li>";
+    }).join("") + "</ul>";
+  } else h += '<div class="tip-none">No direct effect listed: it runs a scripted effect or event.</div>';
+  if (f.pre) h += "Needs " + f.pre.map(g => f.pre.length > 1 && g.length > 1 ? "(" + grp(g) + ")" : grp(g)).join(" and ");
   const mx = (f.mx || []).filter(m => !EX[f.id] || m !== EX[f.id].by);   // the ruled-out line already names it
   if (mx.length) h += "<br><b class='r'>Excludes</b> " + mx.map(nm).join(", ");
   if (f.bypass) h += "<br>Can be bypassed";

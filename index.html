@@ -280,6 +280,51 @@ label.item.done .fd{color:var(--green-ink)}
   font:700 12px/18px var(--f-mono);text-align:center;box-shadow:0 0 0 2px #000;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.fn[data-state="next"] .fn-name{animation:none;background:#5a4e2c}}
 
+/* editing the guide */
+.editbar,.editnote{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 14px;font-size:13.5px;
+  background:linear-gradient(180deg,#4a4130,#2e2a1e);border:1px solid var(--brass);box-shadow:var(--bevel),var(--drop)}
+.editnote{background:linear-gradient(180deg,#34372b,#24271f);border-color:var(--brass-dk);color:var(--muted)}
+.editnote b,.editbar b{color:var(--brass-lt)}
+.editnote .warn{color:#ff9a7f}
+.editbar-text{flex:1 1 320px;min-width:0}
+.editbar-actions{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ed-import{font:500 13px var(--f-body);color:var(--ink);background:linear-gradient(180deg,#454a3c,#2b2e25);border:1px solid #5d604c;padding:6px 12px;border-radius:2px;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 1px 2px rgba(0,0,0,.6)}
+.ed-import:hover,.ed-import:focus-within{border-color:var(--brass)}
+.ed-import input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.ed-done{border-color:var(--brass);color:var(--brass-lt);background:linear-gradient(180deg,#5a4e2c,#3a321d)}
+.ed-link{padding:2px 10px;font-size:12.5px}
+.ed-phase{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:14px 2px 6px;border-bottom:1px solid var(--brass-dk)}
+.ed-phase .ed-title{flex:1 1 200px;font:500 12.5px var(--f-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--brass-lt)}
+.ed-tools,.ed-extra{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.ed-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:start;padding:7px 10px;
+  background:linear-gradient(180deg,var(--node-1),var(--node-2));border:1px solid var(--node-edge)}
+#planCol .ed-row{grid-template-columns:minmax(0,1fr) auto}
+.ed-main{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ed-text{display:block;min-height:1.4em;padding:2px 6px;border:1px dashed #5d604c;border-radius:2px;background:#1b1d17;color:var(--ink-hi);outline:none;word-break:break-word}
+.ed-text:focus{border-color:var(--brass-lt);border-style:solid;background:#14160f}
+.ed-text:empty::before{content:attr(data-ph);color:#77775f;font-style:italic}
+.ed-note{font-size:12.5px;font-style:italic;color:var(--muted)}
+.ed-input,.ed-select{font:500 13px var(--f-body);color:var(--ink);background:#14160f;border:1px solid #5d604c;border-radius:2px;padding:3px 6px;min-width:0;max-width:100%;
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.8)}
+.ed-input:focus,.ed-select:focus{outline:2px solid var(--brass-lt);outline-offset:1px}
+.ed-input.bad{border-color:#d0553e}
+.ed-focus{width:100%}
+.ed-small{font:500 12px var(--f-mono)}
+.ed-select{max-width:170px}
+.ed-check{display:flex;align-items:center;gap:4px;font:500 11.5px var(--f-mono);color:var(--muted)}
+.ed-check input{accent-color:var(--brass)}
+.ed-btn{padding:1px 7px;min-width:26px;font:600 13px var(--f-mono);line-height:1.5}
+.ed-btn.del:hover,.ed-btn.armed{border-color:#d0553e;color:#fff;background:linear-gradient(180deg,#9b3a28,#6a2418)}
+.ed-add{padding:4px 0 6px}
+.ed-add .ed-btn{border-style:dashed;color:var(--brass-lt);padding:3px 12px;font-family:var(--f-body)}
+.ed-add-phase{padding-top:12px}
+.editing #builds [contenteditable]{outline:1px dashed rgba(240,213,138,.45);outline-offset:2px;cursor:text}
+.editing #builds [contenteditable]:focus{outline:2px solid var(--brass-lt);background:rgba(20,22,15,.6)}
+.editing .colhead .next,.editing .colhead .due-line{display:none}
+#editBtn[aria-pressed="true"]{background:linear-gradient(180deg,#5a4e2c,#3a321d);border-color:var(--brass);color:var(--brass-lt)}
+@media (max-width:560px){.ed-row{grid-template-columns:minmax(0,1fr)}.ed-row .num{display:none}.ed-extra{justify-content:flex-end}}
+
 /* glossary terms and the tooltip */
 .gl{text-decoration:underline dotted rgba(240,213,138,.6);text-underline-offset:3px;cursor:help;border-radius:2px}
 .gl:hover,.gl[aria-describedby]{color:var(--brass-lt);text-decoration-style:solid}
@@ -340,11 +385,23 @@ label.item.done .fd{color:var(--green-ink)}
     <div class="controls">
       <label class="picker">Guide <select id="guidePick"></select></label>
       <button id="hideDone" aria-pressed="false">Hide completed</button>
+      <button id="editBtn" aria-pressed="false">Edit guide</button>
       <button id="resetBtn" class="danger">Reset all</button>
     </div>
   </header>
 
   <p class="loadmsg" id="loadMsg" hidden></p>
+  <div class="editnote" id="editNote" hidden></div>
+  <div class="editbar" id="editBar" hidden>
+    <div class="editbar-text"><b>Editing this guide.</b> Changes save in this browser as you type. Press Done to apply them everywhere (tree, dates, counts).</div>
+    <div class="editbar-actions">
+      <button type="button" id="edExportJson">Export JSON</button>
+      <button type="button" id="edExportJs">Export guide file</button>
+      <label class="ed-import"><input type="file" id="edImport" accept=".json,.js,application/json,text/javascript">Import…</label>
+      <button type="button" id="edReset" class="danger">Reset to original</button>
+      <button type="button" id="edDone" class="ed-done">Done</button>
+    </div>
+  </div>
 
   <div class="layout">
   <nav class="tabs" role="tablist">
@@ -648,6 +705,8 @@ document.querySelectorAll(".mo").forEach(b => b.addEventListener("click", () =>
 
 /* Builds tab, rendered from guide.builds */
 function tsLink(ts){ const a = el("a", "ts"); a.href = vlink(ts); a.target = "_blank"; a.rel = "noopener"; a.textContent = "▶ "+ts; return a; }
+// remember which data field an element shows, so edit mode can write changes back ([object, key, rich text?])
+const bindEl = (e, obj, key, isRich) => { e._bind = [obj, key, !!isRich]; return e; };
 function buildFig(it){
   const im = G.images[it.img] || {}, fig = el("figure", "fig"+(it.wide ? " wide" : ""));
   const shot = el("button", "shot"); shot.dataset.img = it.img; shot.setAttribute("aria-label", "Enlarge "+(im.caption || it.title || "screenshot"));
@@ -657,24 +716,24 @@ function buildFig(it){
   (it.pins || []).forEach(([x, y], i) => { const p = el("span", "pin"); p.style.left = x+"%"; p.style.top = y+"%"; p.textContent = i+1; shot.appendChild(p); });
   shot.addEventListener("click", () => openLB(it.img, shot));
   const cap = el("figcaption"), row = el("div", "caprow");
-  const b = el("b"); b.textContent = it.title || ""; row.appendChild(b);
-  if (it.sub) row.appendChild(document.createTextNode(" · "+it.sub));
+  const b = el("b"); b.textContent = it.title || ""; row.appendChild(bindEl(b, it, "title"));
+  if (it.sub){ row.appendChild(document.createTextNode(" · ")); const sb = el("span"); sb.textContent = it.sub; row.appendChild(bindEl(sb, it, "sub")); }
   if (it.ts && G.meta.video){ row.appendChild(document.createTextNode(" ")); row.appendChild(tsLink(it.ts)); }
   cap.appendChild(row);
-  if (it.legend){ const ol = el("ol", "legend"); it.legend.forEach(s => ol.appendChild(el("li", null, rich(s)))); cap.appendChild(ol); }
-  if (it.text) cap.appendChild(el("p", "small", rich(it.text)));
+  if (it.legend){ const ol = el("ol", "legend"); it.legend.forEach((s, i) => ol.appendChild(bindEl(el("li", null, rich(s)), it.legend, i, true))); cap.appendChild(ol); }
+  if (it.text) cap.appendChild(bindEl(el("p", "small", rich(it.text)), it, "text", true));
   fig.append(shot, cap);
   return fig;
 }
 function buildCard(it){
-  const card = el("div", "card"), h = el("h3"); h.textContent = it.title || ""; card.appendChild(h);
-  if (it.text) card.appendChild(el("p", "small", rich(it.text)));
-  if (it.list){ const l = el(it.ordered ? "ol" : "ul", it.ordered ? "seq" : null); it.list.forEach(s => l.appendChild(el("li", null, rich(s)))); card.appendChild(l); }
+  const card = el("div", "card"), h = el("h3"); h.textContent = it.title || ""; card.appendChild(bindEl(h, it, "title"));
+  if (it.text) card.appendChild(bindEl(el("p", "small", rich(it.text)), it, "text", true));
+  if (it.list){ const l = el(it.ordered ? "ol" : "ul", it.ordered ? "seq" : null); it.list.forEach((s, i) => l.appendChild(bindEl(el("li", null, rich(s)), it.list, i, true))); card.appendChild(l); }
   if (it.table){
     const t = el("table", "prod");
     it.table.forEach(sec => {
-      const hr = el("tr"), th = el("th"); th.colSpan = 2; th.textContent = sec.head; hr.appendChild(th); t.appendChild(hr);
-      sec.rows.forEach(([k, v]) => { const tr = el("tr"), a = el("td"), b = el("td"); a.textContent = k; b.textContent = v; tr.append(a, b); t.appendChild(tr); });
+      const hr = el("tr"), th = el("th"); th.colSpan = 2; th.textContent = sec.head; hr.appendChild(bindEl(th, sec, "head")); t.appendChild(hr);
+      sec.rows.forEach(row => { const tr = el("tr"), a = el("td"), b = el("td"); a.textContent = row[0]; b.textContent = row[1]; tr.append(bindEl(a, row, 0), bindEl(b, row, 1)); t.appendChild(tr); });
     });
     card.appendChild(t);
   }
@@ -682,8 +741,9 @@ function buildCard(it){
 }
 function buildBuilds(){
   const root = document.getElementById("builds");
+  root.innerHTML = "";
   (G.builds || []).forEach(sec => {
-    const s = el("div", "sect"), h = el("h2", "sh"); h.textContent = sec.title; s.appendChild(h);
+    const s = el("div", "sect"), h = el("h2", "sh"); h.textContent = sec.title; s.appendChild(bindEl(h, sec, "title"));
     const grid = el("div", sec.layout === "cards" ? "cards" : "figs"+(sec.layout === "narrow" ? " narrow" : ""));
     sec.items.forEach(it => grid.appendChild(it.type === "fig" ? buildFig(it) : buildCard(it)));
     s.appendChild(grid); root.appendChild(s);
@@ -1037,10 +1097,218 @@ pick.addEventListener("change", () => {
   const u = new URL(location.href); u.searchParams.set("guide", pick.value); location.href = u.href;
 });
 
+/* editable guide: your edits are a full copy of the editable sections, saved per guide on top of the original file.
+   "base" fingerprints the original, so we can tell you when the guide file changed under your edits. */
+const EDITABLE = ["plan", "focus", "research", "builds"];
+let G0 = null, EDITING = false, editKey = "", saveTimer = null;
+const hashStr = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
+const sections = g => { const o = {}; EDITABLE.forEach(k => { if (g[k]) o[k] = g[k]; }); return o; };
+const baseHash = () => hashStr(JSON.stringify(sections(G0)));
+const uid = p => p + "u-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+function applyEdits(){
+  G0 = JSON.parse(JSON.stringify(G));
+  editKey = "hoi4-tool-edits:" + G.meta.id;
+  const ed = load(editKey, null), note = document.getElementById("editNote");
+  if (!ed || !ed.data) return;
+  EDITABLE.forEach(k => { if (ed.data[k]) G[k] = ed.data[k]; });
+  note.hidden = false;
+  note.innerHTML = "You're viewing <b>your edited version</b> of this guide" +
+    (ed.base !== baseHash() ? ". <span class='warn'>The original guide has been updated since you edited it.</span> Reset to original to get the new version (export yours first if you want to keep it)." : ".") +
+    " <button type='button' class='ed-link'>Edit</button>";
+  note.querySelector("button").addEventListener("click", enterEdit);
+}
+function saveEdits(now){
+  clearTimeout(saveTimer);
+  const go = () => put(editKey, {base: baseHash(), saved: new Date().toISOString(), data: sections(G)});
+  if (now) go(); else saveTimer = setTimeout(go, 300);
+}
+
+/* small edit controls */
+function edText(value, placeholder, onSet, cls){
+  const s = el("span", "ed-text" + (cls ? " " + cls : ""));
+  s.contentEditable = "true"; s.spellcheck = true; s.textContent = value || ""; s.dataset.ph = placeholder;
+  s.setAttribute("role", "textbox"); s.setAttribute("aria-label", placeholder);
+  s.addEventListener("input", () => onSet(s.textContent.replace(/\s+/g, " ").trim()));
+  s.addEventListener("keydown", e => { if (e.key === "Enter"){ e.preventDefault(); s.blur(); } });
+  s.addEventListener("paste", e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); });
+  return s;
+}
+function edInput(value, placeholder, onSet, cls, width){
+  const i = el("input", "ed-input" + (cls ? " " + cls : "")); i.type = "text"; i.value = value || ""; i.placeholder = placeholder;
+  i.setAttribute("aria-label", placeholder); if (width) i.style.width = width;
+  i.addEventListener("input", () => onSet(i.value.trim(), i));
+  return i;
+}
+function edBtn(label, title, fn, cls){
+  const b = el("button", "ed-btn" + (cls ? " " + cls : "")); b.type = "button"; b.textContent = label; b.title = title; b.setAttribute("aria-label", title);
+  b.addEventListener("click", fn); return b;
+}
+// destructive buttons need a second click within 3 s
+function confirmTwice(b, fn){
+  let t = null; const label = b.textContent;
+  b.addEventListener("click", () => {
+    if (!t){ b.classList.add("armed"); b.textContent = "Sure?"; t = setTimeout(() => { t = null; b.classList.remove("armed"); b.textContent = label; }, 3000); return; }
+    clearTimeout(t); t = null; fn();
+  });
+  return b;
+}
+
+/* edit mode for a list of groups (plan phases, focus groups, research) */
+function editList(colId, groups, kind){
+  const col = document.getElementById(colId), list = col.querySelector("[data-list]");
+  list.innerHTML = "";
+  const redo = () => { saveEdits(); editList(colId, groups, kind); };
+  const move = (gi, si, dir) => {
+    const g = groups[gi], s = g.steps[si], to = si + dir;
+    if (to >= 0 && to < g.steps.length){ g.steps.splice(si, 1); g.steps.splice(to, 0, s); }
+    else if (groups[gi + dir]){ g.steps.splice(si, 1); dir < 0 ? groups[gi - 1].steps.push(s) : groups[gi + 1].steps.unshift(s); }
+    redo();
+  };
+  let n = 0;
+  groups.forEach((g, gi) => {
+    if (g.title !== null || kind !== "research"){
+      const head = el("li", "ed-phase");
+      head.appendChild(edText(g.title, "Phase name", v => { g.title = v; saveEdits(); }, "ed-title"));
+      if (kind === "plan"){
+        head.appendChild(edInput(g.ts, "▶ mm:ss", v => { if (v) g.ts = v; else delete g.ts; saveEdits(); }, "ed-small", "6.5em"));
+        const by = edInput(g.by, "done by YYYY-MM", (v, i) => {
+          const ok = !v || /^\d{4}-\d{2}(-\d{2})?$/.test(v); i.classList.toggle("bad", !ok);
+          if (!ok) return; if (v) g.by = v; else delete g.by; saveEdits();
+        }, "ed-small", "9.5em");
+        const ap = el("label", "ed-check", "<input type='checkbox'> ≈ estimate");
+        ap.querySelector("input").checked = !!g.approx;
+        ap.querySelector("input").addEventListener("change", e => { if (e.target.checked) g.approx = true; else delete g.approx; saveEdits(); });
+        head.append(by, ap);
+      }
+      const tools = el("span", "ed-tools");
+      tools.append(
+        edBtn("↑", "Move phase up", () => { if (gi > 0){ groups.splice(gi - 1, 0, groups.splice(gi, 1)[0]); redo(); } }),
+        edBtn("↓", "Move phase down", () => { if (gi < groups.length - 1){ groups.splice(gi + 1, 0, groups.splice(gi, 1)[0]); redo(); } }),
+        confirmTwice(edBtn("✕", "Delete phase and its steps", () => {}, "del"), () => { groups.splice(gi, 1); redo(); }));
+      head.appendChild(tools);
+      list.appendChild(head);
+    }
+    g.steps.forEach((s, si) => {
+      n++;
+      const row = el("li", "ed-row"); row.dataset.sid = s.id;
+      row.appendChild(el("span", "num", String(n)));
+      const main = el("div", "ed-main");
+      if (kind === "focus" && TREE){
+        // pick the focus from the game's tree by name; free text is kept but loses the tree link
+        const inp = edInput(s.t, "Focus name", (v, i) => {
+          const f = TREE.focuses.find(x => x.name.toLowerCase() === v.toLowerCase());
+          s.t = f ? f.name : v; if (f) s.focus = f.id; else delete s.focus;
+          i.classList.toggle("bad", !f); saveEdits();
+        }, "ed-focus");
+        inp.setAttribute("list", "edFocusList");
+        if (!s.focus) inp.classList.add("bad");
+        main.appendChild(inp);
+      } else {
+        main.appendChild(edText(s.t, kind === "research" ? "Technology" : "What to do", v => { s.t = v; saveEdits(); }));
+      }
+      main.appendChild(edText(s.n, "Note (optional)", v => { if (v) s.n = v; else delete s.n; saveEdits(); }, "ed-note"));
+      row.appendChild(main);
+      const extra = el("span", "ed-extra");
+      if (kind === "research"){
+        const sel = el("select", "ed-select", "<option value=''>—</option><option value='up'>UP</option><option value='sp'>Special project</option>");
+        sel.value = s.tag || ""; sel.setAttribute("aria-label", "Tag");
+        sel.addEventListener("change", () => { if (sel.value) s.tag = sel.value; else delete s.tag; saveEdits(); });
+        extra.appendChild(sel);
+      }
+      if (kind === "plan" && G.images){
+        const sel = el("select", "ed-select"); sel.setAttribute("aria-label", "Screenshot");
+        sel.appendChild(el("option", null, "No screenshot")).value = "";
+        Object.entries(G.images).forEach(([k, im]) => { const o = el("option"); o.value = k; o.textContent = im.caption || k; sel.appendChild(o); });
+        sel.value = s.img || "";
+        sel.addEventListener("change", () => { if (sel.value) s.img = sel.value; else delete s.img; saveEdits(); });
+        extra.appendChild(sel);
+      }
+      extra.append(
+        edBtn("↑", "Move up", () => move(gi, si, -1)),
+        edBtn("↓", "Move down", () => move(gi, si, 1)),
+        confirmTwice(edBtn("✕", "Delete", () => {}, "del"), () => { g.steps.splice(si, 1); redo(); }));
+      row.appendChild(extra);
+      list.appendChild(row);
+    });
+    const add = el("li", "ed-add");
+    add.appendChild(edBtn("+ Add " + (kind === "focus" ? "focus" : kind === "research" ? "tech" : "step"), "Add at the end of this phase", () => {
+      const id = uid(kind === "research" ? "res." : kind + ".");
+      g.steps.push({id, t: ""}); redo();
+      const f = list.querySelector(`[data-sid="${id}"] .ed-text, [data-sid="${id}"] .ed-input`); if (f) f.focus();
+    }));
+    list.appendChild(add);
+  });
+  if (kind !== "research"){
+    const addG = el("li", "ed-add ed-add-phase");
+    addG.appendChild(edBtn("+ Add phase", "Add a new phase at the end", () => { groups.push({id: uid(kind + "-"), title: "New phase", steps: []}); redo(); }));
+    list.appendChild(addG);
+  }
+}
+
+/* edit mode for the Builds tab: text in place, **bold** kept */
+function toMarkup(node){
+  const html = node.innerHTML.replace(/<(b|strong)>([\s\S]*?)<\/\1>/gi, "**$2**").replace(/<br\s*\/?>/gi, " ").replace(/<[^>]+>/g, "");
+  const ta = document.createElement("textarea"); ta.innerHTML = html;
+  return ta.value.replace(/\s+/g, " ").trim();
+}
+function editBuilds(){
+  buildBuilds();
+  document.querySelectorAll("#builds *").forEach(e => {
+    if (!e._bind) return;
+    const [obj, key, isRich] = e._bind;
+    e.contentEditable = "true"; e.classList.add("ed-inplace");
+    e.addEventListener("input", () => { obj[key] = isRich ? toMarkup(e) : e.textContent.replace(/\s+/g, " ").trim(); saveEdits(); });
+    e.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); e.blur(); } });
+  });
+}
+
+function enterEdit(){
+  if (EDITING) return;
+  EDITING = true; hideTip();
+  document.body.classList.add("editing");
+  document.getElementById("editBar").hidden = false;
+  document.getElementById("editNote").hidden = true;
+  document.getElementById("editBtn").setAttribute("aria-pressed", "true");
+  if (TREE && !document.getElementById("edFocusList")){
+    const dl = el("datalist"); dl.id = "edFocusList";
+    [...new Set(TREE.focuses.map(f => f.name))].sort().forEach(nm => { const o = el("option"); o.value = nm; dl.appendChild(o); });
+    document.body.appendChild(dl);
+  }
+  editList("planCol", G.plan, "plan");
+  editList("focusCol", G.focus, "focus");
+  editList("researchCol", G.research, "research");
+  editBuilds();
+}
+function leaveEdit(){ saveEdits(true); location.reload(); }   // reload so the tree, dates and counts all use the edits
+
+function download(name, text, type){
+  const a = el("a"); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+document.getElementById("editBtn").addEventListener("click", () => EDITING ? leaveEdit() : enterEdit());
+document.getElementById("edDone").addEventListener("click", leaveEdit);
+document.getElementById("edExportJson").addEventListener("click", () => download(G.meta.id + "-edited.json", JSON.stringify(G, null, 1), "application/json"));
+document.getElementById("edExportJs").addEventListener("click", () => download(G.meta.id + "-edited.js",
+  "/* Edited copy of the " + G.meta.id + " guide, exported " + new Date().toISOString().slice(0, 10) + ". Same format as guides/germany-blitzkrieg.js:\n   save it in guides/, give meta.id a new value, and add it to guides/index.js to make it a guide of its own. */\nregisterGuide(" + JSON.stringify(G, null, 1) + ");\n",
+  "text/javascript"));
+document.getElementById("edImport").addEventListener("change", e => {
+  const file = e.target.files[0]; if (!file) return;
+  file.text().then(text => {
+    let g;
+    try { g = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)); } catch (err) { g = null; }
+    if (!g || !Array.isArray(g.plan)){ alert("That file doesn't look like a guide export (no plan found)."); return; }
+    put(editKey, {base: baseHash(), saved: new Date().toISOString(), data: sections(g)});
+    location.reload();
+  });
+});
+confirmTwice(document.getElementById("edReset"), () => { try { localStorage.removeItem(editKey); } catch (e) {} location.reload(); });
+
 function fail(msg){ const m = document.getElementById("loadMsg"); m.textContent = msg; m.hidden = false; }
 function start(){
   if (!G || !G.meta){ fail("The guide file loaded but didn't register a guide: " + entry.file); return; }
   prefs.guide = G.meta.id; savePrefs();
+  applyEdits();
   const M = G.meta;
   document.title = (M.short || M.title) + " Checklist";
   document.getElementById("gTitle").textContent = M.title;

@@ -145,7 +145,7 @@ def clean(s, depth=0):
         if c:
             return loc.get(c.group(1), c.group(1))
         key = scripted.get(inner) or scripted.get(inner.split(".")[-1])   # [GER.GetTheUSSRName] -> GetTheUSSRName
-        return clean(loc.get(key, ""), depth + 1) if key else ""
+        return clean(loc.get(key, ""), depth + 1) if key else "\x00"   # \x00 marks a name only known at runtime
     s = re.sub(r"\[([^\]]*)\]", sub, s)
     s = re.sub(r"§.|£\w+|\\n", " ", s)
     return re.sub(r"\s+", " ", s).strip()
@@ -201,7 +201,7 @@ res = []
 for k in kept:
     v = F[k]
     x, y = pos(k)
-    o = {"id": k, "name": NAME_OVERRIDES.get(k) or clean(loc.get(k, k)), "x": x, "y": y, "days": v["days"]}
+    o = {"id": k, "name": NAME_OVERRIDES.get(k) or re.sub(r"\s+", " ", clean(loc.get(k, k)).replace("\x00", "")).strip(), "x": x, "y": y, "days": v["days"]}
     pre = [[p for p in grp if p not in hidden] for grp in v["pre"]]
     pre = [g for g in pre if g]
     if pre: o["pre"] = pre

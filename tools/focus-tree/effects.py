@@ -39,9 +39,37 @@ def chains(node):
             i += 1
 
 
+RELATIONS = {"non_aggression_pact": "non-aggression pact", "military_access": "military access", "guarantee": "guarantee",
+              "docking_rights": "docking rights", "puppet": "puppet status"}
+US = {"ROOT", "THIS", "PREV", "FROM", "GER"}   # in this tree, every one of these means Germany
+
+
 class Summariser:
     def __init__(self, game, loc, clean):
         self.loc, self.clean = loc, clean
+        # SOU -> SOV etc. (aliases that pick a country at runtime)
+        self.alias = {}
+        for f in glob.glob(os.path.join(game, "common", "country_tag_aliases", "*.txt")):
+            for k, _, v in parse(open(f, encoding="utf-8-sig", errors="replace").read()):
+                if k and isinstance(v, list) and first(v, "original_tag"):
+                    self.alias[k] = first(v, "original_tag")
+        # name countries by their 1936 ruling party: SOV is "Soviet Union", not the base "Russia"
+        self.party = {}
+        for f in glob.glob(os.path.join(game, "history", "countries", "*.txt")):
+            tag = os.path.basename(f)[:3]
+            m = re.search(r"ruling_party\s*=\s*(\w+)", open(f, encoding="utf-8-sig", errors="replace").read())
+            if m:
+                self.party[tag] = m.group(1)
+        self.opinion = {}
+        for f in glob.glob(os.path.join(game, "common", "opinion_modifiers", "*.txt")):
+            try:
+                root = parse(open(f, encoding="utf-8-sig", errors="replace").read())
+            except Exception:
+                continue
+            for block in get(root, "opinion_modifiers"):
+                for name, _, body in block:
+                    if name and isinstance(body, list):
+                        self.opinion[name] = (first(body, "value", "0"), first(body, "trade") == "yes")
         self.ideas = {}
         for f in glob.glob(os.path.join(game, "common", "ideas", "*.txt")):
             try:
@@ -59,7 +87,7 @@ class Summariser:
 
     # ---------- naming ----------
     def name(self, key):
-        n = self.clean(self.loc.get(key, ""))
+        n = self.clean(self.loc.get(key, "")).replace("\x00", "").strip()
         if n:
             return n
         # no English name: GER_operation_sea_lion_ns -> Operation sea lion
@@ -67,7 +95,11 @@ class Summariser:
         return key.replace("_", " ").strip().capitalize()
 
     def country(self, tag):
-        return self.name(tag) if tag not in ("ROOT", "THIS", "PREV", "FROM") else "us"
+        if tag in US:
+            return "us"
+        tag = self.alias.get(tag, tag)
+        party = self.party.get(tag)
+        return self.name(f"{tag}_{party}") if party and self.loc.get(f"{tag}_{party}") else self.name(tag)
 
     def state(self, sid):
         return self.clean(self.loc.get(f"STATE_{sid}", "")) or f"state {sid}"
@@ -106,7 +138,7 @@ class Summariser:
                 return f"{x * 100:+.0f}%"
             return f"{x:+g}"
         raw = re.sub(r"\$(?:RIGHT|VALUE)\|([^$]*)\$", fmt, raw)
-        return self.clean(raw) or None
+        return self.clean(raw).replace("\x00", "").strip() or None
 
     # ---------- conditions ----------
     def cond(self, node, mode="AND"):
@@ -140,6 +172,18 @@ class Summariser:
     def summarise(self, reward):
         out = []
         self.walk(reward, out, "")
+        # many claims or cores in a row read better as one line
+        merged = []
+        for line in out:
+            m = re.match(r"(Claim|Core) on (.+)$", line or "")
+            if m and merged and merged[-1][0] == m.group(1):
+                if m.group(2) not in merged[-1][1]:
+                    merged[-1][1].append(m.group(2))
+            elif m:
+                merged.append([m.group(1), [m.group(2)]])
+            else:
+                merged.append(line)
+        out = [x if isinstance(x, str) else (f"{x[0]}s on " if len(x[1]) > 1 else f"{x[0]} on ") + ", ".join(x[1]) for x in merged]
         seen, lines = set(), []
         for line in out:
             line = re.sub(r"\s+([.,:;!?])", r"\1", re.sub(r"\s+", " ", line or "")).strip()
@@ -149,24 +193,61 @@ class Summariser:
             seen.add(line); lines.append(line)
         return lines[:14]
 
-    def walk(self, node, out, where, who=""):
+    def walk(self, node, out, where, who="", state=None):
         pre = (who + ": ") if who else ""
         for item in chains(node):
             if item[0] == "chain":
                 for limit, body in item[1]:
                     if self.cond(limit):
-                        self.walk(body, out, where, who); break
+                        self.walk(body, out, where, who, state); break
                 continue
             k, op, v = item
             if k is None:
                 continue
             kl = k.lower()
             if kl in ("hidden_effect", "limit", "random_select_amount", "tooltip", "add_extra_state_shared_building_slots",
-                      "set_country_flag", "set_global_flag", "add_ai_strategy", "add_opinion_modifier", "country_event",
+                      "set_country_flag", "set_global_flag", "add_ai_strategy", "country_event",
                       "news_event", "clr_country_flag", "set_variable", "mark_focus_tree_layout_dirty"):
-                continue
+                continue   # hidden in game too (AI strategy, flags, events)
             if kl == "effect_tooltip":
-                self.walk(v, out, where, who); continue
+                self.walk(v, out, where, who, state); continue
+            # ---- claims and diplomacy ----
+            if kl in ("add_claim_by", "add_core_of") and not isinstance(v, list):
+                what = "Claim" if kl == "add_claim_by" else "Core"
+                place = self.state(state) if state else "several states"
+                out.append(f"{what} on {place}" if v in US else f"{self.country(v)} gets a {what.lower()} on {place}")
+                continue
+            if kl == "add_opinion_modifier" and isinstance(v, list):
+                val, trade = self.opinion.get(first(v, "modifier", ""), ("?", False))
+                kind = "trade opinion" if trade else "opinion"
+                try:
+                    val = f"{float(val):+g}"
+                except ValueError:
+                    pass
+                tgt = first(v, "target", "ROOT")
+                if who:
+                    out.append(f"{who}: {kind} of {self.country(tgt)} {val}")
+                else:   # target "us" here means the countries of an outer loop (Germany's opinion of each of them)
+                    out.append(f"Our {kind} of {'them' if tgt in US else self.country(tgt)} {val}")
+                continue
+            if kl == "give_guarantee" and not isinstance(v, list):
+                out.append(f"{who or 'We'} guarantee{'s' if who else ''} {self.country(v)}")
+                continue
+            if kl == "add_to_faction" and not isinstance(v, list):
+                out.append(f"{self.country(v)} joins {'our' if not who else who + chr(39) + 's'} faction")
+                continue
+            if kl == "create_faction":
+                out.append(pre + "Creates a faction"); continue
+            if kl == "puppet" and not isinstance(v, list):
+                out.append(pre + f"Puppets {self.country(v)}"); continue
+            if kl == "set_autonomy" and isinstance(v, list):
+                out.append(pre + f"Makes {self.country(first(v, 'target', '?'))} a {self.name(first(v, 'autonomy_state', 'subject'))}"); continue
+            if kl == "diplomatic_relation" and isinstance(v, list):
+                rel = RELATIONS.get(first(v, "relation", ""), first(v, "relation", "relation").replace("_", " "))
+                other = self.country(first(v, "country", "?"))
+                ends = first(v, "active", "yes") == "no"
+                out.append(pre + (f"Ends {rel} with {other}" if ends else f"{rel[0].upper() + rel[1:]} with {other}"))
+                continue
             if kl == "add_political_power":
                 out.append(pre + f"{float(v):+g} political power")
             elif kl in ("army_experience", "air_experience", "navy_experience"):
@@ -235,7 +316,7 @@ class Summariser:
             elif kl == "custom_effect_tooltip":
                 if not isinstance(v, list) and "skip_one_line" not in v:
                     t = self.clean(self.loc.get(v, ""))
-                    if t and len(t) < 160:
+                    if t and "\x00" not in t and len(t) < 160:   # \x00 = a name only known at runtime: skip the line
                         if t[0].islower() and who:      # "[FRA.GetName] and other nations..." lost its subject
                             t = who + " " + t
                         out.append(t.rstrip(".: "))   # tooltips usually say who they're about
@@ -249,15 +330,18 @@ class Summariser:
             elif isinstance(v, list):
                 # scopes: a state id, a country tag, or every_/random_ iterators
                 if k.isdigit():
-                    self.walk(v, out, f" in {self.state(k)}", who)
+                    self.walk(v, out, f" in {self.state(k)}", who, state=k)
                 elif re.fullmatch(r"[A-Z]{3}", k) or k in ("ROOT", "owner", "controller"):
-                    self.walk(v, out, where, "" if k in ("ROOT", "GER", "owner", "controller") else self.country(k))
+                    self.walk(v, out, where, "" if k in US or k in ("owner", "controller") else self.country(k))
                 elif kl.startswith("random_") and "state" in kl:
                     self.walk(v, out, " in a random state", who)
                 elif kl.startswith("every_") and "state" in kl:
                     n = first(v, "random_select_amount")
                     self.walk(v, out, f" in each of {n} states" if n else " in every such state", who)
+                elif kl.startswith(("every_", "random_")) and "country" in kl:
+                    # which countries depends on a condition we can't evaluate, so stay vague
+                    self.walk(v, out, where, "Some countries" if kl.startswith("every_") else "Another country")
                 elif kl.startswith(("every_", "random_")):
-                    continue   # other countries / characters: too situational to summarise
+                    continue   # characters, units...: too situational to summarise
                 elif kl in ("if", "else", "else_if"):
-                    self.walk([x for x in v if x[0] != "limit"], out, where, who)
+                    self.walk([x for x in v if x[0] != "limit"], out, where, who, state)

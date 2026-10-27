@@ -219,6 +219,7 @@ label.item.done .fd{color:var(--green-ink)}
 .treeview{position:relative;height:calc(100vh - 230px);min-height:420px;overflow:hidden;cursor:grab;touch-action:none;user-select:none;
   background:#1c1d1b radial-gradient(ellipse at 50% 0%,#2a2b27,#1c1d1b 70%);box-shadow:inset 0 2px 8px rgba(0,0,0,.7)}
 .treeview.panning{cursor:grabbing}
+.treeview.guide-only .fn.off,.treeview.guide-only #treeLines path:not(.g),.treeview.guide-only .fx.off{display:none}
 .treecanvas{position:absolute;left:0;top:0;transform-origin:0 0}
 #treeLines{position:absolute;left:0;top:0;overflow:visible;pointer-events:none}
 #treeLines path{fill:none;stroke:#6a8bab;stroke-width:2.2;opacity:.3}
@@ -232,13 +233,17 @@ label.item.done .fd{color:var(--green-ink)}
 .fn.guide:focus-visible{outline:2px solid var(--brass-lt);outline-offset:4px;border-radius:10px}
 .fn-ico{position:relative;z-index:1;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:21px;line-height:1;color:#f1e8cc;
   background:radial-gradient(circle at 35% 30%,#6a6f63,#33362e 70%);border:2px solid #8a7440;box-shadow:0 2px 5px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.25);text-shadow:0 1px 1px #000}
-.fn-ico[data-cat="army"]{background:radial-gradient(circle at 35% 30%,#7d8a55,#3c4426 70%)}
-.fn-ico[data-cat="navy"]{background:radial-gradient(circle at 35% 30%,#5d7ea6,#253a55 70%)}
-.fn-ico[data-cat="air"]{background:radial-gradient(circle at 35% 30%,#7a99b8,#33475e 70%)}
-.fn-ico[data-cat="ind"]{background:radial-gradient(circle at 35% 30%,#a08758,#4d3d22 70%)}
-.fn-ico[data-cat="res"]{background:radial-gradient(circle at 35% 30%,#5f9c97,#24423f 70%)}
-.fn-ico[data-cat="ann"]{background:radial-gradient(circle at 35% 30%,#b0574a,#57211a 70%)}
-.fn-ico[data-cat="pol"],.fn-ico[data-cat="int"],.fn-ico[data-cat="stab"]{background:radial-gradient(circle at 35% 30%,#8c7aa6,#3d3150 70%)}
+.fn-ico svg{width:26px;height:26px;fill:currentColor;filter:drop-shadow(0 1px 1px rgba(0,0,0,.85))}
+.fn-ico:is([data-ic="tank"],[data-ic="helmet"],[data-ic="artillery"],[data-ic="fort"]){background:radial-gradient(circle at 35% 30%,#7d8a55,#3c4426 70%)}
+.fn-ico:is([data-ic="ship"],[data-ic="sub"]){background:radial-gradient(circle at 35% 30%,#5d7ea6,#253a55 70%)}
+.fn-ico[data-ic="plane"]{background:radial-gradient(circle at 35% 30%,#7a99b8,#33475e 70%)}
+.fn-ico:is([data-ic="factory"],[data-ic="gear"],[data-ic="road"],[data-ic="oil"],[data-ic="coin"]){background:radial-gradient(circle at 35% 30%,#a08758,#4d3d22 70%)}
+.fn-ico[data-ic="flask"]{background:radial-gradient(circle at 35% 30%,#5f9c97,#24423f 70%)}
+.fn-ico[data-ic="rings"]{background:radial-gradient(circle at 35% 30%,#6f9a6a,#2b4428 70%)}
+.fn-ico:is([data-ic="swords"],[data-ic="flag"]){background:radial-gradient(circle at 35% 30%,#b0574a,#57211a 70%)}
+.fn-ico:is([data-ic="eagle"],[data-ic="horn"],[data-ic="eye"],[data-ic="people"]){background:radial-gradient(circle at 35% 30%,#8c7aa6,#3d3150 70%)}
+.fn-ico[data-ic="star"]{background:radial-gradient(circle at 35% 30%,#c0473a,#5e1510 70%)}
+.fn-ico[data-ic="crown"]{background:radial-gradient(circle at 35% 30%,#a79250,#4e4119 70%)}
 .fn-name{margin-top:-7px;width:100%;min-height:34px;padding:9px 6px 5px;text-align:center;font:600 11px/1.15 var(--f-body);color:#ece7d8;
   background:linear-gradient(180deg,#444541,#272825);border:1px solid #63645c;border-radius:10px;box-shadow:0 2px 4px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.1);
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -271,6 +276,32 @@ label.item.done .fd{color:var(--green-ink)}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 </head><body>
+
+<!-- focus emblems: our own simple silhouettes, picked per focus from the theme of its in-game icon (no game art) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ic-tank" viewBox="0 0 24 24"><rect x="8" y="7" width="7.5" height="4.2" rx="1"/><rect x="14.5" y="8.2" width="8" height="1.7" rx=".5"/><path d="M4.5 11.2h14l1.8 3.3H2.7z"/><path d="M3.2 15.3h17.6a2.4 2.4 0 0 1 0 4.8H3.2a2.4 2.4 0 0 1 0-4.8zm1.3 1.6a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6zm3.6 0a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6zm3.6 0a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6zm3.6 0a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6zm3.6 0a.8.8 0 1 0 0 1.6.8.8 0 0 0 0-1.6z" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-plane" viewBox="0 0 24 24"><path d="M12 1.8c.9 0 1.5 1.1 1.5 2.6V9l8.3 4.3v2.1l-8.3-2.3v4.6l2.6 1.9v1.8L12 20.4l-4.1 1v-1.8l2.6-1.9v-4.6l-8.3 2.3v-2.1L10.5 9V4.4c0-1.5.6-2.6 1.5-2.6z"/></symbol>
+  <symbol id="ic-ship" viewBox="0 0 24 24"><rect x="10.6" y="4" width="1.8" height="4.5"/><path d="M8.2 8.5h6v3.2h3.4V14H5.6v-2.3h2.6z"/><path d="M14.5 10.4h6.8v1.1h-6.8z"/><path d="M1.5 14.8h21l-2.8 4.7H4.6z"/></symbol>
+  <symbol id="ic-sub" viewBox="0 0 24 24"><path d="M9.5 8.5h3.6v3.2H9.5z"/><rect x="11" y="5" width="1.2" height="3.5"/><path d="M2.5 14.2c0-1.8 2.2-2.9 5.4-2.9h9.4c2.8 0 4.7 1.2 4.7 2.9s-1.9 2.9-4.7 2.9H7.9c-3.2 0-5.4-1.1-5.4-2.9z"/><path d="M20.8 12.4l1.5-1.6v6.8l-1.5-1.6z"/></symbol>
+  <symbol id="ic-helmet" viewBox="0 0 24 24"><path d="M4.2 15.2C4.2 9.7 7.6 6 12 6s7.8 3.7 7.8 9.2H22v2.3H2v-2.3z"/><path d="M5 18.3h4.4l-1 2.4H5.6z"/></symbol>
+  <symbol id="ic-artillery" viewBox="0 0 24 24"><path d="M6.5 14.4l14.2-8 1.1 2-13.6 8.6z"/><circle cx="8.3" cy="16.8" r="3.6"/><path d="M2 20.2h11v1.6H2z"/></symbol>
+  <symbol id="ic-fort" viewBox="0 0 24 24"><path d="M12 2l8.5 3.2v6.2c0 5.1-3.6 9.1-8.5 10.9-4.9-1.8-8.5-5.8-8.5-10.9V5.2z"/></symbol>
+  <symbol id="ic-swords" viewBox="0 0 24 24"><g id="ic-sword1"><path d="M3 3h2.6L17.4 14.8l-2.6 2.6L3 5.6z"/><path d="M13.2 19.3l6.1-6.1 1.3 1.3-6.1 6.1z"/><path d="M17.6 18.9l1.3-1.3 3 3-1.3 1.3z"/></g><use href="#ic-sword1" transform="matrix(-1 0 0 1 24 0)"/></symbol>
+  <symbol id="ic-flag" viewBox="0 0 24 24"><path d="M4.5 2h2v20h-2z"/><path d="M7.2 3H20l-2.8 4.2L20 11.4H7.2z"/></symbol>
+  <symbol id="ic-rings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.8"><circle cx="8.6" cy="12" r="5.4"/><circle cx="15.4" cy="12" r="5.4"/></g></symbol>
+  <symbol id="ic-eagle" viewBox="0 0 24 24"><path d="M12 4.2c1.1 0 1.9.8 1.9 1.9l7.4-2.7-1.6 3.6 2.1-.6-2 4.1-5.3 1.9 1.4 6.6-3.9-1.8-3.9 1.8 1.4-6.6-5.3-1.9-2-4.1 2.1.6-1.6-3.6 7.4 2.7c0-1.1.8-1.9 1.9-1.9z"/><path d="M9.6 19.6h4.8l-1.1 2.2h-2.6z"/></symbol>
+  <symbol id="ic-eye" viewBox="0 0 24 24"><path d="M1.5 12S5.6 5.2 12 5.2 22.5 12 22.5 12 18.4 18.8 12 18.8 1.5 12 1.5 12zm10.5-3.6a3.6 3.6 0 1 0 0 7.2 3.6 3.6 0 0 0 0-7.2z" fill-rule="evenodd"/><circle cx="12" cy="12" r="1.7"/></symbol>
+  <symbol id="ic-star" viewBox="0 0 24 24"><path d="M12 2l2.9 6.5 7.1.7-5.4 4.7 1.6 7L12 17.3l-6.2 3.6 1.6-7L2 9.2l7.1-.7z"/></symbol>
+  <symbol id="ic-crown" viewBox="0 0 24 24"><path d="M2.5 7.5l4.8 4.3L12 4.5l4.7 7.3 4.8-4.3-2.1 10.2H4.6z"/><path d="M4.6 19h14.8v2.2H4.6z"/></symbol>
+  <symbol id="ic-flask" viewBox="0 0 24 24"><path d="M8.6 2h6.8v1.8h-1.2v5.4l5.7 9.6a2.2 2.2 0 0 1-1.9 3.2H6a2.2 2.2 0 0 1-1.9-3.2l5.7-9.6V3.8H8.6zm-1.5 15h9.8l-2.4-4.2H9.5z" fill-rule="evenodd"/></symbol>
+  <symbol id="ic-oil" viewBox="0 0 24 24"><path d="M12 2.2c3.6 5 6.6 8.6 6.6 12.2a6.6 6.6 0 0 1-13.2 0c0-3.6 3-7.2 6.6-12.2z"/></symbol>
+  <symbol id="ic-coin" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 1 0 18 9 9 0 0 1 0-18zm0 2.4a6.6 6.6 0 1 0 0 13.2 6.6 6.6 0 0 0 0-13.2z" fill-rule="evenodd"/><path d="M11 7.5h2v9h-2zM8.8 9.5h6.4v1.6H8.8zM8.8 12.9h6.4v1.6H8.8z"/></symbol>
+  <symbol id="ic-road" viewBox="0 0 24 24"><path d="M8.6 2h2.2L9.6 22H3.4zM13.2 2h2.2l5.2 20h-6.2z"/><path d="M11.4 3h1.2v3h-1.2zM11.4 8.5h1.2v3.5h-1.2zM11.3 14.5h1.4v4h-1.4z"/></symbol>
+  <symbol id="ic-factory" viewBox="0 0 24 24"><path d="M2 21.5V10.5l5 3.2v-3.2l5 3.2v-3.2l5 3.2V3h4.5v18.5z"/></symbol>
+  <symbol id="ic-people" viewBox="0 0 24 24"><circle cx="8" cy="7.6" r="3.2"/><circle cx="16.4" cy="8.4" r="2.8"/><path d="M1.8 20.5c0-4.2 2.9-7 6.2-7s6.2 2.8 6.2 7z"/><path d="M15.2 20.5c0-2.4-.7-4.4-1.9-5.8.9-.7 2-1.1 3.1-1.1 3 0 5.6 2.5 5.6 6.9z"/></symbol>
+  <symbol id="ic-horn" viewBox="0 0 24 24"><path d="M3 9.4h4.2L18 4v15.8L7.2 14.4H3z"/><path d="M7.4 15.2l1.7 6.3h2.8l-1.7-6.3z"/><path d="M19.6 9.6h2.6v4.4h-2.6z"/></symbol>
+  <symbol id="ic-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6" fill="none" stroke="currentColor" stroke-width="3.6" stroke-dasharray="3 2.95"/><path d="M12 6.2a5.8 5.8 0 1 1 0 11.6 5.8 5.8 0 0 1 0-11.6zm0 3.6a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4z" fill-rule="evenodd"/></symbol>
+</svg>
 
 <div class="wrap">
   <header class="topbar">
@@ -345,7 +376,8 @@ label.item.done .fd{color:var(--green-ink)}
         <div class="treebar">
           <button type="button" data-zoom="-1" aria-label="Zoom out">−</button>
           <button type="button" data-zoom="1" aria-label="Zoom in">+</button>
-          <button type="button" id="treeFit">Whole tree</button>
+          <button type="button" id="treeAll" aria-pressed="true">Complete tree</button>
+          <button type="button" id="treeFit">Fit</button>
           <button type="button" id="treeNext">Go to next focus</button>
           <span class="legend-tree"><i class="lg done"></i>Done <i class="lg next"></i>Next <i class="lg avail"></i>Available <i class="lg locked"></i>Locked <i class="lg off"></i>Not in guide</span>
         </div>
@@ -731,8 +763,6 @@ function projectFocuses(){
   TREE.end = isoDay(day);
 }
 
-const CATS = [["army","⚔"],["navy","⚓"],["air","✈"],["ind","⚙"],["res","⚗"],["ann","⚑"],["pol","★"],["int","★"],["stab","★"]];
-const catOf = tags => (CATS.find(([c]) => (tags || []).includes(c)) || ["other","◆"]);
 const doneF = id => !!(STEP_OF[id] && store.ticks[STEP_OF[id]]);
 
 function buildTree(){
@@ -745,8 +775,8 @@ function buildTree(){
     n._cx = f.x * UX + UX; n._top = f.y * UY + 24; n._f = f;
     n.style.left = (n._cx - NW/2) + "px"; n.style.top = n._top + "px";
     n.innerHTML = '<span class="fn-ico"></span><span class="fn-name"></span><span class="fn-days"></span>';
-    const [cat, glyph] = catOf(f.tags), ico = n.querySelector(".fn-ico");
-    ico.dataset.cat = cat; ico.textContent = glyph + "︎";
+    const ic = f.ic || "gear", ico = n.querySelector(".fn-ico");
+    ico.dataset.ic = ic; ico.innerHTML = `<svg viewBox="0 0 24 24"><use href="#ic-${ic}"/></svg>`;
     n.querySelector(".fn-name").textContent = f.name;
     n.querySelector(".fn-days").textContent = f.days + "d";
     if (i >= 0){
@@ -772,7 +802,7 @@ function buildTree(){
   TREE.focuses.forEach(f => (f.mx || []).forEach(m => {
     const k = [f.id, m].sort().join("|"), a = FNODE[f.id], b = FNODE[m];
     if (seen.has(k) || !b || a._top !== b._top || Math.abs(a._cx - b._cx) > 6 * UX) return; seen.add(k);
-    const x = el("span", "fx", "!"); x.style.left = ((a._cx + b._cx) / 2 - 9) + "px"; x.style.top = (a._top + 54) + "px";
+    const x = el("span", "fx" + (STEP_OF[f.id] && STEP_OF[m] ? "" : " off"), "!"); x.style.left = ((a._cx + b._cx) / 2 - 9) + "px"; x.style.top = (a._top + 54) + "px";
     canvas.appendChild(x);
   }));
   canvas.style.width = W + "px"; canvas.style.height = H + "px"; canvas._w = W; canvas._h = H;
@@ -837,10 +867,21 @@ function centerOn(id, s){
   applyView();
 }
 function fitTree(){
-  view.s = Math.min(tv.clientWidth / tc._w, tv.clientHeight / tc._h);
-  view.x = (tv.clientWidth - tc._w * view.s) / 2; view.y = (tv.clientHeight - tc._h * view.s) / 2;
+  // fit whatever is shown: every focus, or only the guide's path
+  const ns = Object.values(FNODE).filter(n => !prefs.treeGuideOnly || STEP_OF[n._f.id]);
+  const x0 = Math.min(...ns.map(n => n._cx)) - NW/2 - 24, x1 = Math.max(...ns.map(n => n._cx)) + NW/2 + 24;
+  const y0 = Math.min(...ns.map(n => n._top)) - 24, y1 = Math.max(...ns.map(n => n._top)) + NB + 40;
+  view.s = Math.min(1.2, tv.clientWidth / (x1 - x0), tv.clientHeight / (y1 - y0));
+  view.x = (tv.clientWidth - (x1 - x0) * view.s) / 2 - x0 * view.s; view.y = (tv.clientHeight - (y1 - y0) * view.s) / 2 - y0 * view.s;
   applyView();
 }
+const allBtn = document.getElementById("treeAll");
+function applyTreeMode(){
+  tv.classList.toggle("guide-only", !!prefs.treeGuideOnly);
+  allBtn.setAttribute("aria-pressed", !prefs.treeGuideOnly);
+}
+allBtn.addEventListener("click", () => { prefs.treeGuideOnly = !prefs.treeGuideOnly; savePrefs(); applyTreeMode(); hideTip(); });
+applyTreeMode();
 function treeShown(){
   if (!treeBuilt || treeViewed || !tv.clientWidth) return;
   treeViewed = true;

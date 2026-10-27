@@ -66,6 +66,13 @@ for f in glob.glob(os.path.join(game, "localisation", "english", "*_l_english.ym
         if m:
             loc.setdefault(m.group(1), m.group(2))
 
+def icon_name(f):
+    v = first(f, "icon")
+    if isinstance(v, list):   # conditional icon: icon = { trigger = {...} value = GFX_x }
+        v = first(v, "value")
+    return re.sub(r"^GFX_(focus_|goal_)?", "", v or "")
+
+
 F = {}
 for f in raw:
     fid = first(f, "id")
@@ -82,6 +89,7 @@ for f in raw:
         "bypass": bool(get(f, "bypass")),
         "filters": [v for s in get(f, "search_filters") for _, _, v in s],
         "allowed": all(ev(a) for a in get(f, "allow_branch")),
+        "icon": icon_name(f),
     }
 
 # hide branches that aren't allowed, then anything that can no longer be reached
@@ -136,11 +144,50 @@ def clean(s, depth=0):
         c = re.match(r"(\w{3})\.GetName$", inner)
         if c:
             return loc.get(c.group(1), c.group(1))
-        key = scripted.get(inner)
+        key = scripted.get(inner) or scripted.get(inner.split(".")[-1])   # [GER.GetTheUSSRName] -> GetTheUSSRName
         return clean(loc.get(key, ""), depth + 1) if key else ""
     s = re.sub(r"\[([^\]]*)\]", sub, s)
     s = re.sub(r"Â§.|Â£\w+", "", s)
     return re.sub(r"\s+", " ", s).strip()
+
+
+# our own icon themes, picked from the in-game icon *name* (no game art is used). First match wins.
+ICON_RULES = [
+    ("sub", r"submarine|wolf_pack|u_boat"),
+    ("plane", r"air|bomber|fighter|_cas|aircraft|luftwaffe|jagdwaffe|flying|helicopter|aeronaut|dive_bomb"),
+    ("ship", r"navy|naval|battleship|cruiser|carrier|fleet|panzerschiff|seeherrschaft|zeppelin|high_seas|shipbuild|ships|kriegsmarine|amphibious"),
+    ("tank", r"tank|panzer|armou?r|mechani|motor|truck|kdf|combined_arms|wagen|vehicle"),
+    ("artillery", r"artiller|_gun"),
+    ("fort", r"defen[cs]|fortif|westwall|hedgehog|bulwark|shield|sentinel"),
+    ("rings", r"anti_comintern|befriend|alliance|ally_|_ally|treaty|pact|deal|relations|cooperation|influence|align|entente|brothers|exchange|diplomacy|concession|customs_union|confederation|spheres|realpolitik|tech_sharing|commonwealth|support_|license|invite"),
+    ("eye", r"secret|intelligence|gestapo|abwehr|ss_security|whisper|stasi|spy|rote_drei"),
+    ("star", r"proletar|communis|comintern|spartacus|socialis|soviet_politics|stakhanov|red_army|workers_and_farmers|capitalism|revolution|left_right"),
+    ("crown", r"kaiser|monarch|habsburg|tsar|imperial|prussian|restauration|crown"),
+    ("swords", r"attack|invade|war_with|_war\b|major_war|total_war|operation|strike|schlieffen|maginot|wess?erubung|conquer|assault|invasion|liberation_or_death"),
+    ("helmet", r"army|infantr|troop|wehrmacht|gebirgs|paratroop|strafbat|schutztruppe|position_armies|military_mission|afrikakorps|varnplikt|mobilization_plan|auftrag"),
+    ("flag", r"demand|annex|anschluss|fate_of|integrate_|claim|reclaim|colon|rhineland|border|duchies|protectorate|reichskommis|territory|occupy|mittel|sudeten|danzig|austria|czech|polish|qingdao|subdu|subjug|place_in_the_sun|carve|holdings|liechtenstein|congo|europe|volkskommissar|scandinavia|baltic|benelux|middle_east|south_america|africa|asian|eastern|western"),
+    ("flask", r"research|universit|scien|radar|rocket|wunderwaffe|wonderweapon|heraeus|tech"),
+    ("oil", r"oil|refiner|fuel|rubber|benzin|coal|resource|energy|hydro|electric|natural_wealth|liquefaction|buna"),
+    ("coin", r"gold|currency|price|trade|consumer|money|economies|economy|wirtschaft|reform|bonds|privatis|regulations|corruption"),
+    ("road", r"infrastructure|road|autobahn|supply|logistic|rail|lokomotive"),
+    ("factory", r"factor|industr|production|construct|stahlwerke|armament|todt|holzmann|speer|four_year|autarky|reorient|modernize|central_planning|plenipotentiary|zentrale"),
+    ("people", r"farm|housing|welfare|employment|social_mobilization|workers|people|labour|unity|women|public_works"),
+    ("horn", r"propaganda|film|enlightenment|rall|goebbels|spread_"),
+    ("eagle", r"fuhrer|supreme|party|ascension|chancellor|loyalty|dictatorship|leader|_ss|hegemony|himmler|goring|reich|weltpolitik|neurath|successor|appease|military_achievements|invincible"),
+]
+FILTER_ICON = {"ann": "flag", "army": "helmet", "mil": "helmet", "navy": "ship", "air": "plane", "ind": "factory", "res": "flask",
+               "trade": "coin", "man": "people", "ws": "horn", "pol": "eagle", "char": "eagle", "int": "eagle", "stab": "eagle"}
+
+
+def icon_theme(icon_name, fid, filters):
+    for text in (icon_name.lower(), fid.lower()):
+        for theme, rx in ICON_RULES:
+            if re.search(rx, text):
+                return theme
+    for f in filters:
+        if f in FILTER_ICON:
+            return FILTER_ICON[f]
+    return "gear"
 
 
 # names the game picks at runtime from world state; use the historical one
@@ -159,6 +206,7 @@ for k in kept:
     if v["bypass"]: o["bypass"] = 1
     fl = [FILTER_SHORT.get(f, f) for f in v["filters"]]
     if fl: o["tags"] = fl
+    o["ic"] = icon_theme(v["icon"], k, fl)
     res.append(o)
 
 json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False)
@@ -169,3 +217,4 @@ print("unnamed", [r["id"] for r in res if r["name"] == r["id"]][:20])
 print("unknown triggers", unknown.most_common(10))
 dup = collections.Counter((r["x"], r["y"]) for r in res)
 print("overlaps", [p for p, n in dup.items() if n > 1][:20])
+print("icons", collections.Counter(r["ic"] for r in res).most_common())

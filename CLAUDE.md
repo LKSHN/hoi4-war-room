@@ -48,5 +48,6 @@ Host on GitHub Pages once the split is done. Keep it static.
 - Never add Claude as author or co-author: no `Co-Authored-By` trailers, no "Generated with Claude" lines in commits or PRs.
 - Prefer targeted, scoped edits over rewrites. Don't over-deliver beyond the step being worked on.
 - Keep it working without a build step unless there's a clear reason to add one, and discuss that first.
+- Cache busting: GitHub Pages lets browsers cache files for 10 minutes, so a new page can run with old data. Whenever anything in `guides/` changes, bump `BUILD` in `index.html` and the matching `?v=` on its two `<script src>` tags (all three must match).
 - The user plays on Windows and uses the tool on a second monitor, so test at roughly 1280–1920 px wide as well as narrow widths.
 - Game facts drift with patches. When a number or mechanic is uncertain or from an older source, say so in the UI rather than presenting it as fact.

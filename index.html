@@ -423,10 +423,13 @@ label.item.done .fd{color:var(--green-ink)}
 
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
-<script src="guides/index.js"></script>
-<script src="guides/glossary.js"></script>
+<!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
+<script src="guides/index.js?v=2026-10-27.2"></script>
+<script src="guides/glossary.js?v=2026-10-27.2"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
+const BUILD = "2026-10-27.2";   // also on the two <script src> tags above
+const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
 function registerTree(t){ TREE = t; }
@@ -767,6 +770,7 @@ const view = {x: 0, y: 0, s: .85};
 function projectFocuses(){
   if (!TREE) return;
   const T = TREE.byId = {}; TREE.focuses.forEach(f => T[f.id] = f);
+  TREE.hasFx = TREE.focuses.some(f => f.fx);
   let day = Date.UTC(1936, 0, 1);
   (G.focus || []).forEach(g => g.steps.forEach(s => {
     const f = s.focus && T[s.focus]; if (!f) return;
@@ -886,6 +890,8 @@ function treeTipHtml(f){
       const s = esc(l), m = /^([+-])/.exec(l), bad = /tension/i.test(l);
       return "<li" + (m ? ' class="' + ((m[1] === "+") !== bad ? "up" : "down") + '"' : "") + ">" + s + "</li>";
     }).join("") + "</ul>";
+  } else if (!TREE.hasFx) {
+    h += '<div class="tip-none">Effects didn\'t load: your browser has an old copy of the focus data. Reload with Ctrl+F5.</div>';
   } else h += '<div class="tip-none">No direct effect listed: it runs a scripted effect or event.</div>';
   if (f.pre) h += "Needs " + f.pre.map(g => f.pre.length > 1 && g.length > 1 ? "(" + grp(g) + ")" : grp(g)).join(" and ");
   const mx = (f.mx || []).filter(m => !EX[f.id] || m !== EX[f.id].by);   // the ruled-out line already names it
@@ -1056,11 +1062,11 @@ function start(){
 }
 
 const s = document.createElement("script");
-s.src = entry.file;
+s.src = versioned(entry.file);
 s.onload = () => {
   if (!G || !G.meta || !G.meta.focusTree) return start();
   const t = document.createElement("script");
-  t.src = G.meta.focusTree;
+  t.src = versioned(G.meta.focusTree);
   t.onload = start;
   t.onerror = () => { fail("Couldn't load the focus tree file " + G.meta.focusTree + "."); start(); };
   document.head.appendChild(t);

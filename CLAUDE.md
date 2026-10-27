@@ -19,6 +19,7 @@ Where things are:
 - Step IDs are permanent. Rewording a step keeps its ID, and a new step gets a new ID. Never reuse one.
 - In `index.html`: `build()` renders a list, `refresh()` updates counts, progress bar and the "next" highlight, and `buildBuilds()` renders the Builds tab from data. Pick a guide with `?guide=<id>`.
 - Date tracker: plan groups carry `by` (done-by date) and `approx`. `applyDates()` marks steps `behind` (unticked and past `by`) and `later` (phase not started), and tags each phase as past/now/later. Focus and research have no dates yet.
+- Glossary: `guides/glossary.js` (`GLOSSARY`) holds shared game terms, and `guide.glossary` adds guide-specific ones (same `id` overrides). `glossify()` wraps matching phrases in rendered text in `.gl` spans, and one shared `#tip` element shows the definition on hover, focus or tap. Clicking a term doesn't tick its step. In definitions, `**x**` is gold, `{+x}` green, `{-x}` red, and `patch: true` adds a "may differ between patches" line.
 - State: `hoi4-tool:<guideId>` holds `{ticks, open, date}` per guide, and `hoi4-tool-prefs` holds `{guide, tab, hide}`. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
 - `.claude/launch.json` serves the folder on port 8765 (`python -m http.server`) for previewing.
 

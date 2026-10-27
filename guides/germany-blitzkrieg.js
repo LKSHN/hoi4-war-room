@@ -6,6 +6,7 @@
      by = in-game date the group (or step) should be done by: "YYYY-MM-DD", or "YYYY-MM" for the end of that month.
      approx = true when that date is an estimate rather than stated in the guide. A step without "by" uses its group's.
      Step IDs are stable: never change or reuse one, even if the text is reworded. New steps get new IDs.
+   - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
    - legacy: old positional tick keys from the single-page version, frozen in their 2026-10 order. Used once to migrate saved ticks. */
@@ -279,6 +280,17 @@ registerGuide({
       {"id":"res.high-efficiency","t":"High Efficiency"},
       {"id":"res.logistics-up","t":"Logistics","tag":"up"}
     ]}
+  ],
+
+  "glossary": [
+    {"id": "f1c1", "term": "F1 / C1", "match": ["F1", "C1"], "cs": true,
+     "def": "The guide's names for its first **fighter** (F) and **CAS** (C) designs, made in the plane designer as soon as you have air XP."},
+    {"id": "f2c2", "term": "F2 / C2", "match": ["F2", "C2"], "cs": true,
+     "def": "The improved designs: F2 on the **Improved Small Airframe**, C2 on the improved CAS airframe. F2 replaces F1 at 25 factories. Details on the Builds tab."},
+    {"id": "spg1", "term": "SPG1 / SPG II", "match": ["SPG1", "SPG II"], "cs": true,
+     "def": "The guide's SPG design: Basic Medium Tank chassis, **Artillery** role, engine 7, armor 4. SPG II is the upgrade later in the war."},
+    {"id": "mark", "term": "MARK (ARM)", "match": ["MARK"], "cs": true,
+     "def": "The guide's armor template: **8 motorized** and **10 SPG** battalions, with recon, engineer, artillery, flame tank and logistics support. Width 36."}
   ],
 
   "chapters": [

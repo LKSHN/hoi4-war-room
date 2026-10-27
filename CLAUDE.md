@@ -18,12 +18,14 @@ Where things are:
 - A guide has `meta`, `images`, `plan`/`focus`/`research` (groups of steps with stable `id`s, plus optional `n`, `tag`, `img` and `date`), `chapters`, `builds` (sections of `fig`/`card` items, text allows `**bold**`) and `legacy`.
 - Step IDs are permanent. Rewording a step keeps its ID, and a new step gets a new ID. Never reuse one.
 - In `index.html`: `build()` renders a list, `refresh()` updates counts, progress bar and the "next" highlight, and `buildBuilds()` renders the Builds tab from data. Pick a guide with `?guide=<id>`.
-- State: `hoi4-tool:<guideId>` holds `{ticks, open}` per guide, and `hoi4-tool-prefs` holds `{guide, tab, hide}`. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
+- Date tracker: plan groups carry `by` (done-by date) and `approx`. `applyDates()` marks steps `behind` (unticked and past `by`) and `later` (phase not started), and tags each phase as past/now/later. Focus and research have no dates yet.
+- State: `hoi4-tool:<guideId>` holds `{ticks, open, date}` per guide, and `hoi4-tool-prefs` holds `{guide, tab, hide}`. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
 - `.claude/launch.json` serves the folder on port 8765 (`python -m http.server`) for previewing.
 
 Known weak spots:
 - Progress is per browser and doesn't follow the user between PCs.
 - The game patch for the Germany guide isn't recorded (`meta.patch: null`), and the UI says so.
+- Most Germany phase dates are estimates (`approx: true`, shown with ≈). Only a few are anchored by the guide (see `meta.datesNote`).
 
 ## Roadmap (in this order)
 

@@ -1,8 +1,10 @@
 /* Guide data. Loaded with a <script> tag (not fetch) so the page also works when opened straight from disk.
    Format:
-   - meta: id, title, short, author, guideTitle, video, summary, patch (null = not recorded), source
+   - meta: id, title, short, author, guideTitle, video, summary, patch (null = not recorded), source, datesNote
    - images: key -> {file, caption, alt, w, h}
-   - plan / focus / research: groups {id, title, ts?, date?, steps:[{id, t, n?, tag?("up"|"sp"), img?, date?, tags?}]}
+   - plan / focus / research: groups {id, title, ts?, by?, approx?, steps:[{id, t, n?, tag?("up"|"sp"), img?, by?, tags?}]}
+     by = in-game date the group (or step) should be done by: "YYYY-MM-DD", or "YYYY-MM" for the end of that month.
+     approx = true when that date is an estimate rather than stated in the guide. A step without "by" uses its group's.
      Step IDs are stable: never change or reuse one, even if the text is reworded. New steps get new IDs.
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -17,7 +19,8 @@ registerGuide({
     "video": "https://www.youtube.com/watch?v=s0zNamkHkG0",
     "summary": "Allies down by May 1940, USA, then Barbarossa by Aug 1941",
     "patch": null,
-    "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames."
+    "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
+    "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
 
   "images": {
@@ -39,7 +42,7 @@ registerGuide({
   },
 
   "plan": [
-    {"id":"plan-day-one-jan","title":"Day one, Jan 1936","ts":"02:57","date":"1936-01-01", "steps": [
+    {"id":"plan-day-one-jan","title":"Day one, Jan 1936","ts":"02:57","by":"1936-01-01", "steps": [
       {"id":"plan.construction-infrastructure-westfalen-hessen","t":"Construction: infrastructure in Westfalen, Hessen, Moselland, Rhineland, then 1 civ in each, then mils (Westfalen 4, Hessen 5)","img":"build36"},
       {"id":"plan.production-train-1-bf","t":"Production: train 1, Bf 109 1, Ju 87 1, Do 22 3, artillery 3, trucks 3, support eq. 5, Kar 98k the rest","img":"prod36"},
       {"id":"plan.navy-cancel-extra-ships","t":"Navy: cancel extra ships, 2 dockyards on the heavy ships, max on the rest, 1 on convoys","n":"Light cruisers come later once you have navy XP","img":"navy36"},
@@ -51,7 +54,7 @@ registerGuide({
       {"id":"plan.3-infantry-armies-under","t":"3 infantry armies under one marshal, armor under another"},
       {"id":"plan.fallback-lines-so-nobody","t":"Fallback lines so nobody dies of attrition, shift-click Train to train everyone to Regular, train the other planes"}
     ]},
-    {"id":"plan-early-game-political","title":"Early game & political power","ts":"04:54", "steps": [
+    {"id":"plan-early-game-political","title":"Early game & political power","ts":"04:54","by":"1936-12","approx":true, "steps": [
       {"id":"plan.army-organization-farm-army","t":"Army Organization to farm army XP, then the Mefo Bills architect"},
       {"id":"plan.at-20-army-xp","t":"At 20 army XP: Political Loyalty"},
       {"id":"plan.refit-admiral-hipper-into","t":"Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, all new dockyards on it"},
@@ -68,7 +71,7 @@ registerGuide({
       {"id":"plan.fix-trade-again-more","t":"Fix trade again (more rubber for planes), take the Reichsmarschall specialist"},
       {"id":"plan.100-pp-improved-worker","t":"100 PP: Improved Worker Conditions, then the last price control measures"}
     ]},
-    {"id":"plan-land-doctrine-china","title":"Land doctrine & China","ts":"09:40", "steps": [
+    {"id":"plan-land-doctrine-china","title":"Land doctrine & China","ts":"09:40","by":"1937-09","approx":true, "steps": [
       {"id":"plan.favourite-tactic-then-grand","t":"Favourite tactic, then Grand Assault > Assault Infantry > Self-Propelled Support > Streamlined Deployment","img":"land"},
       {"id":"plan.event-stick-with-todt","t":"Event: stick with Todt. Pick the SPG tank MIO"},
       {"id":"plan.decisions-develop-western-develop","t":"Decisions: Develop Western and Develop Central Germany"},
@@ -81,13 +84,13 @@ registerGuide({
       {"id":"plan.spies-one-usa-one","t":"Spies: one in the USA, one in the UK"},
       {"id":"plan.150-pp-reich-minister","t":"150 PP: Reich Minister of Labour. Force deploy and send more volunteers"}
     ]},
-    {"id":"plan-air-doctrine-czechoslovakia","title":"Air doctrine & Czechoslovakia","ts":"13:10", "steps": [
+    {"id":"plan-air-doctrine-czechoslovakia","title":"Air doctrine & Czechoslovakia","ts":"13:10","by":"1938-02","approx":true, "steps": [
       {"id":"plan.air-airspace-dominance-then","t":"Air: Airspace Dominance, then Precision Naval Bombing","img":"air"},
       {"id":"plan.fate-czechoslovakia-slovakia-as","t":"Fate of Czechoslovakia: Slovakia as a puppet"},
       {"id":"plan.150-pp-security-advisor","t":"150 PP: security advisor, spies to quiet network"},
       {"id":"plan.60-army-xp-motorization","t":"60 army XP: Motorization Drive"}
     ]},
-    {"id":"plan-spg-design-template","title":"SPG design & template","ts":"13:57", "steps": [
+    {"id":"plan-spg-design-template","title":"SPG design & template","ts":"13:57","by":"1938-04","approx":true, "steps": [
       {"id":"plan.design-spg1-medium-chassis","t":"Design SPG1 (medium chassis, Artillery role, engine 7, armor 4) and the Flammpanzer III","n":"Details on the Builds tab","img":"spg1"},
       {"id":"plan.production-flame-tank-1","t":"Production: flame tank 1, SPG all the rest, F1 10, C1 10"},
       {"id":"plan.queue-7-alkett-mio","t":"Queue the 7 Alkett MIO traits","img":"mio"},
@@ -98,14 +101,14 @@ registerGuide({
       {"id":"plan.blitzkrieg-theorist-force-deploy","t":"Blitzkrieg theorist, force deploy, train everything (navy and planes too)"},
       {"id":"plan.import-oil-so-you","t":"Import oil so you don't run dry before the war, take Maneuver Warfare"}
     ]},
-    {"id":"plan-naval-doctrine-last","title":"Naval doctrine & last prep","ts":"17:55", "steps": [
+    {"id":"plan-naval-doctrine-last","title":"Naval doctrine & last prep","ts":"17:55","by":"1938-12","approx":true, "steps": [
       {"id":"plan.naval-trade-interdiction-then","t":"Naval: Trade Interdiction, then Patrol Boats, Line of Battle, Capital Hunters","img":"naval"},
       {"id":"plan.infantry-expert-cas-expert","t":"Infantry expert, CAS expert, Armor Genius"},
       {"id":"plan.start-preparing-collaboration-government","t":"Start preparing a collaboration government in the USA with your spies"},
       {"id":"plan.design-f2-c2-f2","t":"Design F2 and C2, F2 to 25 factories (taken from SPG)","img":"f2"},
       {"id":"plan.more-military-factories-100","t":"More military factories in 100% provinces"}
     ]},
-    {"id":"plan-ww2-setup","title":"WW2 setup","ts":"19:42", "steps": [
+    {"id":"plan-ww2-setup","title":"WW2 setup","ts":"19:42","by":"1939-06","approx":true, "steps": [
       {"id":"plan.armor-army-poland-with","t":"Armor army for Poland with your best general and a logistics wizard, promote the top general to marshal"},
       {"id":"plan.promote-defensive-marshal-infantry","t":"Promote a defensive marshal for the infantry armies"},
       {"id":"plan.smallest-infantry-army-covers","t":"Smallest infantry army covers all of Poland, one on the French border, one on northern Poland, the last two also on the Polish front"},
@@ -113,7 +116,7 @@ registerGuide({
       {"id":"plan.navy-destroyers-patrol-at","t":"Navy: destroyers patrol at low risk, subs convoy-raid the same sea, capital ships on strike force in the best harbor"},
       {"id":"plan.planes-naval-bombers-500","t":"Planes: naval bombers + 500 fighters follow the navy, 500 fighters defend Germany (3 on interception), the rest air superiority + CAS on the armor"}
     ]},
-    {"id":"plan-ww2-europe","title":"WW2: Europe","ts":"22:24", "steps": [
+    {"id":"plan-ww2-europe","title":"WW2: Europe","ts":"22:24","by":"1940-03","approx":true, "steps": [
       {"id":"plan.war-bonds-reich-minister","t":"War bonds, Reich Minister of Foreign Affairs, justify on Hungary"},
       {"id":"plan.from-now-every-free","t":"From now on every free civilian factory builds military factories"},
       {"id":"plan.poland-down-seize-their","t":"Poland down: seize their gold, then Netherlands, Belgium, Luxembourg (take their gold too)"},
@@ -127,7 +130,7 @@ registerGuide({
       {"id":"plan.domestic-film-industry-more","t":"Domestic Film Industry, more tags (Liberia, Yemen, others)"},
       {"id":"plan.spain-then-portugal","t":"Spain, then Portugal","n":"If the Republicans won the civil war, they're in the peace deal anyway and you can skip invading"}
     ]},
-    {"id":"plan-invading-uk","title":"Invading the UK","ts":"36:15", "steps": [
+    {"id":"plan-invading-uk","title":"Invading the UK","ts":"36:15","by":"1940-05","approx":true, "steps": [
       {"id":"plan.plan-naval-invasion-two","t":"Plan the naval invasion: two groups of 6 SPG divisions"},
       {"id":"plan.tag-argentina-brazil-mexico","t":"Tag Argentina, Brazil and Mexico, accept the white peace when the USA asks","n":"Important: you don't want war with the USA yet. The UK calls them back in later."},
       {"id":"plan.launch-it-fleet-naval","t":"Launch it: fleet on naval invasion support, others on patrol. Justify on Italy"},
@@ -135,7 +138,7 @@ registerGuide({
       {"id":"plan.production-infantry-c2-f2","t":"Production: infantry, C2, F2 to 50, trucks 15, mechanized ASAP. Recruit 12 more armored"},
       {"id":"plan.radio-propaganda-last-develop","t":"Radio Propaganda and the last Develop Germany decisions"}
     ]},
-    {"id":"plan-usa-italy","title":"USA & Italy","ts":"41:21", "steps": [
+    {"id":"plan-usa-italy","title":"USA & Italy","ts":"41:21","by":"1941-03","approx":true, "steps": [
       {"id":"plan.main-push-with-armor","t":"Main push with armor + 2 infantry armies following, 1 infantry army toward San Francisco, defensive divisions push Seattle from Canada"},
       {"id":"plan.two-submarine-fleets-two","t":"Two submarine fleets and two main fleets, destroyers split across sea regions on patrol, the rest strike force"},
       {"id":"plan.spend-spare-pp-spy","t":"Spend spare PP on spy upgrades"},
@@ -143,7 +146,7 @@ registerGuide({
       {"id":"plan.justify-usa-force-deploy","t":"Justify on the USA, force deploy and train the new armor"},
       {"id":"plan.war-with-usa-spgs","t":"War with the USA: SPGs first, then call Canada and Mexico and push with everyone"}
     ]},
-    {"id":"plan-operation-barbarossa","title":"Operation Barbarossa","ts":"46:25", "steps": [
+    {"id":"plan-operation-barbarossa","title":"Operation Barbarossa","ts":"46:25","by":"1941-08","approx":true, "steps": [
       {"id":"plan.all-infantry-marshal-line","t":"All infantry on a marshal line in support, SPGs do the main push"},
       {"id":"plan.optional-justify-everyone-left","t":"Optional: justify on everyone left for a world-conquest peace deal"},
       {"id":"plan.spg-ii-flame-tank","t":"SPG II and flame tank upgrade, motorized to mechanized, add an SPG to the infantry template"},

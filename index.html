@@ -119,20 +119,27 @@ label.item.done .shotbtn{opacity:.6}
 .lb-bar button{background:#24271f;color:#e4e1d4;border-color:#3a3d33}
 .lb img{display:block;max-width:100%;max-height:calc(100vh - 100px);object-fit:contain;margin:0 auto;cursor:zoom-out}
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.picker{display:flex;align-items:center;gap:6px;font:500 12px var(--f-mono);color:var(--muted)}
+.picker select{font:500 13px var(--f-body);color:var(--ink);background:var(--panel);border:1px solid var(--line);padding:5px 8px;border-radius:3px;max-width:100%}
+.picker select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.loadmsg{background:var(--panel);border:1px solid var(--line);padding:14px;font-size:14px}
 </style>
 </head><body>
 
 <div class="wrap">
   <header>
     <div>
-      <h1>Germany · Blitzkrieg Run</h1>
-      <div class="sub">MachiavellianStrategist — <a href="https://www.youtube.com/watch?v=s0zNamkHkG0" target="_blank" rel="noopener">Ultimate Germany Guide</a> · Allies down by May 1940, USA, then Barbarossa by Aug 1941</div>
+      <h1 id="gTitle">HOI4 Tool</h1>
+      <div class="sub" id="gSub"></div>
     </div>
     <div class="controls">
+      <label class="picker">Guide <select id="guidePick"></select></label>
       <button id="hideDone" aria-pressed="false">Hide completed</button>
       <button id="resetBtn" class="danger">Reset all</button>
     </div>
   </header>
+
+  <p class="loadmsg" id="loadMsg" hidden></p>
 
   <nav class="tabs" role="tablist">
     <button role="tab" data-tab="plan" aria-selected="true">Game plan<span class="tc" data-tc="planCol"></span></button>
@@ -172,227 +179,7 @@ label.item.done .shotbtn{opacity:.6}
     </div>
   </div>
 
-  <div data-panel="builds" hidden>
-    <div class="sect">
-      <h2 class="sh">Panzer division</h2>
-      <div class="figs">
-        <figure class="fig wide">
-          <button class="shot" data-img="template" aria-label="Enlarge division designer">
-            <img src="img/template.jpg" alt="Division designer showing the MARK armor template" width="973" height="487" loading="lazy">
-            <span class="pin" style="left:1.2%;top:40%">1</span>
-            <span class="pin" style="left:9.4%;top:40%">2</span>
-            <span class="pin" style="left:24.6%;top:40%">3</span>
-            <span class="pin" style="left:79.5%;top:11.5%">4</span>
-          </button>
-          <figcaption>
-            <div class="caprow"><b>MARK (ARM)</b> · final template, Apr 1938 · width 36 <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=1015s" target="_blank" rel="noopener">▶ 16:55</a></div>
-            <ol class="legend">
-              <li><b>Support:</b> motorized recon, engineers, artillery, flame tank, logistics</li>
-              <li><b>8 motorized</b> in the first two columns</li>
-              <li><b>10 medium SP artillery</b>: 4 + 4 + 2</li>
-              <li><b>715 soft attack</b>, 427 breakthrough, 285 defense, 4.8 supply use</li>
-            </ol>
-            <p class="small">About 90 army XP to finish, since SPGs get no Motorization Drive discount. Recruit 9, then 12 more after the UK. If SPGs get nerfed, put medium tanks in the same slots.</p>
-          </figcaption>
-        </figure>
-
-        <figure class="fig">
-          <button class="shot" data-img="spg1" aria-label="Enlarge SPG1 design"><img src="img/spg1.jpg" alt="Tank designer showing SPG1" width="967" height="485" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>SPG1 (7/4)</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=837s" target="_blank" rel="noopener">▶ 13:57</a></div>
-            <p class="small">Basic Medium Tank chassis, <b>Artillery</b> role, Alkett MIO. Engine 7, armor 4, all six modules as shown. 60.9 soft attack, cost 15.2.</p>
-          </figcaption>
-        </figure>
-
-        <figure class="fig">
-          <button class="shot" data-img="flame" aria-label="Enlarge flame tank design"><img src="img/flame.jpg" alt="Tank designer showing Flammpanzer III" width="967" height="485" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Flammpanzer III</b></div>
-            <p class="small">Medium chassis, <b>Flame</b> role, flamethrower I only. Engine 6, armor 0, Christie suspension, cost 5.88. It won't save, so redo it if it's gone.</p>
-          </figcaption>
-        </figure>
-
-        <figure class="fig">
-          <button class="shot" data-img="mio" aria-label="Enlarge Alkett MIO tree"><img src="img/mio.jpg" alt="Alkett MIO trait tree with queue numbers" width="1143" height="635" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Alkett MIO</b> · trait queue <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=903s" target="_blank" rel="noopener">▶ 15:03</a></div>
-            <p class="small">The small numbers next to each trait are his queue order, 1 to 7. Take the Alkett MIO for tanks and set the same queue.</p>
-          </figcaption>
-        </figure>
-
-        <figure class="fig">
-          <button class="shot" data-img="templates" aria-label="Enlarge template list"><img src="img/templates.jpg" alt="Template list" width="330" height="510" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Templates</b></div>
-            <p class="small">Infantry, armor, motorized, mountain, the Austrian infantry for defense, and a 1-battalion cavalry template for garrisons.</p>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <div class="sect">
-      <h2 class="sh">Doctrines</h2>
-      <div class="figs">
-        <figure class="fig wide">
-          <button class="shot" data-img="land" aria-label="Enlarge land doctrine"><img src="img/land.jpg" alt="Mobile Warfare land doctrine tracks" width="1420" height="860" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Land · Mobile Warfare</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=580s" target="_blank" rel="noopener">▶ 9:40</a></div>
-            <p class="small">Favourite tactic first, then in order: <b>Grand Assault</b> (Operations), <b>Assault Infantry</b> (Infantry, off screen to the left), <b>Self-propelled Support</b>, <b>Streamlined Deployment</b>. Maneuver Warfare later.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig">
-          <button class="shot" data-img="air" aria-label="Enlarge air doctrine"><img src="img/air.jpg" alt="Battlefield Support air doctrine" width="1510" height="860" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Air · Battlefield Support</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=790s" target="_blank" rel="noopener">▶ 13:10</a></div>
-            <p class="small">Airspace Dominance first, then Precision Naval Bombing. Operational Air Support and Coastal Air Patrol on the other tracks.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig">
-          <button class="shot" data-img="naval" aria-label="Enlarge naval doctrine"><img src="img/naval.jpg" alt="Trade Interdiction naval doctrine" width="1510" height="860" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Naval · Trade Interdiction</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=1075s" target="_blank" rel="noopener">▶ 17:55</a></div>
-            <p class="small">Defensive build: Patrol Boats, Line of Battle, Capital Hunters. Carriers skipped.</p>
-          </figcaption>
-        </figure>
-      </div>
-    </div>
-
-    <div class="sect">
-      <h2 class="sh">Planes &amp; ships</h2>
-      <div class="figs">
-        <figure class="fig">
-          <button class="shot" data-img="f2" aria-label="Enlarge F2 fighter"><img src="img/f2.jpg" alt="Plane designer showing F2" width="972" height="487" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>F2 fighter</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=1150s" target="_blank" rel="noopener">▶ 19:10</a></div>
-            <p class="small">Improved Small Airframe. 62 air attack, 53 agility, 675 km/h, cost 33. Replaces F1 at 25 factories.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig">
-          <button class="shot" data-img="c2" aria-label="Enlarge C2 CAS"><img src="img/c2.jpg" alt="Plane designer showing C2" width="972" height="487" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>C2 CAS</b></div>
-            <p class="small">Improved CAS airframe. 53 agility, 572 km/h, 975 km range, cost 27. Doubles as a naval bomber over the Channel.</p>
-          </figcaption>
-        </figure>
-        <div class="card">
-          <h3>Ships</h3>
-          <p class="small">Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, then put every new dockyard on it. Convoys stay at 1 dockyard.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="sect">
-      <h2 class="sh">Economy</h2>
-      <div class="figs narrow">
-        <figure class="fig tall">
-          <button class="shot" data-img="build36" aria-label="Enlarge 1936 construction queue"><img src="img/build36.jpg" alt="Construction queue on 1 Jan 1936" width="365" height="640" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Construction, 1 Jan 1936</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=177s" target="_blank" rel="noopener">▶ 2:57</a></div>
-            <p class="small">Infrastructure in 4 western states, 1 civ in each, then military factories in Westfalen and Hessen.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig tall">
-          <button class="shot" data-img="prod36" aria-label="Enlarge 1936 production"><img src="img/prod36.jpg" alt="Military production on 1 Jan 1936" width="476" height="990" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Production, 1 Jan 1936</b></div>
-            <p class="small">Train 1, Bf 109 1, Ju 87 1, Do 22 3, artillery 3, trucks 3, support 5, Kar 98k the rest.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig tall">
-          <button class="shot" data-img="navy36" aria-label="Enlarge 1936 naval production"><img src="img/navy36.jpg" alt="Naval production lines in 1936" width="476" height="990" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Naval lines, 1936</b></div>
-            <p class="small">Extra ships cancelled. Subs and destroyers at max, heavy ships at 2, convoys at 1.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig tall">
-          <button class="shot" data-img="prodtodt" aria-label="Enlarge production after Todt"><img src="img/prodtodt.jpg" alt="Production after Organisation Todt, Nov 1936" width="476" height="990" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>After Todt, Nov 1936</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=490s" target="_blank" rel="noopener">▶ 8:10</a></div>
-            <p class="small">Armored support vehicle on top, Kar 98k capped at 25, F1 25, C1 15, Do 22 5.</p>
-          </figcaption>
-        </figure>
-        <figure class="fig tall">
-          <button class="shot" data-img="build37" aria-label="Enlarge 1937 construction queue"><img src="img/build37.jpg" alt="Construction queue, June 1937" width="365" height="990" loading="lazy"></button>
-          <figcaption>
-            <div class="caprow"><b>Construction, Jun 1937</b> <a class="ts" href="https://www.youtube.com/watch?v=s0zNamkHkG0&t=650s" target="_blank" rel="noopener">▶ 10:50</a></div>
-            <p class="small">Mils in the 100% states, 2 refineries each, then mils in the 80% states. Gives exactly enough rubber by 1939.</p>
-          </figcaption>
-        </figure>
-        <div class="card">
-          <h3>Production later on</h3>
-          <table class="prod">
-            <tr><th colspan="2">Sino-Japanese war starts</th></tr>
-            <tr><td>Infantry equipment</td><td>10</td></tr>
-            <tr><td>New factories</td><td>F1, lowest</td></tr>
-            <tr><th colspan="2">SPG unlocked</th></tr>
-            <tr><td>Flame tank</td><td>1</td></tr>
-            <tr><td>SPG</td><td>the rest</td></tr>
-            <tr><td>F1 / C1</td><td>10 / 10</td></tr>
-            <tr><th colspan="2">F2 and C2 designed</th></tr>
-            <tr><td>F2 (taken from SPG)</td><td>25</td></tr>
-            <tr><th colspan="2">After the UK falls</th></tr>
-            <tr><td>Infantry eq., C2, F2</td><td>50 each</td></tr>
-            <tr><td>Trucks</td><td>15</td></tr>
-            <tr><td>Mechanized</td><td>150</td></tr>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="sect">
-      <h2 class="sh">Reference</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Advisors &amp; spirits, in order</h3>
-          <ol class="seq">
-            <li>Army Organization (army XP farm)</li>
-            <li>Mefo Bills architect</li>
-            <li>Political Loyalty (20 army XP)</li>
-            <li>War Economy (150 PP)</li>
-            <li>Organisation Todt as industrial concern</li>
-            <li>Reichsmarschall specialist</li>
-            <li>Improved Worker Conditions (100 PP)</li>
-            <li>Air spirits</li>
-            <li>Reich Minister of Labour (150 PP)</li>
-            <li>Security advisor (150 PP), spies to quiet network</li>
-            <li>Motorization Drive (60 army XP)</li>
-            <li>Spymaster</li>
-            <li>Decisive Battle expert (navy XP)</li>
-            <li>Blitzkrieg theorist</li>
-            <li>Infantry expert, CAS expert, Armor Genius</li>
-            <li>War bonds, Reich Minister of Foreign Affairs</li>
-            <li>Extensive Conscription, Domestic Film Industry, Radio Propaganda</li>
-          </ol>
-        </div>
-        <div class="card">
-          <h3>WW2 air &amp; naval setup</h3>
-          <ul>
-            <li>Destroyers on patrol, engage at low risk. Submarines convoy-raid the same sea.</li>
-            <li>Capital ships on strike force in the best harbor.</li>
-            <li>Naval bombers follow the navy, escorted by 500 fighters.</li>
-            <li>500 fighters defend Germany: 3 wings on interception, the rest air superiority.</li>
-            <li>Everything else: air superiority + CAS over the armor.</li>
-            <li>After France: CAS naval-bombing the Channel, naval bombers on patrol, then port strikes.</li>
-            <li>Block every sea region except the Channel.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Rules of thumb</h3>
-          <ul>
-            <li>The rubber deficit after the Mefo decisions is fine.</li>
-            <li>Send all volunteer groups at the same moment, or the cap drops.</li>
-            <li>No land volunteers to Italy, they get stuck. Bombers only.</li>
-            <li>Spearheads are broken, use normal battle plans.</li>
-            <li>Stop fleet training by hand if one damaged ship keeps it going.</li>
-            <li>Every free civilian factory after Poland builds military factories.</li>
-            <li>Never keep a puppet Poland, or the USSR attacks it.</li>
-            <li>Claims expire, you get about a month each.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
     <div class="lb-inner">
@@ -406,214 +193,104 @@ label.item.done .shotbtn{opacity:.6}
     <ul id="chapters"></ul>
   </div>
 
-  <p class="foot">From the video's description and transcript. <span class="tag">UP</span> means the next level of a tech you already have. <span class="tag sp">Special project</span> goes in the special-projects slot. Designs, template, build queues and doctrines were read from the video frames. Ticks are saved in this browser.</p>
+  <p class="foot"><span id="gSource"></span> <span class="tag">UP</span> means the next level of a tech you already have. <span class="tag sp">Special project</span> goes in the special-projects slot. Ticks are saved in this browser.</p>
 </div>
 
+<script src="guides/index.js"></script>
 <script>
-const V = "https://www.youtube.com/watch?v=s0zNamkHkG0";
-const PLAN = [
-  {phase:"Day one, Jan 1936", ts:"02:57"},
-  {t:"Construction: infrastructure in Westfalen, Hessen, Moselland, Rhineland, then 1 civ in each, then mils (Westfalen 4, Hessen 5)"},
-  {t:"Production: train 1, Bf 109 1, Ju 87 1, Do 22 3, artillery 3, trucks 3, support eq. 5, Kar 98k the rest"},
-  {t:"Navy: cancel extra ships, 2 dockyards on the heavy ships, max on the rest, 1 on convoys", n:"Light cruisers come later once you have navy XP"},
-  "Fix trade",
-  "Templates: infantry, armor, motorized (used less), mountaineers (unused)",
-  "Split off the armored divisions, convert everything else to infantry, queue 21 infantry",
-  "Fleet: submarines in one fleet, the rest in another, each with an admiral, train both",
-  {t:"Merge planes, send the bombers as air volunteers to Italy", n:"Bombers only. Land divisions get stuck there."},
-  "3 infantry armies under one marshal, armor under another",
-  "Fallback lines so nobody dies of attrition, shift-click Train to train everyone to Regular, train the other planes",
+/* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
+let G = null;
+function registerGuide(g){ G = g; }
 
-  {phase:"Early game & political power", ts:"04:54"},
-  "Army Organization to farm army XP, then the Mefo Bills architect",
-  "At 20 army XP: Political Loyalty",
-  "Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, all new dockyards on it",
-  "First event that pops: take the first option",
-  "With air XP: design the F1 fighter and C1 CAS",
-  {t:"When the focus unlocks the Mefo decisions: take all of them except Implementations and Wage Controls", n:"Cuts consumer goods about 17%. Rubber deficit is fine."},
-  {t:"Spanish Civil War: force deploy, send volunteers under von Manstein, plus air volunteers", n:"Helping the Republicans makes the war longer and gives more army XP"},
-  "Queue another 24 infantry",
-  "150 PP: War Economy, then military factories in 100% provinces first",
-  {t:"Anschluss: force deploy divisions if it's blocked", n:"Keep force deploying so it doesn't cancel"},
-  "Organisation Todt as industrial concern when the notification shows",
-  "Production: armored support vehicles at top priority, Kar 98k capped at 25, F1 25, C1 15, Do 22 5",
-  "Austrian infantry template, 1-cavalry garrison template, occupation law Local Police Force, convert Austrian divisions and train them",
-  "Fix trade again (more rubber for planes), take the Reichsmarschall specialist",
-  "100 PP: Improved Worker Conditions, then the last price control measures",
+const TAGS = {up: "UP", sp: "Special project"};
+const PREFS_KEY = "hoi4-tool-prefs";
+const OLD_PREFIX = "hoi4-ger-checklist-v1";   // single-page version, before guides were split out
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || "null") || d; } catch(e) { return d; } };
+const put = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
 
-  {phase:"Land doctrine & China", ts:"09:40"},
-  "Favourite tactic, then Grand Assault > Assault Infantry > Self-Propelled Support > Streamlined Deployment",
-  "Event: stick with Todt. Pick the SPG tank MIO",
-  "Decisions: Develop Western and Develop Central Germany",
-  {t:"Queue: mils in the 100% states, then 2 refineries each, then mils in the 80% states", n:"Exact state order is on the Builds tab"},
-  "Recruit 42 more defensive divisions (48 total), improve relations with Japan, take the air spirits",
-  "Gold event: always take the gold",
-  {t:"China war: attaché to Japan, deploy everything, then send max volunteers to Spain, Japan and every Japanese puppet at the same moment", n:"Air volunteers too. Push along the Chinese coast to farm XP, level up the strong general who'll become a marshal."},
-  "Intelligence agency with 5 upgrades",
-  "Infantry equipment down to 10, new factories on F1 at lowest priority",
-  "Spies: one in the USA, one in the UK",
-  "150 PP: Reich Minister of Labour. Force deploy and send more volunteers",
+let prefs = load(PREFS_KEY, null);
+if (!prefs){
+  // first run of this version: carry over tab and hide-done from the old keys
+  prefs = {};
+  try { prefs.tab = localStorage.getItem(OLD_PREFIX+"-tab") || undefined; prefs.hide = localStorage.getItem(OLD_PREFIX+"-hide") === "1"; } catch(e){}
+  put(PREFS_KEY, prefs);
+}
+const savePrefs = () => put(PREFS_KEY, prefs);
 
-  {phase:"Air doctrine & Czechoslovakia", ts:"13:10"},
-  "Air: Airspace Dominance, then Precision Naval Bombing",
-  "Fate of Czechoslovakia: Slovakia as a puppet",
-  "150 PP: security advisor, spies to quiet network",
-  "60 army XP: Motorization Drive",
+const secs = ts => ts.split(":").map(Number).reduce((a, b) => a*60 + b, 0);
+const vlink = ts => { const u = new URL(G.meta.video); u.searchParams.set("t", secs(ts)+"s"); return u.href; };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rich = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
-  {phase:"SPG design & template", ts:"13:57"},
-  {t:"Design SPG1 (medium chassis, Artillery role, engine 7, armor 4) and the Flammpanzer III", n:"Details on the Builds tab"},
-  "Production: flame tank 1, SPG all the rest, F1 10, C1 10",
-  "Queue the 7 Alkett MIO traits",
-  "Force deploy the last defensive divisions, recruit 9 armored divisions",
-  "Build the MARK template as XP comes in: 8 motorized + 10 SPG, support recon, engineers, artillery, flame, logistics",
-  "Spymaster, then Decisive Battle expert for navy XP, train the new ships",
-  "After Coal Liquefaction: take the new decision",
-  "Blitzkrieg theorist, force deploy, train everything (navy and planes too)",
-  "Import oil so you don't run dry before the war, take Maneuver Warfare",
+/* per-guide progress: {ticks:{id:true}, open:{id:true}} */
+let storeKey, store;
+const save = () => put(storeKey, store);
+function openStore(){
+  storeKey = "hoi4-tool:" + G.meta.id;
+  store = load(storeKey, null);
+  if (store) return;
+  store = {ticks: {}, open: {}};
+  const L = G.legacy;
+  if (L){
+    // one-off migration from positional keys (g12, f3, r40) to stable step IDs. Old keys are left in place.
+    const map = id => { const m = /^([a-z]+)(\d+)$/.exec(id); return m && L[m[1]] ? L[m[1]][m[2]-1] : null; };
+    const copy = (from, to) => Object.keys(load(from, {})).forEach(k => { const id = map(k); if (id) to[id] = true; });
+    copy(L.key, store.ticks);
+    copy(L.key+"-open", store.open);
+    if (Object.keys(store.ticks).length || Object.keys(store.open).length) store.migratedFrom = L.key;
+  }
+  save();
+}
 
-  {phase:"Naval doctrine & last prep", ts:"17:55"},
-  "Naval: Trade Interdiction, then Patrol Boats, Line of Battle, Capital Hunters",
-  "Infantry expert, CAS expert, Armor Genius",
-  "Start preparing a collaboration government in the USA with your spies",
-  "Design F2 and C2, F2 to 25 factories (taken from SPG)",
-  "More military factories in 100% provinces",
-
-  {phase:"WW2 setup", ts:"19:42"},
-  "Armor army for Poland with your best general and a logistics wizard, promote the top general to marshal",
-  "Promote a defensive marshal for the infantry armies",
-  "Smallest infantry army covers all of Poland, one on the French border, one on northern Poland, the last two also on the Polish front",
-  "Danzig or War (70 days)",
-  "Navy: destroyers patrol at low risk, subs convoy-raid the same sea, capital ships on strike force in the best harbor",
-  "Planes: naval bombers + 500 fighters follow the navy, 500 fighters defend Germany (3 on interception), the rest air superiority + CAS on the armor",
-
-  {phase:"WW2: Europe", ts:"22:24"},
-  "War bonds, Reich Minister of Foreign Affairs, justify on Hungary",
-  "From now on every free civilian factory builds military factories",
-  "Poland down: seize their gold, then Netherlands, Belgium, Luxembourg (take their gold too)",
-  "France down. Justify Yugoslavia after Hungary, then Bulgaria and Greece. Watch the claim timers",
-  "CAS naval-bombing the Channel with fighters, naval bombers on patrol and port strikes",
-  "Tag Saudi Arabia, Iraq and Iran (declare war, don't invade)",
-  "Hungary, Yugoslavia (campaign instructions help), Bulgaria, Romania, Greece",
-  "Extensive Conscription if manpower gets tight",
-  "Block every sea region except the Channel, repair the fleet when damaged",
-  "Tag Ireland, declare on Denmark and Norway to get the Iceland claim, justify Portugal",
-  "Domestic Film Industry, more tags (Liberia, Yemen, others)",
-  {t:"Spain, then Portugal", n:"If the Republicans won the civil war, they're in the peace deal anyway and you can skip invading"},
-
-  {phase:"Invading the UK", ts:"36:15"},
-  "Plan the naval invasion: two groups of 6 SPG divisions",
-  {t:"Tag Argentina, Brazil and Mexico, accept the white peace when the USA asks", n:"Important: you don't want war with the USA yet. The UK calls them back in later."},
-  "Launch it: fleet on naval invasion support, others on patrol. Justify on Italy",
-  {t:"Peace deal: annex Danzig, Luxembourg and the provinces you need to reach the USA. Annex or balkanize Poland, puppet the rest with resource rights and war reparations", n:"Never keep a puppet Poland"},
-  "Production: infantry, C2, F2 to 50, trucks 15, mechanized ASAP. Recruit 12 more armored",
-  "Radio Propaganda and the last Develop Germany decisions",
-
-  {phase:"USA & Italy", ts:"41:21"},
-  "Main push with armor + 2 infantry armies following, 1 infantry army toward San Francisco, defensive divisions push Seattle from Canada",
-  "Two submarine fleets and two main fleets, destroyers split across sea regions on patrol, the rest strike force",
-  "Spend spare PP on spy upgrades",
-  "Italy: crush them, take their navy. Mechanized to 150 factories",
-  "Justify on the USA, force deploy and train the new armor",
-  "War with the USA: SPGs first, then call Canada and Mexico and push with everyone",
-
-  {phase:"Operation Barbarossa", ts:"46:25"},
-  "All infantry on a marshal line in support, SPGs do the main push",
-  "Optional: justify on everyone left for a world-conquest peace deal",
-  "SPG II and flame tank upgrade, motorized to mechanized, add an SPG to the infantry template",
-  "Take Switzerland with spare SPGs, use medals to cut supply use",
-  "Leningrad, Stalingrad, then sweep the victory points",
-  {t:"Don't forget Yugoslavia", n:"He nearly did"}
-];
-
-const FOCUS = [
-  {phase:"1936 · Opening"},
-  "Remilitarize The Rhineland","Fuhrerprinzip","Reichsleiter Todt","The Four-Year Plan","Autarky Efforts","Institute Price Controls","Reorganize The Wehrmacht","Construct The Reichsautobahn","Party Chancellor Hess",
-  {phase:"Expansion & industry"},
-  {t:"Anschluss",n:"Force deploy if needed"},"KdF-Wagen Factories","Develop Heraeus Research Facility","Reichsleiter Goebbels","Accelerate the Rearmament Program","Establish Production Targets","Concentrated Armament Program","Demand Sudetenland","First Vienna Award","Fate Of Czechoslovakia",
-  {phase:"Luftwaffe & Panzers"},
-  "Expanding The Luftwaffe","Aeronautical Research Institute","Dive Bombers","Coal Liquefaction","Develop Modern Maneuver Warfare","Adopt New Panzer Doctrine","Panzer Troop Schools","Advanced Panzer Research","Combined Arms","Form The Jagdwaffe","Instill Auftragstaktik",
-  {phase:"War prep"},
-  "Establish The Reichswerke","Reassert Eastern Claims","Establish Buna Werke","Danzig Or War","Around Maginot","Operation Weserubung","Form The Zentrale Planung","Operation Sea Lion",
-  {phase:"Wartime"},
-  "Demonstration Of Military Achievements","Germany Army, Invincible","Loyalty To The Fuhrer",
-  {t:"The Triumphant Will",n:"Skip if the war is almost over"},
-  {t:"Autarky Achieved",n:"Bypasses the previous focuses"},
-  "The Supreme Leader","Panzergrenadier","Improve The Logistics System","Operation Tannenbaum","Reintegrate Luxembourg and Alsace-Lorraine","Armament Rationalization"
-];
-
-const SP = "Special project", UP = "UP";
-const RESEARCH = [
-  "Electronic Mechanical Engineering","Basic Machine Tools","Construction 1","Range Improvements",
-  {t:"Military Engineering Vehicles",tag:SP},"Inter-War Artillery","Mechanical Computing","Concentrated Industry 1","Radio",
-  {t:"Support Weapons",tag:UP},{t:"Concentrated Industry",tag:UP},{t:"Machine Tools",tag:UP},{t:"Construction",tag:UP},{t:"Artillery",tag:UP},{t:"Radio",tag:UP},{t:"Computing",tag:UP},
-  {t:"Flame Tank",tag:SP},"Medium Tank","Logistics Company",{t:"Infantry Equipment",tag:UP},{t:"Support Weapons",tag:UP},
-  "Rubber Processing","Oil Processing","Fuel Refining",{t:"Infantry Equipment",tag:UP},"Engines 3","Improved Small Airframe",{t:"Concentrated Industry",tag:UP},{t:"Rubber Processing",tag:UP},
-  "Heavy Bombs","Heavy MG","Survivability Studies",{t:"Engineer Company",tag:UP},{t:"Machine Tools",tag:UP},{t:"Logistics Company",tag:UP},{t:"Artillery",tag:UP},{t:"Support Weapons",tag:UP},{t:"Infantry Equipment",tag:UP},{t:"Rubber Processing",tag:UP},{t:"Construction",tag:UP},{t:"Radio",tag:UP},{t:"Artillery",tag:UP},
-  "Mechanized","Advanced Flamethrower","Basic Armor Protection","Improved Medium Tank","Excavation 3","Pulverized Coal Firing 1","Excavation 2",
-  {t:"Concentrated Industry",tag:UP},{t:"Machine Tools",tag:UP},{t:"Construction",tag:UP},{t:"Mechanized",tag:UP},{t:"Infantry Equipment",tag:UP},{t:"Support Weapons",tag:UP},
-  "Panzerfaust 30","High Efficiency",{t:"Logistics",tag:UP}
-];
-
-const CHAPTERS = [
-  ["00:00","Intro & setup"],["04:54","Early game setup & PP management"],["09:40","Land doctrines build"],["13:10","Air doctrines build"],
-  ["13:57","New SPG design, MIO and template"],["17:55","Naval doctrines build"],["19:42","WW2 setup"],["22:24","WW2"],
-  ["36:15","UK invasion & final stats"],["41:21","USA setup & war (and Italy)"],["46:25","Operation Barbarossa"],
-  ["52:58","Barbarossa with 16k casualties, what's next"],["54:25","They almost got away with it"]
-];
-
-const secs = ts => { const [m,s] = ts.split(":").map(Number); return m*60+s; };
-const KEY = "hoi4-ger-checklist-v1";
-let state = {};
-try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e) { state = {}; }
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} };
-let openShots = {};
-try { openShots = JSON.parse(localStorage.getItem(KEY+"-open") || "{}") || {}; } catch(e) { openShots = {}; }
-
-function build(colId, data, prefix){
+function build(colId, groups){
   const col = document.getElementById(colId), list = col.querySelector("[data-list]");
-  let n = 0, phaseEl = null;
-  data.forEach(d => {
-    if (d && d.phase){
-      phaseEl = document.createElement("li"); phaseEl.className = "phase";
-      const s = document.createElement("span"); s.textContent = d.phase; phaseEl.appendChild(s);
-      if (d.ts){ const a = document.createElement("a"); a.href = V+"&t="+secs(d.ts)+"s"; a.target="_blank"; a.rel="noopener"; a.textContent = "▶ "+d.ts; phaseEl.appendChild(a); }
-      list.appendChild(phaseEl); return;
+  let n = 0;
+  groups.forEach(g => {
+    let phaseEl = null;
+    if (g.title){
+      phaseEl = el("li", "phase");
+      const s = el("span"); s.textContent = g.title; phaseEl.appendChild(s);
+      if (g.ts && G.meta.video){ const a = el("a"); a.href = vlink(g.ts); a.target="_blank"; a.rel="noopener"; a.textContent = "▶ "+g.ts; phaseEl.appendChild(a); }
+      list.appendChild(phaseEl);
     }
-    n++;
-    const o = typeof d === "string" ? {t:d} : d, id = prefix + n;
-    const li = document.createElement("li");
-    li.innerHTML = `<label class="item"><input type="checkbox" id="${id}"><span class="num">${n}</span><span class="txt"></span></label>`;
-    const txt = li.querySelector(".txt");
-    txt.appendChild(document.createTextNode(o.t));
-    if (o.tag){ const s=document.createElement("span"); s.className="tag"+(o.tag===SP?" sp":""); s.textContent=o.tag; txt.appendChild(s); }
-    const imgKey = o.img || (prefix === "g" ? stepImg(o.t) : null);
-    if (imgKey){
-      const b=document.createElement("button"); b.type="button"; b.className="shotbtn";
-      const pane=document.createElement("div"); pane.className="inshot"; pane.hidden=true;
-      const setOpen = open => {
-        if (open && !pane.firstChild){
-          const im=document.createElement("img"); im.src="img/"+imgKey+".jpg"; im.alt=IMGS[imgKey]||"";
-          im.addEventListener("click", () => openLB(imgKey, im));
-          const cap=document.createElement("div"); cap.className="inshot-cap"; cap.textContent=(IMGS[imgKey]||"")+" · click to enlarge";
-          pane.append(im, cap);
-        }
-        pane.hidden=!open; b.setAttribute("aria-expanded", open); b.textContent = open ? "▾ Hide screen" : "▸ Show screen";
-      };
-      setOpen(!!openShots[id]);
-      b.addEventListener("click", e => { e.preventDefault(); e.stopPropagation();
-        const open = pane.hidden; setOpen(open);
-        if (open) openShots[id]=true; else delete openShots[id];
-        try { localStorage.setItem(KEY+"-open", JSON.stringify(openShots)); } catch(err){}
-      });
-      txt.appendChild(b); li._pane = pane;
-    }
-    if (o.n){ const s=document.createElement("span"); s.className="note"; s.textContent=o.n; txt.appendChild(s); }
-    const label = li.querySelector("label"); label._phase = phaseEl; label._label = o.t + (o.tag ? " ("+o.tag+")" : "");
-    const cb = li.querySelector("input");
-    cb.checked = !!state[id];
-    cb.addEventListener("change", () => { if(cb.checked) state[id]=true; else delete state[id]; save(); refresh(col); });
-    if (li._pane) li.appendChild(li._pane);
-    list.appendChild(li);
+    g.steps.forEach(o => {
+      n++;
+      const id = o.id, tag = TAGS[o.tag];
+      const li = el("li", null, `<label class="item"><input type="checkbox"><span class="num">${n}</span><span class="txt"></span></label>`);
+      li.querySelector("input").id = id;
+      const txt = li.querySelector(".txt");
+      txt.appendChild(document.createTextNode(o.t));
+      if (tag){ const s = el("span", "tag"+(o.tag==="sp"?" sp":"")); s.textContent = tag; txt.appendChild(s); }
+      let pane = null;
+      if (o.img && G.images[o.img]){
+        const im = G.images[o.img], b = el("button", "shotbtn"); b.type = "button";
+        pane = el("div", "inshot"); pane.hidden = true;
+        const setOpen = open => {
+          if (open && !pane.firstChild){
+            const img = el("img"); img.src = im.file; img.alt = im.alt || im.caption || "";
+            img.addEventListener("click", () => openLB(o.img, img));
+            const cap = el("div", "inshot-cap"); cap.textContent = (im.caption||"")+" · click to enlarge";
+            pane.append(img, cap);
+          }
+          pane.hidden = !open; b.setAttribute("aria-expanded", open); b.textContent = open ? "▾ Hide screen" : "▸ Show screen";
+        };
+        setOpen(!!store.open[id]);
+        b.addEventListener("click", e => { e.preventDefault(); e.stopPropagation();
+          const open = pane.hidden; setOpen(open);
+          if (open) store.open[id] = true; else delete store.open[id];
+          save();
+        });
+        txt.appendChild(b);
+      }
+      if (o.n){ const s = el("span", "note"); s.textContent = o.n; txt.appendChild(s); }
+      const label = li.querySelector("label"); label._phase = phaseEl; label._label = o.t + (tag ? " ("+tag+")" : "");
+      const cb = li.querySelector("input");
+      cb.checked = !!store.ticks[id];
+      cb.addEventListener("change", () => { if (cb.checked) store.ticks[id] = true; else delete store.ticks[id]; save(); refresh(col); });
+      if (pane) li.appendChild(pane);
+      list.appendChild(li);
+    });
   });
   refresh(col);
 }
@@ -629,7 +306,7 @@ function refresh(col){
   });
   const nx = col.querySelector("[data-next]");
   if (next){ nx.innerHTML = "Next: <b></b>"; nx.querySelector("b").textContent = (col.id==="planCol" ? "" : next.querySelector(".num").textContent+". ") + next._label; }
-  else nx.textContent = "All done.";
+  else nx.textContent = items.length ? "All done." : "";
   col.querySelector("[data-count]").textContent = done + " / " + items.length;
   col.querySelector("[data-bar]").style.width = (items.length ? done/items.length*100 : 0) + "%";
   col.querySelectorAll(".phase").forEach(p => {
@@ -646,43 +323,62 @@ function updateTabCounts(){
   if (b) b.textContent = pct(["focusCol","researchCol"]);
 }
 
-/* screenshots */
-const IMGS = {
-  template:"MARK (ARM) division template · Apr 1938", spg1:"SPG1 (7/4) tank design", flame:"Flammpanzer III design",
-  mio:"Alkett MIO · numbers are the trait queue", templates:"Template list", land:"Land doctrine · Mobile Warfare",
-  air:"Air doctrine · Battlefield Support", naval:"Naval doctrine · Trade Interdiction", f2:"F2 fighter design", c2:"C2 CAS design",
-  build36:"Construction queue · 1 Jan 1936", prod36:"Military production · 1 Jan 1936", navy36:"Naval production lines · 1936",
-  prodtodt:"Production after Organisation Todt · Nov 1936", build37:"Construction queue · Jun 1937"
-};
-const STEP_IMG = [
-  ["Construction: infrastructure","build36"],["Production: train 1","prod36"],["Navy: cancel","navy36"],["Templates: infantry","templates"],
-  ["Production: armored support","prodtodt"],["Queue: mils in the 100%","build37"],["Favourite tactic","land"],["Air: Airspace","air"],
-  ["Design SPG1","spg1"],["Queue the 7 Alkett","mio"],["Build the MARK template","template"],["Naval: Trade","naval"],["Design F2 and C2","f2"]
-];
-function stepImg(t){ const m = STEP_IMG.find(([p]) => t.startsWith(p)); return m ? m[1] : null; }
+/* Builds tab, rendered from guide.builds */
+function tsLink(ts){ const a = el("a", "ts"); a.href = vlink(ts); a.target = "_blank"; a.rel = "noopener"; a.textContent = "▶ "+ts; return a; }
+function buildFig(it){
+  const im = G.images[it.img] || {}, fig = el("figure", "fig"+(it.wide ? " wide" : ""));
+  const shot = el("button", "shot"); shot.dataset.img = it.img; shot.setAttribute("aria-label", "Enlarge "+(im.caption || it.title || "screenshot"));
+  const img = el("img"); img.src = im.file; img.alt = im.alt || ""; img.loading = "lazy";
+  if (im.w){ img.width = im.w; img.height = im.h; }
+  shot.appendChild(img);
+  (it.pins || []).forEach(([x, y], i) => { const p = el("span", "pin"); p.style.left = x+"%"; p.style.top = y+"%"; p.textContent = i+1; shot.appendChild(p); });
+  shot.addEventListener("click", () => openLB(it.img, shot));
+  const cap = el("figcaption"), row = el("div", "caprow");
+  const b = el("b"); b.textContent = it.title || ""; row.appendChild(b);
+  if (it.sub) row.appendChild(document.createTextNode(" · "+it.sub));
+  if (it.ts && G.meta.video){ row.appendChild(document.createTextNode(" ")); row.appendChild(tsLink(it.ts)); }
+  cap.appendChild(row);
+  if (it.legend){ const ol = el("ol", "legend"); it.legend.forEach(s => ol.appendChild(el("li", null, rich(s)))); cap.appendChild(ol); }
+  if (it.text) cap.appendChild(el("p", "small", rich(it.text)));
+  fig.append(shot, cap);
+  return fig;
+}
+function buildCard(it){
+  const card = el("div", "card"), h = el("h3"); h.textContent = it.title || ""; card.appendChild(h);
+  if (it.text) card.appendChild(el("p", "small", rich(it.text)));
+  if (it.list){ const l = el(it.ordered ? "ol" : "ul", it.ordered ? "seq" : null); it.list.forEach(s => l.appendChild(el("li", null, rich(s)))); card.appendChild(l); }
+  if (it.table){
+    const t = el("table", "prod");
+    it.table.forEach(sec => {
+      const hr = el("tr"), th = el("th"); th.colSpan = 2; th.textContent = sec.head; hr.appendChild(th); t.appendChild(hr);
+      sec.rows.forEach(([k, v]) => { const tr = el("tr"), a = el("td"), b = el("td"); a.textContent = k; b.textContent = v; tr.append(a, b); t.appendChild(tr); });
+    });
+    card.appendChild(t);
+  }
+  return card;
+}
+function buildBuilds(){
+  const root = document.getElementById("builds");
+  (G.builds || []).forEach(sec => {
+    const s = el("div", "sect"), h = el("h2", "sh"); h.textContent = sec.title; s.appendChild(h);
+    const grid = el("div", sec.layout === "cards" ? "cards" : "figs"+(sec.layout === "narrow" ? " narrow" : ""));
+    sec.items.forEach(it => grid.appendChild(it.type === "fig" ? buildFig(it) : buildCard(it)));
+    s.appendChild(grid); root.appendChild(s);
+  });
+}
+
+/* lightbox */
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
 let lbReturn = null;
 function openLB(key, from){
-  lbImg.src = "img/" + key + ".jpg"; lbImg.alt = IMGS[key] || ""; lbCap.textContent = IMGS[key] || "";
+  const im = G.images[key] || {};
+  lbImg.src = im.file; lbImg.alt = im.alt || im.caption || ""; lbCap.textContent = im.caption || "";
   lbReturn = from || null; lb.hidden = false; document.getElementById("lbClose").focus();
 }
 function closeLB(){ lb.hidden = true; lbImg.removeAttribute("src"); if (lbReturn) lbReturn.focus(); }
 document.getElementById("lbClose").addEventListener("click", closeLB);
 lb.addEventListener("click", e => { if (e.target === lb || e.target === lbImg) closeLB(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !lb.hidden) closeLB(); });
-document.querySelectorAll(".shot").forEach(b => b.addEventListener("click", () => openLB(b.dataset.img, b)));
-
-build("planCol", PLAN, "g");
-build("focusCol", FOCUS, "f");
-build("researchCol", RESEARCH, "r");
-
-const ul = document.getElementById("chapters");
-CHAPTERS.forEach(([ts, label]) => {
-  const li = document.createElement("li");
-  li.innerHTML = `<a href="${V}&t=${secs(ts)}s" target="_blank" rel="noopener"><time>${ts}</time><span></span></a>`;
-  li.querySelector("span").textContent = label;
-  ul.appendChild(li);
-});
 
 /* tabs */
 const tabs = [...document.querySelectorAll("nav.tabs button")];
@@ -690,30 +386,74 @@ function showTab(name){
   if (!tabs.some(t => t.dataset.tab === name)) name = "plan";
   tabs.forEach(t => t.setAttribute("aria-selected", t.dataset.tab === name));
   document.querySelectorAll("[data-panel]").forEach(p => p.hidden = p.dataset.panel !== name);
-  try { localStorage.setItem(KEY+"-tab", name); } catch(e){}
+  prefs.tab = name; savePrefs();
 }
 tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
-let startTab = (location.hash || "").slice(1);
-if (!startTab){ try { startTab = localStorage.getItem(KEY+"-tab") || "plan"; } catch(e){ startTab = "plan"; } }
-showTab(startTab);
+showTab((location.hash || "").slice(1) || prefs.tab || "plan");
 
 /* hide done */
 const hideBtn = document.getElementById("hideDone");
-let hide = false; try { hide = localStorage.getItem(KEY+"-hide") === "1"; } catch(e){}
-const applyHide = () => { document.body.classList.toggle("hide-done", hide); hideBtn.setAttribute("aria-pressed", hide); };
+const applyHide = () => { document.body.classList.toggle("hide-done", !!prefs.hide); hideBtn.setAttribute("aria-pressed", !!prefs.hide); };
 applyHide();
-hideBtn.addEventListener("click", () => { hide = !hide; try{localStorage.setItem(KEY+"-hide", hide?"1":"0");}catch(e){} applyHide(); });
+hideBtn.addEventListener("click", () => { prefs.hide = !prefs.hide; savePrefs(); applyHide(); });
 
-/* reset with in-page confirm */
+/* reset with in-page confirm (current guide only) */
 const resetBtn = document.getElementById("resetBtn"); let armed = null;
 resetBtn.addEventListener("click", () => {
+  if (!G) return;
   if (!armed){ resetBtn.classList.add("armed"); resetBtn.textContent = "Click again to reset";
     armed = setTimeout(() => { armed=null; resetBtn.classList.remove("armed"); resetBtn.textContent="Reset all"; }, 3000); return; }
-  clearTimeout(armed); armed = null; state = {}; save();
+  clearTimeout(armed); armed = null; store.ticks = {}; save();
   document.querySelectorAll("label.item input").forEach(cb => cb.checked = false);
   ["planCol","focusCol","researchCol"].forEach(id => refresh(document.getElementById(id)));
   resetBtn.classList.remove("armed"); resetBtn.textContent = "Reset all";
 });
+
+/* guide picker + loading */
+const pick = document.getElementById("guidePick");
+const wanted = new URLSearchParams(location.search).get("guide") || prefs.guide;
+const entry = GUIDES.find(g => g.id === wanted) || GUIDES[0];
+GUIDES.forEach(g => { const o = el("option"); o.value = g.id; o.textContent = g.title; o.selected = g === entry; pick.appendChild(o); });
+pick.addEventListener("change", () => {
+  prefs.guide = pick.value; savePrefs();
+  const u = new URL(location.href); u.searchParams.set("guide", pick.value); location.href = u.href;
+});
+
+function fail(msg){ const m = document.getElementById("loadMsg"); m.textContent = msg; m.hidden = false; }
+function start(){
+  if (!G || !G.meta){ fail("The guide file loaded but didn't register a guide: " + entry.file); return; }
+  prefs.guide = G.meta.id; savePrefs();
+  const M = G.meta;
+  document.title = (M.short || M.title) + " Checklist";
+  document.getElementById("gTitle").textContent = M.title;
+  const sub = document.getElementById("gSub");
+  sub.appendChild(document.createTextNode((M.author ? M.author + " — " : "")));
+  if (M.video){ const a = el("a"); a.href = M.video; a.target = "_blank"; a.rel = "noopener"; a.textContent = M.guideTitle || "Video"; sub.appendChild(a); }
+  else if (M.guideTitle) sub.appendChild(document.createTextNode(M.guideTitle));
+  if (M.summary) sub.appendChild(document.createTextNode(" · " + M.summary));
+  sub.appendChild(document.createTextNode(" · " + (M.patch ? "Patch " + M.patch : "Game patch not recorded, numbers may have drifted")));
+  document.getElementById("gSource").textContent = M.source || "";
+
+  openStore();
+  build("planCol", G.plan || []);
+  build("focusCol", G.focus || []);
+  build("researchCol", G.research || []);
+  buildBuilds();
+
+  const ul = document.getElementById("chapters");
+  (G.chapters || []).forEach(c => {
+    const li = el("li", null, `<a target="_blank" rel="noopener"><time></time><span></span></a>`);
+    li.querySelector("a").href = vlink(c.ts); li.querySelector("time").textContent = c.ts; li.querySelector("span").textContent = c.label;
+    ul.appendChild(li);
+  });
+  ul.parentElement.hidden = !(G.chapters && G.chapters.length && M.video);
+}
+
+const s = document.createElement("script");
+s.src = entry.file;
+s.onload = start;
+s.onerror = () => fail("Couldn't load the guide file " + entry.file + ".");
+document.head.appendChild(s);
 </script>
 
 </body></html>

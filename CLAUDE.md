@@ -6,25 +6,24 @@ It started as a single-page checklist built from MachiavellianStrategist's "Ulti
 
 ## Current state
 
-Everything lives in `index.html` (about 720 lines: CSS, markup, data and script in one file), plus cropped game screenshots in `img/`. No build step and no dependencies. Open the file in a browser and it works. The fonts come from Google Fonts.
+`index.html` is the player (CSS, markup and script). Guide content lives in `guides/`, and cropped game screenshots are in `img/`. No build step and no dependencies. Open the file in a browser and it works. The fonts come from Google Fonts.
 
 Three tabs:
 - **Game plan**: about 90 steps grouped into phases. Each phase links to its video timestamp. The next unticked step is highlighted, and some steps have a "▸ Show screen" reveal with a screenshot.
 - **Focus & research**: national focus order and research order, side by side.
 - **Builds & numbers**: reference cards (division template with numbered pins, tank/plane designs, Alkett MIO trait order, doctrines, build queues, production numbers, advisor order). Screenshots open in a lightbox.
 
-Where things are in `index.html`:
-- `PLAN`, `FOCUS`, `RESEARCH`, `CHAPTERS` arrays hold the guide content. Items are strings or `{t, n}` objects, and phases are `{phase, ts}`.
-- `IMGS` maps screenshot keys to captions. `STEP_IMG` attaches a screenshot to a step by matching the start of its text.
-- `build()` renders a list. `refresh()` updates counts, progress bar and the "next" highlight.
-- The Builds tab is hand-written HTML, not data.
-- State goes to `localStorage` under `hoi4-ger-checklist-v1` (ticks), plus `-open`, `-tab` and `-hide` suffixes.
+Where things are:
+- `guides/index.js` lists the guides for the picker (`GUIDES`). Each guide is a `.js` file that calls `registerGuide({...})` with JSON-shaped data. It's loaded with a `<script>` tag, not `fetch`, so `file://` keeps working. The format is documented at the top of `guides/germany-blitzkrieg.js`.
+- A guide has `meta`, `images`, `plan`/`focus`/`research` (groups of steps with stable `id`s, plus optional `n`, `tag`, `img` and `date`), `chapters`, `builds` (sections of `fig`/`card` items, text allows `**bold**`) and `legacy`.
+- Step IDs are permanent. Rewording a step keeps its ID, and a new step gets a new ID. Never reuse one.
+- In `index.html`: `build()` renders a list, `refresh()` updates counts, progress bar and the "next" highlight, and `buildBuilds()` renders the Builds tab from data. Pick a guide with `?guide=<id>`.
+- State: `hoi4-tool:<guideId>` holds `{ticks, open}` per guide, and `hoi4-tool-prefs` holds `{guide, tab, hide}`. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
+- `.claude/launch.json` serves the folder on port 8765 (`python -m http.server`) for previewing.
 
 Known weak spots:
-- Tick IDs are positional (`prefix + n`). Inserting or reordering a step shifts everyone's saved ticks. Steps need stable IDs.
-- Screenshot-to-step matching by text prefix breaks if a step is reworded.
-- Guide content is mixed into the code, so a second guide means copying the whole page.
 - Progress is per browser and doesn't follow the user between PCs.
+- The game patch for the Germany guide isn't recorded (`meta.patch: null`), and the UI says so.
 
 ## Roadmap (in this order)
 

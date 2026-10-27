@@ -213,6 +213,11 @@ for k in kept:
     o["ic"] = icon_theme(v["icon"], k, fl)
     fx = summ.summarise(first(RAW[k], "completion_reward", []))
     if fx: o["fx"] = fx
+    # what must be true to take it, and when the game skips it for you
+    req = [r for r in summ.phr.clauses(first(RAW[k], "available", []) or []) if r != "we are not a subject"]
+    if req: o["req"] = req
+    byp = summ.phr.text(first(RAW[k], "bypass", []) or [])
+    if byp: o["byp"] = byp
     res.append(o)
 
 json.dump(res, open(out, "w", encoding="utf-8"), ensure_ascii=False)

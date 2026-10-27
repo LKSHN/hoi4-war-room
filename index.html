@@ -211,7 +211,13 @@ label.item.done .shotbtn{opacity:.6}
 .tip-fx li::marker{color:var(--brass)}
 .tip-fx li.up{color:#8fd16a}
 .tip-fx li.down{color:#ff8a6e}
-.tip-fx + br{display:none}
+.tip-line{margin-top:3px}
+.tip-fx li.alt{font-style:italic;color:#c9c3a8}
+.tip-ai{font-size:11.5px;font-style:italic;color:var(--muted)}
+.tip-sec{margin-top:6px;font:500 10.5px var(--f-mono);text-transform:uppercase;letter-spacing:.1em;color:var(--brass)}
+.tip-req{margin:2px 0 0;padding-left:14px;font-size:12.5px;color:#d8d2b8}
+.tip-req li::marker{color:var(--brass)}
+.tip-req + .tip-fx{margin-top:6px}
 .tip-none{margin:6px 0;font-size:12.5px;font-style:italic;color:var(--muted)}
 label.item.done .fd{color:var(--green-ink)}
 .treecol .colhead{position:static}
@@ -278,7 +284,7 @@ label.item.done .fd{color:var(--green-ink)}
 .gl{text-decoration:underline dotted rgba(240,213,138,.6);text-underline-offset:3px;cursor:help;border-radius:2px}
 .gl:hover,.gl[aria-describedby]{color:var(--brass-lt);text-decoration-style:solid}
 .gl:focus-visible{outline:2px solid var(--brass-lt);outline-offset:1px}
-.tip{position:fixed;z-index:60;max-width:min(380px,calc(100vw - 16px));padding:8px 11px 9px;font:13.5px/1.45 var(--f-body);color:#ddd7bd;
+.tip{position:fixed;z-index:60;max-width:min(380px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:hidden;padding:8px 11px 9px;font:13.5px/1.45 var(--f-body);color:#ddd7bd;
   background:linear-gradient(180deg,rgba(26,28,21,.97),rgba(13,14,10,.97));border:1px solid var(--brass-dk);
   box-shadow:inset 0 1px 0 rgba(240,213,138,.15),0 0 0 1px #000,0 6px 18px rgba(0,0,0,.7);pointer-events:none}
 .tip-h{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--brass-lt);margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid #3a3a2b}
@@ -424,11 +430,11 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-28.1"></script>
-<script src="guides/glossary.js?v=2026-10-28.1"></script>
+<script src="guides/index.js?v=2026-10-28.2"></script>
+<script src="guides/glossary.js?v=2026-10-28.2"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-28.1";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.2";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
@@ -742,6 +748,7 @@ function placeTip(){
   const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
   if (r.bottom < 0 || r.top > vh){ hideTip(); return; }
   let top = r.bottom + 6; if (top + th > vh - 8 && r.top - th - 6 > 8) top = r.top - th - 6;
+  top = Math.max(8, Math.min(top, vh - th - 8));   // tall tooltips: keep them on screen even if they cover the anchor
   tip.style.left = Math.max(8, Math.min(r.left, vw - tw - 8)) + "px";
   tip.style.top = top + "px";
 }
@@ -884,22 +891,29 @@ function treeTipHtml(f){
     const x = EX[f.id];
     h += "<br><b class='r'>Ruled out by the guide</b>: " + (x.by ? "it excludes " + nm(x.by) + " (guide focus #" + (ORDER.indexOf(x.by) + 1) + ")" : "only reachable through " + nm(x.via) + ", which is ruled out");
   } else h += "<br>Not taken in this guide, still possible";
+  const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+  if (f.req) h += '<div class="tip-sec">Requires</div><ul class="tip-req">' + f.req.map(r => "<li>" + esc(cap(r)) + "</li>").join("") + "</ul>";
   if (f.fx){
     // effects, summarised from the game files; signed numbers get coloured like the game (tension is the exception)
     h += '<ul class="tip-fx">' + f.fx.map(l => {
-      const s = esc(l), m = /^([+-])/.exec(l), bad = /tension/i.test(l);
-      return "<li" + (m ? ' class="' + ((m[1] === "+") !== bad ? "up" : "down") + '"' : "") + ">" + s + "</li>";
+      const ai = l.indexOf(" (AI: "), main = ai > 0 ? l.slice(0, ai) : l, odds = ai > 0 ? l.slice(ai + 2, -1) : "";
+      const m = /^([+-])/.exec(l), bad = /tension/i.test(l), alt = /^(Instead, if|In other cases)/.test(l);
+      const cls = alt ? "alt" : m ? ((m[1] === "+") !== bad ? "up" : "down") : "";
+      return "<li" + (cls ? ' class="' + cls + '"' : "") + ">" + esc(main) + (odds ? ' <span class="tip-ai">' + esc(odds) + "</span>" : "") + "</li>";
     }).join("") + "</ul>";
   } else if (!TREE.hasFx) {
     h += '<div class="tip-none">Effects didn\'t load: your browser has an old copy of the focus data. Reload with Ctrl+F5.</div>';
   } else h += '<div class="tip-none">No direct effect listed: it runs a scripted effect or event.</div>';
-  if (f.pre) h += "Needs " + f.pre.map(g => f.pre.length > 1 && g.length > 1 ? "(" + grp(g) + ")" : grp(g)).join(" and ");
+  // one block per line, so nothing runs together after the lists above
+  const line = s => '<div class="tip-line">' + s + "</div>";
+  if (f.pre) h += line("Needs " + f.pre.map(g => f.pre.length > 1 && g.length > 1 ? "(" + grp(g) + ")" : grp(g)).join(" and "));
   const mx = (f.mx || []).filter(m => !EX[f.id] || m !== EX[f.id].by);   // the ruled-out line already names it
-  if (mx.length) h += "<br><b class='r'>Excludes</b> " + mx.map(nm).join(", ");
-  if (f.bypass) h += "<br>Can be bypassed";
+  if (mx.length) h += line("<b class='r'>Excludes</b> " + mx.map(nm).join(", "));
+  if (f.byp) h += line("<b class='k'>Bypassed if</b> " + esc(f.byp));
+  else if (f.bypass) h += line("Can be bypassed");
   if (i >= 0){
     const skipped = (f.pre || []).filter(g => !g.some(p => { const j = ORDER.indexOf(p); return j >= 0 && j < i; }));
-    if (skipped.length) h += "<br><b class='r'>The guide never takes</b> " + skipped.map(grp).join(" and ") + ". Probably bypassed, or the tree changed since the video.";
+    if (skipped.length) h += line("<b class='r'>The guide never takes</b> " + skipped.map(grp).join(" and ") + ". Probably bypassed, or the tree changed since the video.");
   }
   return h + '</div><div class="tip-f">From the patch ' + esc(TREE.patch) + " game files. Durations change between patches.</div>";
 }

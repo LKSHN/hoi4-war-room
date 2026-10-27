@@ -9,7 +9,8 @@ head = f"""/* German national focus tree, facts only (names, positions, duration
    Assumes every DLC is enabled and default game rules, as seen at game start. Durations change between patches.
    Focus: id, name, x/y (grid units), days, pre (list of groups: all groups needed, any focus within a group),
    mx (mutually exclusive), bypass (1 = can be bypassed), tags (search filters), ic (our emblem theme),
-   fx (effects summarised in our own words by tools/focus-tree/effects.py, as for Germany at peace with all DLC). */
+   fx (effects summarised in our own words by tools/focus-tree/effects.py, as for Germany at peace with all DLC),
+   req (requirements to take it) and byp (when it gets bypassed), both written by tools/focus-tree/triggers.py. */
 registerTree({{
   "id": "GER",
   "patch": "{patch}",

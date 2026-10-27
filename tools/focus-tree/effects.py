@@ -4,6 +4,7 @@ Conditions are evaluated as for Germany at peace in 1936-39 with every DLC; unkn
 so the first matching branch of an if/else chain is used. Scripted effects and events are skipped."""
 import os, re, glob
 from pdx import parse, get, first
+from triggers import Phraser, Subj, WE
 
 BUILDINGS = {"industrial_complex": "civilian factory", "arms_factory": "military factory", "dockyard": "naval dockyard",
              "infrastructure": "infrastructure", "synthetic_refinery": "synthetic refinery", "fuel_silo": "fuel silo",
@@ -69,8 +70,10 @@ class Summariser:
                 continue
             for k, _, v in root:
                 if k in ("country_event", "news_event") and isinstance(v, list) and first(v, "id"):
-                    self.events[first(v, "id")] = [[x for x in o if x[0] not in ("name", "trigger", "ai_chance")] for o in get(v, "option")]
-        self.cur_tag, self.depth = None, 0
+                    self.events[first(v, "id")] = [([x for x in o if x[0] not in ("name", "trigger", "ai_chance")], first(o, "ai_chance", []) or [])
+                                                   for o in get(v, "option")]
+        self.cur_tag, self.depth, self.branch_level = None, 0, 0
+        self.phr = Phraser(self)
         self.opinion = {}
         for f in glob.glob(os.path.join(game, "common", "opinion_modifiers", "*.txt")):
             try:
@@ -216,7 +219,8 @@ class Summariser:
             return
         self.depth += 1
         country = self.country(tag)
-        for body in opts[:3]:
+        seen = set()
+        for body, ai in opts[:3]:
             sub, saved = [], self.cur_tag
             self.cur_tag = tag
             self.walk(self.rewrite(body, tag), sub, "", "THEM")
@@ -235,12 +239,78 @@ class Summariser:
                 return "they: " + s
             theirs = [they(s) for s in theirs]
             parts = ours + theirs
-            if not parts:
+            if not parts or "; ".join(parts) in seen:   # some events repeat an answer for edge cases
                 continue
+            seen.add("; ".join(parts))
             label = ("if they refuse" if any(s.startswith("War goal") for s in ours)
                      else "if they accept" if any(re.match(r"(Gains|Annexes|Cores? on|Puppets)", s) for s in ours) else "may answer")
-            out.append("\x01" + f"{country}, {label}: " + "; ".join(parts[:4]))   # \x01 marks an event answer
+            odds = self.likelihood(ai, tag)
+            out.append("\x01" + f"{country}, {label}: " + "; ".join(parts[:4]) + (f" ({odds})" if odds else ""))   # \x01 marks an event answer
         self.depth -= 1
+
+    def likelihood(self, ai, tag):
+        """What makes the AI pick this answer more or less often, from its ai_chance modifiers."""
+        ai = self.rewrite(ai, tag)
+        more, less, never = [], [], []
+        for m in get(ai, "modifier"):
+            cond = self.phr.text([x for x in m if x[0] not in ("factor", "add", "base")], Subj("they", True))
+            if not cond:
+                continue
+            f, add = first(m, "factor"), first(m, "add")
+            try:
+                if f is not None:
+                    x = float(f)
+                    (never if x == 0 else less if x < 1 else more if x > 1 else []).append(cond)
+                elif add is not None:
+                    (more if float(add) > 0 else less).append(cond)
+            except ValueError:
+                continue
+        bits = []
+        for word, conds in (("never if", never), ("less likely if", less), ("more likely if", more)):
+            conds = list(dict.fromkeys(conds))
+            if conds:
+                bits.append(f"{word} {conds[0]}" + (" …" if len(conds) > 1 else ""))
+        return ("AI: " + "; ".join(bits)) if bits else ""
+
+    @staticmethod
+    def assumed_only(limit):
+        """True when a limit only checks things we assume (DLC, game rules), so there's no real choice to show."""
+        for k, _, v in limit:
+            kl = (k or "").lower()
+            if kl in ("not", "or", "and") and isinstance(v, list):
+                if not Summariser.assumed_only(v):
+                    return False
+            elif kl not in ("has_dlc", "has_game_rule", "always"):
+                return False
+        return True
+
+    def alternatives(self, branches, main, out, where, who, state):
+        """'Instead, if we are at war: +3 military factories in Hannover' for branches other than the one we took."""
+        subj = WE if not who else Subj(who)
+        shown = 0
+        for i, (lim, body) in enumerate(branches):
+            if i == main:
+                continue
+            sub = []
+            self.branch_level += 1
+            self.walk(body, sub, where, who, state)
+            self.branch_level -= 1
+            sub = self.merge([s.lstrip("\x01") for s in sub if s])
+            if not sub:
+                continue
+            is_else = lim == [("always", "=", "yes")]
+            if is_else and main is not None:
+                cond = self.phr.text(branches[main][0], subj, neg=True)
+            else:
+                cond = self.phr.text(lim, subj)
+            # "if the owner of X isn't us yet: core on X" is bookkeeping, not a real choice
+            if cond and re.search(r"\bthe (owner|controller) of\b", cond):
+                continue
+            head = f"Instead, if {cond}" if cond else "In other cases"
+            out.append(f"{head}: " + "; ".join(sub[:3]) + (" …" if len(sub) > 3 else ""))
+            shown += 1
+            if shown == 2:
+                break
 
     def summarise(self, reward):
         out = []
@@ -262,9 +332,15 @@ class Summariser:
         pre = (who + ": ") if who else ""
         for item in chains(node):
             if item[0] == "chain":
-                for limit, body in item[1]:
-                    if self.cond(limit):
-                        self.walk(body, out, where, who, state); break
+                branches = item[1]
+                main = next((i for i, (lim, _) in enumerate(branches) if self.cond(lim)), None)
+                if main is not None:
+                    self.branch_level += 1
+                    self.walk(branches[main][1], out, where, who, state)
+                    self.branch_level -= 1
+                # the other branches, with their conditions (only for top-level choices, not DLC switches)
+                if self.branch_level == 0 and self.depth == 0 and not all(self.assumed_only(lim) for lim, _ in branches):
+                    self.alternatives(branches, main, out, where, who, state)
                 continue
             k, op, v = item
             if k is None:

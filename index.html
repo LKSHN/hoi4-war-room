@@ -424,11 +424,11 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-27.3"></script>
-<script src="guides/glossary.js?v=2026-10-27.3"></script>
+<script src="guides/index.js?v=2026-10-28.1"></script>
+<script src="guides/glossary.js?v=2026-10-28.1"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-27.3";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.1";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }

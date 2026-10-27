@@ -11,7 +11,7 @@ BUILDINGS = {"industrial_complex": "civilian factory", "arms_factory": "military
              "coastal_bunker": "coastal fort", "naval_base": "naval base", "rocket_site": "rocket site",
              "nuclear_reactor": "nuclear reactor", "supply_node": "supply hub", "rail_way": "railway"}
 FALSE_TRIGGERS = {"has_war", "has_completed_focus", "is_subject", "has_civil_war", "is_puppet", "has_capitulated",
-                  "is_in_faction", "has_war_with", "has_country_flag", "has_global_flag", "is_ai"}
+                  "is_in_faction", "has_war_with", "has_country_flag", "has_global_flag", "is_ai", "is_subject_of"}
 RULES = {"obsolete_focus_branches_visibility": "HIDE"}
 PERCENT = re.compile(r"factor|_mult|speed|efficiency|chance|_rate|_modifier|consumer_goods|stability|war_support|attack|defen[cs]e|"
                      r"breakthrough|morale|output|_cost|organisation|_org|recovery|_reduction|capacity|export|contribution|research_speed")
@@ -60,6 +60,17 @@ class Summariser:
             m = re.search(r"ruling_party\s*=\s*(\w+)", open(f, encoding="utf-8-sig", errors="replace").read())
             if m:
                 self.party[tag] = m.group(1)
+        # events: id -> list of option bodies (to summarise what another country's answer does)
+        self.events = {}
+        for f in glob.glob(os.path.join(game, "events", "*.txt")):
+            try:
+                root = parse(open(f, encoding="utf-8-sig", errors="replace").read())
+            except Exception:
+                continue
+            for k, _, v in root:
+                if k in ("country_event", "news_event") and isinstance(v, list) and first(v, "id"):
+                    self.events[first(v, "id")] = [[x for x in o if x[0] not in ("name", "trigger", "ai_chance")] for o in get(v, "option")]
+        self.cur_tag, self.depth = None, 0
         self.opinion = {}
         for f in glob.glob(os.path.join(game, "common", "opinion_modifiers", "*.txt")):
             try:
@@ -153,6 +164,9 @@ class Summariser:
                 r = False
             elif kl == "has_game_rule":
                 r = RULES.get(first(v, "rule")) == first(v, "option")
+            elif kl == "tag" and not isinstance(v, list):
+                # limits ask about other countries (a state's controller, a loop's country), which are never us at start
+                r = v not in US
             elif kl in FALSE_TRIGGERS:
                 r = (v == "no") if not isinstance(v, list) else False
             elif kl == "not":
@@ -169,21 +183,72 @@ class Summariser:
         return any(res) if mode == "OR" else all(res)
 
     # ---------- effects ----------
-    def summarise(self, reward):
-        out = []
-        self.walk(reward, out, "")
-        # many claims or cores in a row read better as one line
+    @staticmethod
+    def merge(lines):
+        """Many claims, cores or gained states in a row read better as one line."""
+        gained = {l[6:] for l in lines if l and l.startswith("Gains ")}
+        cored = {l[8:] for l in lines if l and l.startswith("Core on ")}
+        both = gained & cored
+        lines = [("Gains and cores " + l[6:] if l.startswith("Gains ") and l[6:] in both else l) for l in lines
+                 if l and not (l.startswith("Core on ") and l[8:] in both)]
         merged = []
-        for line in out:
-            m = re.match(r"(Claim|Core) on (.+)$", line or "")
-            if m and merged and merged[-1][0] == m.group(1):
+        for line in lines:
+            m = re.match(r"(Claim on|Core on|Gains and cores|Gains) (.+)$", line or "")
+            if m and merged and isinstance(merged[-1], list) and merged[-1][0] == m.group(1):
                 if m.group(2) not in merged[-1][1]:
                     merged[-1][1].append(m.group(2))
             elif m:
                 merged.append([m.group(1), [m.group(2)]])
             else:
                 merged.append(line)
-        out = [x if isinstance(x, str) else (f"{x[0]}s on " if len(x[1]) > 1 else f"{x[0]} on ") + ", ".join(x[1]) for x in merged]
+        plural = {"Claim on": "Claims on", "Core on": "Cores on", "Gains": "Gains", "Gains and cores": "Gains and cores"}
+        return [x if isinstance(x, str) else (plural[x[0]] if len(x[1]) > 1 else x[0]) + " " + ", ".join(x[1]) for x in merged]
+
+    def rewrite(self, node, recipient):
+        """Inside an event, ROOT/THIS is the country that gets it and FROM is us."""
+        swap = lambda s: recipient if s in ("ROOT", "THIS") else ("GER" if s == "FROM" else s)
+        return [(swap(k) if k else k, op, self.rewrite(v, recipient) if isinstance(v, list) else swap(v)) for k, op, v in node]
+
+    def event_answers(self, eid, tag, out):
+        """Summarise each answer another country can give to our event."""
+        opts = self.events.get(eid)
+        if not opts or self.depth:
+            return
+        self.depth += 1
+        country = self.country(tag)
+        for body in opts[:3]:
+            sub, saved = [], self.cur_tag
+            self.cur_tag = tag
+            self.walk(self.rewrite(body, tag), sub, "", "THEM")
+            self.cur_tag = saved
+            ours = self.merge([s for s in sub if s and not s.startswith("THEM: ") and not s.startswith(country + ": ")])
+            # effects on the answering country itself: "they get -150 political power"
+            theirs = [re.sub(r"^(THEM|" + re.escape(country) + r"): ", "", s) for s in sub if s and (s.startswith("THEM: ") or s.startswith(country + ": "))]
+            def they(s):
+                if s[:1] in "+-":
+                    return "they get " + s
+                for a, b in (("Gains and cores ", "they gain and core "), ("Gains ", "they gain "), ("Annexes ", "they annex "),
+                             ("Ends ", "they end "), ("opinion of", "their opinion of"), ("trade opinion of", "their trade opinion of"),
+                             ("New spirit: ", "they get spirit ")):
+                    if s.startswith(a):
+                        return b + s[len(a):]
+                return "they: " + s
+            theirs = [they(s) for s in theirs]
+            parts = ours + theirs
+            if not parts:
+                continue
+            label = ("if they refuse" if any(s.startswith("War goal") for s in ours)
+                     else "if they accept" if any(re.match(r"(Gains|Annexes|Cores? on|Puppets)", s) for s in ours) else "may answer")
+            out.append("\x01" + f"{country}, {label}: " + "; ".join(parts[:4]))   # \x01 marks an event answer
+        self.depth -= 1
+
+    def summarise(self, reward):
+        out = []
+        self.walk(reward, out, "")
+        # when the game already spells out "Effects if they accept/refuse", the event answers would repeat it
+        spelled_out = any(l and l.lower().startswith("effects if they") for l in out)
+        out = [l[1:] if l and l.startswith("\x01") else l for l in out if not (spelled_out and l and l.startswith("\x01"))]
+        out = self.merge(out)
         seen, lines = set(), []
         for line in out:
             line = re.sub(r"\s+([.,:;!?])", r"\1", re.sub(r"\s+", " ", line or "")).strip()
@@ -205,10 +270,15 @@ class Summariser:
             if k is None:
                 continue
             kl = k.lower()
+            if kl == "country_event":
+                # an event sent to another country: show what its answers do (our own events are skipped)
+                if self.cur_tag and self.cur_tag not in US:
+                    self.event_answers(first(v, "id") if isinstance(v, list) else v, self.cur_tag, out)
+                continue
             if kl in ("hidden_effect", "limit", "random_select_amount", "tooltip", "add_extra_state_shared_building_slots",
-                      "set_country_flag", "set_global_flag", "add_ai_strategy", "country_event",
+                      "set_country_flag", "set_global_flag", "add_ai_strategy",
                       "news_event", "clr_country_flag", "set_variable", "mark_focus_tree_layout_dirty"):
-                continue   # hidden in game too (AI strategy, flags, events)
+                continue   # hidden in game too (AI strategy, flags)
             if kl == "effect_tooltip":
                 self.walk(v, out, where, who, state); continue
             # ---- claims and diplomacy ----
@@ -316,10 +386,12 @@ class Summariser:
             elif kl == "custom_effect_tooltip":
                 if not isinstance(v, list) and "skip_one_line" not in v:
                     t = self.clean(self.loc.get(v, ""))
-                    if t and "\x00" not in t and len(t) < 160:   # \x00 = a name only known at runtime: skip the line
-                        if t[0].islower() and who:      # "[FRA.GetName] and other nations..." lost its subject
+                    # \x00 = a name only known at runtime; "game will end" is only for whoever plays the other side
+                    if t and "\x00" not in t and len(t) < 160 and "game will end" not in t.lower():
+                        if t[0].islower() and who and who != "THEM":   # "[FRA.GetName] and other nations..." lost its subject
                             t = who + " " + t
-                        out.append(t.rstrip(".: "))   # tooltips usually say who they're about
+                        # in another country's event answer, game tooltips speak for that country ("we" = them)
+                        out.append((pre if self.depth else "") + t.rstrip(".: "))
             elif kl == "add_to_variable" and isinstance(v, list):
                 tt = first(v, "tooltip")
                 val = next((x[2] for x in v if x[0] not in ("tooltip", "value", "var")), None) or first(v, "value")
@@ -332,7 +404,10 @@ class Summariser:
                 if k.isdigit():
                     self.walk(v, out, f" in {self.state(k)}", who, state=k)
                 elif re.fullmatch(r"[A-Z]{3}", k) or k in ("ROOT", "owner", "controller"):
-                    self.walk(v, out, where, "" if k in US or k in ("owner", "controller") else self.country(k))
+                    ours = k in US or k in ("owner", "controller")
+                    saved, self.cur_tag = self.cur_tag, (None if ours else k)
+                    self.walk(v, out, where, "" if ours else self.country(k))
+                    self.cur_tag = saved
                 elif kl.startswith("random_") and "state" in kl:
                     self.walk(v, out, " in a random state", who)
                 elif kl.startswith("every_") and "state" in kl:
@@ -340,7 +415,9 @@ class Summariser:
                     self.walk(v, out, f" in each of {n} states" if n else " in every such state", who)
                 elif kl.startswith(("every_", "random_")) and "country" in kl:
                     # which countries depends on a condition we can't evaluate, so stay vague
+                    saved, self.cur_tag = self.cur_tag, None   # unknown countries: don't follow their events
                     self.walk(v, out, where, "Some countries" if kl.startswith("every_") else "Another country")
+                    self.cur_tag = saved
                 elif kl.startswith(("every_", "random_")):
                     continue   # characters, units...: too situational to summarise
                 elif kl in ("if", "else", "else_if"):

@@ -1,6 +1,7 @@
 /* Guide data. Loaded with a <script> tag (not fetch) so the page also works when opened straight from disk.
    Format:
-   - meta: id, title, short, author, guideTitle, video, summary, patch (null = not recorded), source, datesNote
+   - meta: id, title, short, author, guideTitle, video, summary, patch (null = not recorded), source, datesNote,
+     focusTree (path to a guides/trees/*.js file; focus steps link to it with "focus": "<game focus id>")
    - images: key -> {file, caption, alt, w, h}
    - plan / focus / research: groups {id, title, ts?, by?, approx?, steps:[{id, t, n?, tag?("up"|"sp"), img?, by?, tags?}]}
      by = in-game date the group (or step) should be done by: "YYYY-MM-DD", or "YYYY-MM" for the end of that month.
@@ -20,6 +21,7 @@ registerGuide({
     "video": "https://www.youtube.com/watch?v=s0zNamkHkG0",
     "summary": "Allies down by May 1940, USA, then Barbarossa by Aug 1941",
     "patch": null,
+    "focusTree": "guides/trees/germany-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -159,63 +161,63 @@ registerGuide({
 
   "focus": [
     {"id":"focus-1936-opening","title":"1936 · Opening", "steps": [
-      {"id":"focus.remilitarize-rhineland","t":"Remilitarize The Rhineland"},
-      {"id":"focus.fuhrerprinzip","t":"Fuhrerprinzip"},
-      {"id":"focus.reichsleiter-todt","t":"Reichsleiter Todt"},
-      {"id":"focus.four-year-plan","t":"The Four-Year Plan"},
-      {"id":"focus.autarky-efforts","t":"Autarky Efforts"},
-      {"id":"focus.institute-price-controls","t":"Institute Price Controls"},
-      {"id":"focus.reorganize-wehrmacht","t":"Reorganize The Wehrmacht"},
-      {"id":"focus.construct-reichsautobahn","t":"Construct The Reichsautobahn"},
-      {"id":"focus.party-chancellor-hess","t":"Party Chancellor Hess"}
+      {"id":"focus.remilitarize-rhineland","t":"Remilitarize The Rhineland","focus":"GER_remilitarize_the_rhineland"},
+      {"id":"focus.fuhrerprinzip","t":"Fuhrerprinzip","focus":"GER_fuhrerprinzip"},
+      {"id":"focus.reichsleiter-todt","t":"Reichsleiter Todt","focus":"GER_ascension_of_todt"},
+      {"id":"focus.four-year-plan","t":"The Four-Year Plan","focus":"GER_the_four_year_plan"},
+      {"id":"focus.autarky-efforts","t":"Autarky Efforts","focus":"GER_autarky_efforts"},
+      {"id":"focus.institute-price-controls","t":"Institute Price Controls","focus":"GER_institute_price_controls"},
+      {"id":"focus.reorganize-wehrmacht","t":"Reorganize The Wehrmacht","focus":"GER_reorganize_the_wehrmacht"},
+      {"id":"focus.construct-reichsautobahn","t":"Construct The Reichsautobahn","focus":"GER_construct_the_reichsautobahn"},
+      {"id":"focus.party-chancellor-hess","t":"Party Chancellor Hess","focus":"GER_party_chancellor_hess"}
     ]},
     {"id":"focus-expansion-industry","title":"Expansion & industry", "steps": [
-      {"id":"focus.anschluss","t":"Anschluss","n":"Force deploy if needed"},
-      {"id":"focus.kdf-wagen-factories","t":"KdF-Wagen Factories"},
-      {"id":"focus.develop-heraeus-research-facility","t":"Develop Heraeus Research Facility"},
-      {"id":"focus.reichsleiter-goebbels","t":"Reichsleiter Goebbels"},
-      {"id":"focus.accelerate-rearmament-program","t":"Accelerate the Rearmament Program"},
-      {"id":"focus.establish-production-targets","t":"Establish Production Targets"},
-      {"id":"focus.concentrated-armament-program","t":"Concentrated Armament Program"},
-      {"id":"focus.demand-sudetenland","t":"Demand Sudetenland"},
-      {"id":"focus.first-vienna-award","t":"First Vienna Award"},
-      {"id":"focus.fate-czechoslovakia","t":"Fate Of Czechoslovakia"}
+      {"id":"focus.anschluss","t":"Anschluss","focus":"GER_anschluss","n":"Force deploy if needed"},
+      {"id":"focus.kdf-wagen-factories","t":"KdF-Wagen Factories","focus":"GER_kdf_wagen_factories"},
+      {"id":"focus.develop-heraeus-research-facility","t":"Develop Heraeus Research Facility","focus":"GER_develop_heraeus_facilities"},
+      {"id":"focus.reichsleiter-goebbels","t":"Reichsleiter Goebbels","focus":"GER_ascension_of_goebbels"},
+      {"id":"focus.accelerate-rearmament-program","t":"Accelerate the Rearmament Program","focus":"GER_accelerate_the_rearmament_program"},
+      {"id":"focus.establish-production-targets","t":"Establish Production Targets","focus":"GER_establish_production_targets"},
+      {"id":"focus.concentrated-armament-program","t":"Concentrated Armament Program","focus":"GER_concentrated_armament_program"},
+      {"id":"focus.demand-sudetenland","t":"Demand Sudetenland","focus":"GER_demand_sudetenland"},
+      {"id":"focus.first-vienna-award","t":"First Vienna Award","focus":"GER_first_vienna_award"},
+      {"id":"focus.fate-czechoslovakia","t":"Fate Of Czechoslovakia","focus":"GER_fate_of_czechoslovakia"}
     ]},
     {"id":"focus-luftwaffe-panzers","title":"Luftwaffe & Panzers", "steps": [
-      {"id":"focus.expanding-luftwaffe","t":"Expanding The Luftwaffe"},
-      {"id":"focus.aeronautical-research-institute","t":"Aeronautical Research Institute"},
-      {"id":"focus.dive-bombers","t":"Dive Bombers"},
-      {"id":"focus.coal-liquefaction","t":"Coal Liquefaction"},
-      {"id":"focus.develop-modern-maneuver-warfare","t":"Develop Modern Maneuver Warfare"},
-      {"id":"focus.adopt-new-panzer-doctrine","t":"Adopt New Panzer Doctrine"},
-      {"id":"focus.panzer-troop-schools","t":"Panzer Troop Schools"},
-      {"id":"focus.advanced-panzer-research","t":"Advanced Panzer Research"},
-      {"id":"focus.combined-arms","t":"Combined Arms"},
-      {"id":"focus.form-jagdwaffe","t":"Form The Jagdwaffe"},
-      {"id":"focus.instill-auftragstaktik","t":"Instill Auftragstaktik"}
+      {"id":"focus.expanding-luftwaffe","t":"Expanding The Luftwaffe","focus":"GER_expanding_the_luftwaffe"},
+      {"id":"focus.aeronautical-research-institute","t":"Aeronautical Research Institute","focus":"GER_aeronautical_research_institute"},
+      {"id":"focus.dive-bombers","t":"Dive Bombers","focus":"GER_dive_bombers"},
+      {"id":"focus.coal-liquefaction","t":"Coal Liquefaction","focus":"GER_coal_liquefaction"},
+      {"id":"focus.develop-modern-maneuver-warfare","t":"Develop Modern Maneuver Warfare","focus":"GER_develop_modern_maneuver_warfare"},
+      {"id":"focus.adopt-new-panzer-doctrine","t":"Adopt New Panzer Doctrine","focus":"GER_adopt_new_panzer_doctrine"},
+      {"id":"focus.panzer-troop-schools","t":"Panzer Troop Schools","focus":"GER_panzer_troops_school"},
+      {"id":"focus.advanced-panzer-research","t":"Advanced Panzer Research","focus":"GER_advanced_panzer_research"},
+      {"id":"focus.combined-arms","t":"Combined Arms","focus":"GER_combined_arms"},
+      {"id":"focus.form-jagdwaffe","t":"Form The Jagdwaffe","focus":"GER_form_the_jagdwaffe"},
+      {"id":"focus.instill-auftragstaktik","t":"Instill Auftragstaktik","focus":"GER_instill_auftragstaktik"}
     ]},
     {"id":"focus-war-prep","title":"War prep", "steps": [
-      {"id":"focus.establish-reichswerke","t":"Establish The Reichswerke"},
-      {"id":"focus.reassert-eastern-claims","t":"Reassert Eastern Claims"},
-      {"id":"focus.establish-buna-werke","t":"Establish Buna Werke"},
-      {"id":"focus.danzig-or-war","t":"Danzig Or War"},
-      {"id":"focus.around-maginot","t":"Around Maginot"},
-      {"id":"focus.operation-weserubung","t":"Operation Weserubung"},
-      {"id":"focus.form-zentrale-planung","t":"Form The Zentrale Planung"},
-      {"id":"focus.operation-sea-lion","t":"Operation Sea Lion"}
+      {"id":"focus.establish-reichswerke","t":"Establish The Reichswerke","focus":"GER_establish_the_reichswerke"},
+      {"id":"focus.reassert-eastern-claims","t":"Reassert Eastern Claims","focus":"GER_reassert_eastern_claims"},
+      {"id":"focus.establish-buna-werke","t":"Establish Buna Werke","focus":"GER_establish_buna_werke"},
+      {"id":"focus.danzig-or-war","t":"Danzig Or War","focus":"GER_danzig_or_war"},
+      {"id":"focus.around-maginot","t":"Around Maginot","focus":"GER_around_maginot"},
+      {"id":"focus.operation-weserubung","t":"Operation Weserubung","focus":"GER_operation_weserubung"},
+      {"id":"focus.form-zentrale-planung","t":"Form The Zentrale Planung","focus":"GER_zentrale_planung"},
+      {"id":"focus.operation-sea-lion","t":"Operation Sea Lion","focus":"GER_operation_sea_lion"}
     ]},
     {"id":"focus-wartime","title":"Wartime", "steps": [
-      {"id":"focus.demonstration-military-achievements","t":"Demonstration Of Military Achievements"},
-      {"id":"focus.germany-army-invincible","t":"Germany Army, Invincible"},
-      {"id":"focus.loyalty-fuhrer","t":"Loyalty To The Fuhrer"},
-      {"id":"focus.triumphant-will","t":"The Triumphant Will","n":"Skip if the war is almost over"},
-      {"id":"focus.autarky-achieved","t":"Autarky Achieved","n":"Bypasses the previous focuses"},
-      {"id":"focus.supreme-leader","t":"The Supreme Leader"},
-      {"id":"focus.panzergrenadier","t":"Panzergrenadier"},
-      {"id":"focus.improve-logistics-system","t":"Improve The Logistics System"},
-      {"id":"focus.operation-tannenbaum","t":"Operation Tannenbaum"},
-      {"id":"focus.reintegrate-luxembourg-alsace-lorraine","t":"Reintegrate Luxembourg and Alsace-Lorraine"},
-      {"id":"focus.armament-rationalization","t":"Armament Rationalization"}
+      {"id":"focus.demonstration-military-achievements","t":"Demonstration Of Military Achievements","focus":"GER_demonstration_of_military_achievements"},
+      {"id":"focus.germany-army-invincible","t":"Germany Army, Invincible","focus":"GER_an_invincible_army"},
+      {"id":"focus.loyalty-fuhrer","t":"Loyalty To The Fuhrer","focus":"GER_loyalty_to_the_fuhrer"},
+      {"id":"focus.triumphant-will","t":"The Triumphant Will","focus":"GER_the_triumphant_will","n":"Skip if the war is almost over"},
+      {"id":"focus.autarky-achieved","t":"Autarky Achieved","focus":"GER_autarky_achieved","n":"Bypasses the previous focuses"},
+      {"id":"focus.supreme-leader","t":"The Supreme Leader","focus":"GER_the_supreme_leader"},
+      {"id":"focus.panzergrenadier","t":"Panzergrenadier","focus":"GER_panzergrenadier"},
+      {"id":"focus.improve-logistics-system","t":"Improve The Logistics System","focus":"GER_improve_the_logistics_system"},
+      {"id":"focus.operation-tannenbaum","t":"Operation Tannenbaum","focus":"GER_operation_tannenbaum"},
+      {"id":"focus.reintegrate-luxembourg-alsace-lorraine","t":"Reintegrate Luxembourg and Alsace-Lorraine","focus":"GER_reintegrate_luxemburg_and_alsace_lorraine"},
+      {"id":"focus.armament-rationalization","t":"Armament Rationalization","focus":"GER_armament_rationalization"}
     ]}
   ],
 

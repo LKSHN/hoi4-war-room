@@ -20,6 +20,8 @@ Where things are:
 - In `index.html`: `build()` renders a list, `refresh()` updates counts, progress bar and the "next" highlight, and `buildBuilds()` renders the Builds tab from data. Pick a guide with `?guide=<id>`.
 - Date tracker: plan groups carry `by` (done-by date) and `approx`. `applyDates()` marks steps `behind` (unticked and past `by`) and `later` (phase not started), and tags each phase as past/now/later. Focus and research have no dates yet.
 - Glossary: `guides/glossary.js` (`GLOSSARY`) holds shared game terms, and `guide.glossary` adds guide-specific ones (same `id` overrides). `glossify()` wraps matching phrases in rendered text in `.gl` spans, and one shared `#tip` element shows the definition on hover, focus or tap. Clicking a term doesn't tick its step. In definitions, `**x**` is gold, `{+x}` green, `{-x}` red, and `patch: true` adds a "may differ between patches" line.
+- Focus tree: `guides/trees/germany-1.19.1.js` (`registerTree`) holds the full German tree as facts only (names, x/y grid positions, days, prerequisites, mutually exclusive, bypass), extracted from the user's 1.19.1 game files with all DLC and default rules. The guide points at it with `meta.focusTree`, and each focus step links to a game id with `"focus"`. `projectFocuses()` chains the guide's focuses back to back from 1 Jan 1936 for projected dates (also used by the date tracker on the focus list). `buildTree()`/`updateTree()` draw the "Focus tree" tab, where clicking a numbered guide focus ticks it. No game textures or icons: emblems are CSS with category glyphs.
+- Regenerating the tree for a new patch: `tools/focus-tree/` (Python, dev only, not a build step). Run `extract_tree.py <game dir> <germany.txt> <out.json>`, then `emit.py <out.json> guides/trees/germany-<patch>.js guides/germany-blitzkrieg.js <patch>`, then `validate.py` to check the guide order against prerequisites. Point `meta.focusTree` at the new file.
 - State: `hoi4-tool:<guideId>` holds `{ticks, open, date}` per guide, and `hoi4-tool-prefs` holds `{guide, tab, hide}`. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
 - `.claude/launch.json` serves the folder on port 8765 (`python -m http.server`) for previewing.
 
@@ -27,6 +29,7 @@ Known weak spots:
 - Progress is per browser and doesn't follow the user between PCs.
 - The game patch for the Germany guide isn't recorded (`meta.patch: null`), and the UI says so.
 - Most Germany phase dates are estimates (`approx: true`, shown with ≈). Only a few are anchored by the guide (see `meta.datesNote`).
+- The focus tree is from patch 1.19.1, likely newer than the video. Five guide focuses have prerequisites the guide never takes (Sea Lion, Tannenbaum, Reintegrate Luxemburg, Loyalty to the Führer, Autarky Achieved); the tree assumes they were bypassed and says so in the tooltip.
 
 ## Roadmap (in this order)
 

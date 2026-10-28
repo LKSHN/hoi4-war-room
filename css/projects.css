@@ -94,14 +94,82 @@
   transition: box-shadow .3s;
 }
 
+/* the guide's picks: gold card with a banner; the rest step back while there are picks */
 .spcard.picked {
-  border-color: var(--brass);
-  box-shadow: inset 3px 0 0 var(--brass), 0 0 10px rgba(201, 162, 74, .2);
+  border: 1px solid var(--brass-lt);
+  background: linear-gradient(180deg, #4a4128, #2a261a);
+  box-shadow: 0 0 0 1px rgba(240, 213, 138, .35), 0 0 14px rgba(201, 162, 74, .35);
 }
 
 .spcard.done {
-  border-color: var(--green);
-  box-shadow: inset 3px 0 0 var(--green);
+  border-color: #7cc04f;
+  background: linear-gradient(180deg, #34452a, #1f2a19);
+  box-shadow: 0 0 0 1px rgba(124, 192, 79, .35), 0 0 12px rgba(124, 192, 79, .25);
+}
+
+.sgrid.haspicks .spcard:not(.picked) {
+  opacity: .6;
+  transition: opacity .15s;
+}
+
+.sgrid.haspicks .spcard:not(.picked):hover {
+  opacity: 1;
+}
+
+.spbanner {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: -6px -8px 6px;
+  padding: 3px 8px;
+  font-family: var(--f-display);
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #2b2618;
+  background: linear-gradient(180deg, #f0d58a, #c9a24a);
+  border-bottom: 1px solid #8a7440;
+}
+
+.spcard.done .spbanner {
+  color: #13200c;
+  background: linear-gradient(180deg, #a9dc80, #6fa848);
+  border-bottom-color: #4f7a33;
+}
+
+.spbanner .mnum {
+  position: static;
+  flex: none;
+}
+
+.spwhy {
+  margin: 4px 0 6px;
+  padding: 4px 7px;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--ink-hi);
+  background: rgba(0, 0, 0, .25);
+  border-left: 2px solid var(--brass-lt);
+}
+
+.spcount {
+  margin-left: 6px;
+  font: 600 12px var(--f-mono);
+  font-style: normal;
+  letter-spacing: 0;
+  color: var(--brass-lt);
+}
+
+.spnone {
+  margin: 4px 2px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.sponly {
+  margin-left: 10px;
+  padding: 3px 10px;
+  font-size: 12px;
 }
 
 .spcard.flash {

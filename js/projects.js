@@ -54,6 +54,19 @@ function renderProjects() {
   const head = el("div", "pch-h");
   head.innerHTML = "<b>Recommended by the guide</b><span></span>";
   head.querySelector("span").textContent = picks.length ? picks.filter(x => store.ticks[x.step]).length + " of " + picks.length + " done" : "none yet";
+  const only = !!prefs.spPicksOnly && picks.length > 0;
+  const toggle = el("button", "sponly");
+  toggle.type = "button";
+  toggle.textContent = "Guide picks only";
+  toggle.setAttribute("aria-pressed", only);
+  toggle.disabled = !picks.length;
+  toggle.title = only ? "Show every project" : "Hide the projects the guide doesn't recommend";
+  toggle.addEventListener("click", () => {
+    prefs.spPicksOnly = !prefs.spPicksOnly;
+    savePrefs();
+    renderProjects();
+  });
+  head.appendChild(toggle);
   top.appendChild(head);
   const ol = el("ol", "sppicks");
   picks.forEach((x, i) => {
@@ -139,6 +152,7 @@ function renderProjects() {
   // every project, one column per specialization; parents come before their children
   const grid = document.getElementById("spGrid");
   grid.innerHTML = "";
+  grid.classList.toggle("haspicks", picks.length > 0);
   const depth = (id, seen = []) => {
     const p = P[id];
     if (!p || seen.includes(id)) return 0;
@@ -147,12 +161,16 @@ function renderProjects() {
   const specs = [...SP_ORDER.filter(s => Object.values(P).some(p => p.spec === s)), ...new Set(Object.values(P).map(p => p.spec).filter(s => !SP_ORDER.includes(s)))];
   specs.forEach(s => {
     const col = el("section", "pwin spcol");
-    col.appendChild(el("div", "dtitle", esc(SPROJ.specs[s] || s)));
+    const all = Object.values(P).filter(p => p.spec === s),
+      nPicks = all.filter(p => pickOf(p.id) >= 0).length;
+    col.appendChild(el("div", "dtitle", esc(SPROJ.specs[s] || s) + (nPicks ? ` <i class="spcount">★ ${nPicks}</i>` : "")));
     const list = el("div", "splist");
-    const ps = Object.values(P).filter(p => p.spec === s).sort((a, b) => (a.tag || "").localeCompare(b.tag || "") || depth(a.id) - depth(b.id) || a.name.localeCompare(b.name));
+    const ps = only ? all.filter(p => pickOf(p.id) >= 0).sort((a, b) => pickOf(a.id) - pickOf(b.id)) // in the guide's order
+      : all.sort((a, b) => (a.tag || "").localeCompare(b.tag || "") || depth(a.id) - depth(b.id) || a.name.localeCompare(b.name));
+    if (!ps.length) list.appendChild(el("p", "spnone", "No guide picks here."));
     let lastTag = null;
     ps.forEach(p => {
-      if (p.tag !== lastTag) {
+      if (p.tag !== lastTag && !only) {
         lastTag = p.tag;
         list.appendChild(el("div", "sptag", esc(SPROJ.tags[p.tag] || p.tag || "Other")));
       }
@@ -173,10 +191,17 @@ function projectCard(p, n, picks) {
   c.id = "sp-" + p.id;
   c.innerHTML = `<div class="sphead"><span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${SP_ICON[p.tag] || "flask"}"/></svg></span><b></b></div><div class="spmeta"></div>`;
   c.querySelector("b").textContent = p.name;
-  if (n >= 0) {
-    const k = el("span", "mnum");
-    k.textContent = n + 1;
-    c.querySelector(".sphead").appendChild(k);
+  if (n >= 0) { // the guide's pick: a banner on top and why it's recommended
+    const banner = el("div", "spbanner");
+    banner.innerHTML = `<span class="mnum"></span><span></span>`;
+    banner.firstChild.textContent = n + 1;
+    banner.lastChild.textContent = done ? "Guide pick · done" : "Guide pick";
+    c.prepend(banner);
+    if (x.n) {
+      const why = el("p", "spwhy");
+      why.textContent = x.n;
+      c.querySelector(".spmeta").after(why);
+    }
   }
   const cost = Object.entries(p.cost).map(([s, v]) => v + " " + (SPROJ.specs[s] || s).split(" ")[0].toLowerCase() + " breakthrough").join(", ") || "no breakthrough cost";
   c.querySelector(".spmeta").textContent = cost + " · " + (p.time ? p.time + " days per prototype" : "") + (p.complexity ? " · " + p.complexity.join("–") + "% per prototype" : "");

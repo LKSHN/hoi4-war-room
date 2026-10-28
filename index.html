@@ -280,6 +280,42 @@ label.item.done .fd{color:var(--green-ink)}
   font:700 12px/18px var(--f-mono);text-align:center;box-shadow:0 0 0 2px #000;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.fn[data-state="next"] .fn-name{animation:none;background:#5a4e2c}}
 
+/* research tree, after the in-game one: folder tabs, year columns, tech cards with an icon block and name */
+.rescol .colhead{position:static}
+.folderbar{display:flex;flex-wrap:wrap;gap:4px}
+.fbtn{display:flex;align-items:baseline;gap:8px;padding:6px 12px;font-family:var(--f-display);font-size:14px;letter-spacing:.04em;color:var(--muted);
+  background:linear-gradient(180deg,#33372b,#23261e);border-color:#4b4e3d}
+.fbtn i{font:500 11px var(--f-mono);font-style:normal;color:var(--muted)}
+.fbtn[aria-selected="true"]{color:var(--brass-lt);border-color:var(--brass);background:linear-gradient(180deg,#4c4430,#2e2a1e);box-shadow:inset 0 -3px 0 var(--brass)}
+.fbtn[aria-selected="true"] i{color:var(--brass)}
+.resview{position:relative;height:calc(100vh - 250px);min-height:420px;overflow:auto;background:#1c1d1b radial-gradient(ellipse at 50% 0%,#2a2b27,#1c1d1b 70%);box-shadow:inset 0 2px 8px rgba(0,0,0,.7)}
+.rescanvas{position:relative}
+.rlab{position:absolute;white-space:nowrap;pointer-events:none}
+.rlab.year{font-family:var(--f-display);font-size:24px;letter-spacing:.04em;color:rgba(240,213,138,.28)}
+.rlab.title{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.12em;color:var(--brass)}
+.reslines{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+.reslines path{fill:none;stroke:#6a8bab;stroke-width:2;opacity:.55}
+.reslines path.done{stroke:#7cc04f;opacity:.9}
+.rt{position:absolute;display:grid;grid-template-columns:30px 1fr;grid-template-rows:1fr auto;column-gap:6px;padding:4px 6px 3px 4px;
+  background:linear-gradient(180deg,#3d3f3a,#262824);border:1px solid #5d604c;border-radius:3px;box-shadow:0 2px 4px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.08)}
+.rt-ico{grid-row:1 / span 2;align-self:center;width:30px;height:30px;border-radius:3px;display:grid;place-items:center;color:#f1e8cc;
+  background:linear-gradient(180deg,#5d6252,#33362e);border:1px solid #000;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.rt-ico svg{width:20px;height:20px;fill:currentColor;filter:drop-shadow(0 1px 1px rgba(0,0,0,.8))}
+.rt-name{align-self:center;font:600 10.5px/1.12 var(--f-body);color:#ece7d8;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rt-year{font:500 10px var(--f-mono);color:#a9a691;text-align:right}
+.rt .fn-num{top:-9px;left:-8px}
+.rt.off{opacity:.45}
+.rt.off:hover{opacity:1}
+.rt.guide{cursor:pointer;border-color:#8a7440}
+.rt.guide:focus-visible{outline:2px solid var(--brass-lt);outline-offset:3px}
+.rt[data-state="owned"],.rt[data-state="done"]{background:linear-gradient(180deg,#3d5a2c,#253a1b);border-color:#7cc04f}
+.rt[data-state="owned"] .rt-ico,.rt[data-state="done"] .rt-ico{background:linear-gradient(180deg,#6f9a4a,#3b5a25)}
+.rt[data-state="locked"]{background:linear-gradient(180deg,#30312d,#1f201c)}
+.rt[data-state="next"]{border-color:var(--brass-lt);box-shadow:0 0 0 1px #000,0 0 14px rgba(240,213,138,.6);
+  background:linear-gradient(105deg,#3b3c38 35%,#7a6835 50%,#3b3c38 65%);background-size:300% 100%;animation:fn-shine 2.6s linear infinite}
+.lg.owned{background:linear-gradient(#5c8a3c,#2e4a1e)}
+@media (prefers-reduced-motion:reduce){.rt[data-state="next"]{animation:none;background:#5a4e2c}}
+
 /* editing the guide */
 .editbar,.editnote{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 14px;font-size:13.5px;
   background:linear-gradient(180deg,#4a4130,#2e2a1e);border:1px solid var(--brass);box-shadow:var(--bevel),var(--drop)}
@@ -364,6 +400,7 @@ label.item.done .fd{color:var(--green-ink)}
   <symbol id="ic-factory" viewBox="0 0 24 24"><path d="M2 21.5V10.5l5 3.2v-3.2l5 3.2v-3.2l5 3.2V3h4.5v18.5z"/></symbol>
   <symbol id="ic-people" viewBox="0 0 24 24"><circle cx="8" cy="7.6" r="3.2"/><circle cx="16.4" cy="8.4" r="2.8"/><path d="M1.8 20.5c0-4.2 2.9-7 6.2-7s6.2 2.8 6.2 7z"/><path d="M15.2 20.5c0-2.4-.7-4.4-1.9-5.8.9-.7 2-1.1 3.1-1.1 3 0 5.6 2.5 5.6 6.9z"/></symbol>
   <symbol id="ic-horn" viewBox="0 0 24 24"><path d="M3 9.4h4.2L18 4v15.8L7.2 14.4H3z"/><path d="M7.4 15.2l1.7 6.3h2.8l-1.7-6.3z"/><path d="M19.6 9.6h2.6v4.4h-2.6z"/></symbol>
+  <symbol id="ic-bolt" viewBox="0 0 24 24"><path d="M13.5 1.8L4.6 13.6h5.8l-1.9 8.6 9-12.1h-5.9z"/></symbol>
   <symbol id="ic-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.6" fill="none" stroke="currentColor" stroke-width="3.6" stroke-dasharray="3 2.95"/><path d="M12 6.2a5.8 5.8 0 1 1 0 11.6 5.8 5.8 0 0 1 0-11.6zm0 3.6a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4z" fill-rule="evenodd"/></symbol>
 </svg>
 
@@ -408,6 +445,7 @@ label.item.done .fd{color:var(--green-ink)}
     <button role="tab" data-tab="plan" aria-selected="true">Game plan<span class="tc" data-tc="planCol"></span></button>
     <button role="tab" data-tab="trees" aria-selected="false">Focus &amp; research<span class="tc" data-tc="trees"></span></button>
     <button role="tab" data-tab="tree" aria-selected="false" hidden>Focus tree</button>
+    <button role="tab" data-tab="restree" aria-selected="false" hidden>Research tree</button>
     <button role="tab" data-tab="builds" aria-selected="false">Builds &amp; numbers</button>
   </nav>
 
@@ -465,6 +503,18 @@ label.item.done .fd{color:var(--green-ink)}
     </section>
   </div>
 
+  <div data-panel="restree" hidden>
+    <section class="col rescol">
+      <div class="colhead">
+        <div class="row"><h2>Research tree</h2><span class="count" id="resMeta"></span></div>
+        <div class="folderbar" id="resFolders" role="tablist" aria-label="Research folders"></div>
+        <div class="treebar"><span class="legend-tree"><i class="lg owned"></i>Researched <i class="lg next"></i>Next <i class="lg avail"></i>Guide <i class="lg off"></i>Not in guide</span></div>
+        <div class="next" id="resNote"></div>
+      </div>
+      <div class="resview" id="resView"><div class="rescanvas" id="resCanvas"></div></div>
+    </section>
+  </div>
+
   <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
@@ -487,15 +537,17 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-28.2"></script>
-<script src="guides/glossary.js?v=2026-10-28.2"></script>
+<script src="guides/index.js?v=2026-10-28.3"></script>
+<script src="guides/glossary.js?v=2026-10-28.3"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-28.2";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.3";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
 function registerTree(t){ TREE = t; }
+let RES = null;
+function registerResearch(r){ RES = r; }
 
 const TAGS = {up: "UP", sp: "Special project"};
 const PREFS_KEY = "hoi4-tool-prefs";
@@ -607,6 +659,13 @@ function build(colId, groups){
         fd.dataset.focus = o.focus; fd.tabIndex = 0;   // hover or tap for what the focus does
         txt.appendChild(fd);
       }
+      const tech = o.tech && RES && RES.byId[o.tech];
+      if (tech){
+        const fd = el("span", "fd");
+        fd.textContent = [tech.year || "", RES.folderName[tech.f[0][0]], "cost " + tech.cost].filter(Boolean).join(" · ");
+        fd.dataset.tech = tech.id; fd.tabIndex = 0;   // hover or tap for the tech's details
+        txt.appendChild(fd);
+      }
       const cb = li.querySelector("input");
       cb.checked = !!store.ticks[id];
       cb.addEventListener("change", () => { if (cb.checked) store.ticks[id] = true; else delete store.ticks[id]; save(); refresh(col); });
@@ -638,6 +697,7 @@ function refresh(col){
   col._late = applyDates(col, items);
   updateTabCounts();
   if (col.id === "focusCol") updateTree();
+  if (col.id === "researchCol") updateResearch();
 }
 
 /* date tracker: behind = unticked and past its "by" date; later = its phase hasn't started yet */
@@ -791,7 +851,9 @@ let tipFor = null;
 const fmtDef = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b class="k">$1</b>').replace(/\{\+(.+?)\}/g, '<b class="g">$1</b>').replace(/\{-(.+?)\}/g, '<b class="r">$1</b>');
 function showTip(g){
   if (g.classList.contains("fn")){ if (!panning) openTip(g, g._f.name, treeTipHtml(g._f)); return; }
+  if (g.classList.contains("rt")){ openTip(g, g._t.name, techTipHtml(g._t)); return; }
   if (g.dataset.focus){ const f = TREE.byId[g.dataset.focus]; if (f) openTip(g, f.name, treeTipHtml(f)); return; }
+  if (g.dataset.tech){ const t = RES && RES.byId[g.dataset.tech]; if (t) openTip(g, t.name, techTipHtml(t)); return; }
   const e = GLOSS[g.dataset.term]; if (!e) return;
   openTip(g, e.term, '<div class="tip-b">' + fmtDef(e.def) + "</div>" + (e.patch ? '<div class="tip-f">May differ between game patches.</div>' : ""));
 }
@@ -813,12 +875,12 @@ function placeTip(){
   tip.style.top = top + "px";
 }
 function hideTip(){ if (tipFor) tipFor.removeAttribute("aria-describedby"); tip.hidden = true; tipFor = null; }
-document.addEventListener("mouseover", e => { const g = e.target.closest(".gl,.fn,.fd[data-focus]"); if (g) showTip(g); });
-document.addEventListener("mouseout", e => { const g = e.target.closest(".gl,.fn,.fd[data-focus]"); if (g && !g.contains(e.relatedTarget) && document.activeElement !== g) hideTip(); });
-document.addEventListener("focusin", e => { const g = e.target.closest(".gl,.fn,.fd[data-focus]"); if (g) showTip(g); else hideTip(); });
-document.addEventListener("focusout", e => { if (e.target.closest(".gl,.fn,.fd[data-focus]")) hideTip(); });
+document.addEventListener("mouseover", e => { const g = e.target.closest(".gl,.fn,.rt,.fd[data-focus],.fd[data-tech]"); if (g) showTip(g); });
+document.addEventListener("mouseout", e => { const g = e.target.closest(".gl,.fn,.rt,.fd[data-focus],.fd[data-tech]"); if (g && !g.contains(e.relatedTarget) && document.activeElement !== g) hideTip(); });
+document.addEventListener("focusin", e => { const g = e.target.closest(".gl,.fn,.rt,.fd[data-focus],.fd[data-tech]"); if (g) showTip(g); else hideTip(); });
+document.addEventListener("focusout", e => { if (e.target.closest(".gl,.fn,.rt,.fd[data-focus],.fd[data-tech]")) hideTip(); });
 document.addEventListener("click", e => {
-  const g = e.target.closest(".gl,.fd[data-focus]");
+  const g = e.target.closest(".gl,.fd[data-focus],.fd[data-tech]");
   if (g){ e.preventDefault(); e.stopPropagation(); showTip(g); }   // don't tick the step when tapping a term or focus details
   else if (!tip.hidden) hideTip();
 }, true);
@@ -1043,6 +1105,135 @@ document.querySelectorAll("[data-zoom]").forEach(b => b.addEventListener("click"
 document.getElementById("treeFit").addEventListener("click", fitTree);
 document.getElementById("treeNext").addEventListener("click", () => centerOn(ORDER.find(id => !doneF(id)) || ORDER[0], Math.max(view.s, .85)));
 
+/* research tree: game facts from guides/trees/research-*.js, drawn per folder like in game, the guide's order numbered */
+const RSTEP = {}, RORDER = [], RNODE = {};
+let resFolder = null, resBuilt = false;
+function prepResearch(){
+  if (!RES) return;
+  RES.byId = {}; RES.techs.forEach(t => RES.byId[t.id] = t);
+  RES.folderName = {}; RES.folders.forEach(f => RES.folderName[f.id] = f.name);
+  RES.owned = new Set(RES.start);
+  RES.parents = {}; RES.techs.forEach(t => (t.leads || []).forEach(c => (RES.parents[c] = RES.parents[c] || []).push(t.id)));
+  (G.research || []).forEach(g => g.steps.forEach(s => {
+    if (s.tech && RES.byId[s.tech] && !RSTEP[s.tech]){ RSTEP[s.tech] = s.id; RORDER.push(s.tech); }
+  }));
+}
+const resDone = id => RES.owned.has(id) || !!(RSTEP[id] && store.ticks[RSTEP[id]]);
+const resNext = () => RORDER.find(id => !resDone(id));
+
+function buildResearch(){
+  if (!RES) return;
+  document.querySelector('[data-tab="restree"]').hidden = false;
+  document.getElementById("resMeta").textContent = "Patch " + RES.patch + " · " + RES.techs.length + " techs";
+  const bar = document.getElementById("resFolders");
+  RES.folders.forEach(f => {
+    const b = el("button", "fbtn"); b.type = "button"; b.setAttribute("role", "tab"); b.dataset.folder = f.id;
+    b.innerHTML = "<span></span><i></i>"; b.firstChild.textContent = f.name;
+    b.addEventListener("click", () => { prefs.resFolder = f.id; savePrefs(); renderFolder(f.id); });
+    bar.appendChild(b);
+  });
+  resBuilt = true;
+  updateResearch();
+}
+function researchShown(){
+  if (!resBuilt) return;
+  const want = prefs.resFolder && RES.folders.some(f => f.id === prefs.resFolder) ? prefs.resFolder : null;
+  const nx = resNext();
+  renderFolder(resFolder || want || (nx ? RES.byId[nx].f[0][0] : RES.folders[0].id));
+}
+
+function renderFolder(fid){
+  resFolder = fid;
+  const f = RES.folders.find(x => x.id === fid), canvas = document.getElementById("resCanvas");
+  canvas.innerHTML = ""; Object.keys(RNODE).forEach(k => delete RNODE[k]);
+  canvas.style.width = f.w + "px"; canvas.style.height = f.h + "px";
+  document.querySelectorAll("#resFolders .fbtn").forEach(b => b.setAttribute("aria-selected", b.dataset.folder === fid));
+  // each card is as wide as the gap to its nearest neighbour on the right allows
+  const H = 56;
+  const pts = RES.techs.flatMap(t => t.f.filter(p => p[0] === fid).map(p => ({t, x: p[1], y: p[2]})));
+  pts.forEach(a => {
+    let gap = 140;
+    pts.forEach(b => { if (a !== b && Math.abs(a.y - b.y) < H && b.x > a.x) gap = Math.min(gap, b.x - a.x); });
+    a.w = Math.max(84, Math.min(128, gap - 10));
+  });
+  f.labels.forEach(l => { const s = el("span", "rlab " + l.k); s.textContent = l.t; s.style.left = l.x + "px"; s.style.top = l.y + "px"; canvas.appendChild(s); });
+  // links: across when the child is to the right, down otherwise
+  let d = "";
+  pts.forEach(a => (a.t.leads || []).forEach(cid => {
+    const b = pts.find(p => p.t.id === cid); if (!b) return;
+    if (b.x >= a.x + a.w){
+      const mx = Math.round((a.x + a.w + b.x) / 2);
+      d += `<path data-p="${a.t.id}" d="M${a.x + a.w},${a.y + H/2}H${mx}V${b.y + H/2}H${b.x}"/>`;
+    } else {
+      const my = Math.round((a.y + H + b.y) / 2);
+      d += `<path data-p="${a.t.id}" d="M${a.x + a.w/2},${a.y + H}V${my}H${b.x + b.w/2}V${b.y}"/>`;
+    }
+  }));
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("class", "reslines"); svg.setAttribute("width", f.w); svg.setAttribute("height", f.h); svg.innerHTML = d;
+  canvas.appendChild(svg);
+  pts.forEach(({t, x, y, w}) => {
+    const i = RORDER.indexOf(t.id), n = el("div", "rt " + (i >= 0 ? "guide" : "off"));
+    n.style.left = x + "px"; n.style.top = y + "px"; n.style.width = w + "px"; n.style.height = H + "px";
+    n.innerHTML = `<span class="rt-ico" data-ic="${t.ic}"><svg viewBox="0 0 24 24"><use href="#ic-${t.ic}"/></svg></span><span class="rt-name"></span><span class="rt-year"></span>`;
+    n.querySelector(".rt-name").textContent = t.name;
+    n.querySelector(".rt-year").textContent = t.year || "";
+    n._t = t; n.dataset.id = t.id;
+    if (i >= 0){
+      const b = el("span", "fn-num"); b.textContent = i + 1; n.appendChild(b);
+      n.tabIndex = 0; n.setAttribute("role", "button");
+      n.setAttribute("aria-label", "Guide research " + (i + 1) + ": " + t.name + ". Press Enter to tick.");
+    }
+    canvas.appendChild(n); RNODE[t.id] = n;
+  });
+  updateResearch();
+}
+
+function updateResearch(){
+  if (!resBuilt) return;
+  const nx = resNext();
+  Object.values(RNODE).forEach(n => {
+    const id = n._t.id, ps = RES.parents[id] || [];
+    n.dataset.state = RES.owned.has(id) ? "owned" : resDone(id) ? "done" : id === nx ? "next"
+      : (!ps.length || ps.some(resDone)) ? "avail" : "locked";
+  });
+  document.querySelectorAll("#resCanvas .reslines path").forEach(p => p.classList.toggle("done", resDone(p.dataset.p)));
+  // folder buttons show the guide's progress in each folder
+  document.querySelectorAll("#resFolders .fbtn").forEach(b => {
+    const ids = RORDER.filter(id => RES.byId[id].f.some(p => p[0] === b.dataset.folder));
+    b.querySelector("i").textContent = ids.length ? ids.filter(resDone).length + "/" + ids.length : "";
+  });
+  const note = document.getElementById("resNote");
+  if (nx){
+    note.innerHTML = "Next: <b></b> · <span></span>";
+    note.querySelector("b").textContent = "#" + (RORDER.indexOf(nx) + 1) + " " + RES.byId[nx].name;
+    note.querySelector("span").textContent = RES.folderName[RES.byId[nx].f[0][0]];
+  } else note.textContent = RORDER.length ? "Every guide tech is researched." : "";
+}
+
+function techTipHtml(t){
+  const nm = id => esc(RES.byId[id] ? RES.byId[id].name : id), i = RORDER.indexOf(t.id);
+  let h = '<div class="tip-b"><b class="k">' + (t.year ? t.year : "No start year") + "</b> · research cost " + t.cost + " · " + esc(RES.folderName[t.f[0][0]]);
+  if (RES.owned.has(t.id)) h += "<br><b class='g'>Researched at the start</b> (1 Jan 1936)";
+  else if (i >= 0) h += "<br>Guide research <b class='k'>#" + (i + 1) + "</b>";
+  else h += "<br>Not in this guide's research order";
+  if (t.fx) h += '<ul class="tip-fx">' + t.fx.map(l => "<li" + (/^\+/.test(l) ? ' class="up"' : /^-/.test(l) ? ' class="down"' : "") + ">" + esc(l) + "</li>").join("") + "</ul>";
+  const line = s => '<div class="tip-line">' + s + "</div>";
+  const ps = RES.parents[t.id] || [];
+  if (ps.length) h += line("Needs " + ps.map(nm).join(" or "));
+  if (t.leads) h += line("Leads to " + t.leads.map(nm).join(", "));
+  if (t.xor) h += line("<b class='r'>Excludes</b> " + t.xor.map(nm).join(", "));
+  return h + '</div><div class="tip-f">From the patch ' + esc(RES.patch) + " game files. Researching before the start year costs extra time.</div>";
+}
+
+// clicking a numbered tech ticks it in the research list, like the focus tree
+function toggleTech(id){ const cb = RSTEP[id] && document.getElementById(RSTEP[id]); if (cb) cb.click(); }
+document.getElementById("resCanvas").addEventListener("click", e => { const n = e.target.closest(".rt.guide"); if (n) toggleTech(n.dataset.id); });
+document.getElementById("resCanvas").addEventListener("keydown", e => {
+  const n = e.target.closest(".rt.guide");
+  if (n && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); toggleTech(n.dataset.id); }
+});
+
 /* lightbox */
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
 let lbReturn = null;
@@ -1064,6 +1255,7 @@ function showTab(name){
   document.querySelectorAll("[data-panel]").forEach(p => p.hidden = p.dataset.panel !== name);
   prefs.tab = name; savePrefs();
   if (name === "tree") requestAnimationFrame(treeShown);
+  if (name === "restree") researchShown();
 }
 tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
 const wantTab = (location.hash || "").slice(1) || prefs.tab || "plan";   // the tree tab only exists once the guide has loaded
@@ -1194,7 +1386,17 @@ function editList(colId, groups, kind){
       const row = el("li", "ed-row"); row.dataset.sid = s.id;
       row.appendChild(el("span", "num", String(n)));
       const main = el("div", "ed-main");
-      if (kind === "focus" && TREE){
+      if (kind === "research" && RES && !s.project){
+        // pick the tech from the game's research tree by name, like focuses
+        const inp = edInput(s.t, "Technology", (v, i) => {
+          const t = RES.techs.find(x => x.name.toLowerCase() === v.toLowerCase());
+          s.t = t ? t.name : v; if (t) s.tech = t.id; else delete s.tech;
+          i.classList.toggle("bad", !t); saveEdits();
+        }, "ed-focus");
+        inp.setAttribute("list", "edTechList");
+        if (!s.tech) inp.classList.add("bad");
+        main.appendChild(inp);
+      } else if (kind === "focus" && TREE){
         // pick the focus from the game's tree by name; free text is kept but loses the tree link
         const inp = edInput(s.t, "Focus name", (v, i) => {
           const f = TREE.focuses.find(x => x.name.toLowerCase() === v.toLowerCase());
@@ -1270,6 +1472,11 @@ function enterEdit(){
   document.getElementById("editBar").hidden = false;
   document.getElementById("editNote").hidden = true;
   document.getElementById("editBtn").setAttribute("aria-pressed", "true");
+  if (RES && !document.getElementById("edTechList")){
+    const dl = el("datalist"); dl.id = "edTechList";
+    [...new Set(RES.techs.map(t => t.name))].sort().forEach(nm => { const o = el("option"); o.value = nm; dl.appendChild(o); });
+    document.body.appendChild(dl);
+  }
   if (TREE && !document.getElementById("edFocusList")){
     const dl = el("datalist"); dl.id = "edFocusList";
     [...new Set(TREE.focuses.map(f => f.name))].sort().forEach(nm => { const o = el("option"); o.value = nm; dl.appendChild(o); });
@@ -1323,6 +1530,7 @@ function start(){
 
   openStore();
   projectFocuses();
+  prepResearch();
   document.querySelector('[data-res="date"]').hidden = !(G.plan || []).some(g => g.by || g.steps.some(s => s.by));
   dateIn.value = store.date || "";
   build("planCol", G.plan || []);
@@ -1332,7 +1540,8 @@ function start(){
   initGlossary();
   glossify(document.querySelector(".main"));
   buildTree();
-  if (wantTab === "tree" && TREE) showTab("tree");
+  buildResearch();
+  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES)) showTab(wantTab);
 
   const ul = document.getElementById("chapters");
   (G.chapters || []).forEach(c => {
@@ -1346,12 +1555,17 @@ function start(){
 const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
-  if (!G || !G.meta || !G.meta.focusTree) return start();
-  const t = document.createElement("script");
-  t.src = versioned(G.meta.focusTree);
-  t.onload = start;
-  t.onerror = () => { fail("Couldn't load the focus tree file " + G.meta.focusTree + "."); start(); };
-  document.head.appendChild(t);
+  // then the guide's game data files, one after another (focus tree, research tree)
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree].filter(Boolean) : [];
+  const next = () => {
+    const f = files.shift(); if (!f) return start();
+    const t = document.createElement("script");
+    t.src = versioned(f);
+    t.onload = next;
+    t.onerror = () => { fail("Couldn't load the game data file " + f + "."); next(); };
+    document.head.appendChild(t);
+  };
+  next();
 };
 s.onerror = () => fail("Couldn't load the guide file " + entry.file + ".");
 document.head.appendChild(s);

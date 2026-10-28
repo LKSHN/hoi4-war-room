@@ -18,6 +18,9 @@
      lines: [{id, name, eq? (game equipment id) | design? (designs id), kind? (shown under the name), f? (factories),
      cap? (in-game factory limit), rest? (gets every factory left), n?}]}]}; lines in priority order. A line keeps its id
      from state to state so the page can show what changed; equipment comes from meta.equipment
+   - construction: {lists: [{id, step (plan step id), title, civs? (civilian factories), uses? [{name, n}] (factories
+     taken before the queue: consumer goods, trade...), img?, ts?, n?, items: [{id, state (game state id), b (building id),
+     n (levels)}]}]}; items in queue order; buildings and states come from meta.construction
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -37,6 +40,7 @@ registerGuide({
     "designers": "guides/trees/designers-1.19.1.js",
     "units": "guides/trees/units-1.19.1.js",
     "equipment": "guides/trees/equipment-1.19.1.js",
+    "construction": "guides/trees/construction-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -428,6 +432,42 @@ registerGuide({
     ]
   },
 
+  "construction": {
+    "lists": [
+      {"id": "cons.1936", "step": "plan.construction-infrastructure-westfalen-hessen", "title": "Day one", "civs": 35, "uses": [{"name": "Consumer Goods", "n": 15}], "img": "build36", "ts": "02:57", "items":[
+        {"id": "cq.1", "state": 57, "b": "infrastructure", "n": 1},
+        {"id": "cq.2", "state": 55, "b": "infrastructure", "n": 1},
+        {"id": "cq.3", "state": 42, "b": "infrastructure", "n": 1},
+        {"id": "cq.4", "state": 51, "b": "infrastructure", "n": 1},
+        {"id": "cq.5", "state": 57, "b": "industrial_complex", "n": 1},
+        {"id": "cq.6", "state": 55, "b": "industrial_complex", "n": 1},
+        {"id": "cq.7", "state": 42, "b": "industrial_complex", "n": 1},
+        {"id": "cq.8", "state": 51, "b": "industrial_complex", "n": 1},
+        {"id": "cq.9", "state": 57, "b": "arms_factory", "n": 4},
+        {"id": "cq.10", "state": 55, "b": "arms_factory", "n": 5}
+      ]},
+      {"id": "cons.1937", "step": "plan.queue-mils-100-states", "title": "Jun 1937 queue", "civs": 59, "uses": [{"name": "Consumer Goods", "n": 15}, {"name": "National Projects", "n": 6}, {"name": "Traded Goods", "n": 4}], "img": "build37", "ts": "10:50", "n": "Mils in the 100% states, then 2 refineries each, then mils in the 80% states. Gives exactly enough rubber by 1939. The screenshot stops at Sachsen; the guide goes on with the 80% states.", "items":[
+        {"id": "cq.11", "state": 59, "b": "arms_factory", "n": 4},
+        {"id": "cq.12", "state": 64, "b": "arms_factory", "n": 5},
+        {"id": "cq.13", "state": 60, "b": "arms_factory", "n": 8},
+        {"id": "cq.14", "state": 57, "b": "arms_factory", "n": 1},
+        {"id": "cq.15", "state": 55, "b": "arms_factory", "n": 1},
+        {"id": "cq.16", "state": 51, "b": "arms_factory", "n": 2},
+        {"id": "cq.17", "state": 42, "b": "arms_factory", "n": 3},
+        {"id": "cq.18", "state": 42, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.19", "state": 51, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.20", "state": 55, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.21", "state": 57, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.22", "state": 60, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.23", "state": 54, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.24", "state": 64, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.25", "state": 59, "b": "synthetic_refinery", "n": 2},
+        {"id": "cq.26", "state": 65, "b": "arms_factory", "n": 5}
+      ]},
+      {"id": "cons.poland", "step": "plan.from-now-every-free", "title": "After Poland", "n": "From here on every free civilian factory builds military factories. The guide doesn't list the states.", "items":[]}
+    ]
+  },
+
   "designs": [
     {"id":"design.spg1", "name":"SPG1 (7/4)", "frame":"medium_tank_chassis_1", "role":"medium_tank_artillery_chassis",
      "modules":{"turret_type_slot":"tank_medium_three_man_tank_turret", "main_armament_slot":"tank_medium_howitzer",
@@ -489,12 +529,8 @@ registerGuide({
        "text":"Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, then put every new dockyard on it. Convoys stay at 1 dockyard."}
     ]},
     {"title": "Economy", "layout": "narrow", "items": [
-      {"type":"fig", "img":"build36", "title":"Construction, 1 Jan 1936", "ts":"2:57",
-       "text":"Infrastructure in 4 western states, 1 civ in each, then military factories in Westfalen and Hessen."},
       {"type":"fig", "img":"navy36", "title":"Naval lines, 1936",
-       "text":"Extra ships cancelled. Subs and destroyers at max, heavy ships at 2, convoys at 1."},
-      {"type":"fig", "img":"build37", "title":"Construction, Jun 1937", "ts":"10:50",
-       "text":"Mils in the 100% states, 2 refineries each, then mils in the 80% states. Gives exactly enough rubber by 1939."}
+       "text":"Extra ships cancelled. Subs and destroyers at max, heavy ships at 2, convoys at 1."}
     ]},
     {"title": "Reference", "layout": "cards", "items": [
       {"type":"card", "title":"Advisors & spirits, in order", "ordered":true, "list":[

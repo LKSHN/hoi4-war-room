@@ -458,6 +458,36 @@ label.item.done .fd{color:var(--green-ink)}
 .ptitle{min-width:200px}
 @media (max-width:900px){ .pcompare{grid-template-columns:1fr} }
 
+/* construction queue */
+.cwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+.clines{list-style:none;margin:0;padding:6px;display:flex;flex-direction:column;gap:4px}
+.cuse{display:flex;align-items:center;gap:8px;padding:6px 10px;background:linear-gradient(180deg,#3d3a2c,#2a281e);border:1px solid #55503a}
+.cuse span{flex:1;font-weight:600;color:var(--ink-hi)}
+.cuse b{font:600 13px var(--f-mono);padding:1px 10px;background:#111;border:1px solid #444;color:var(--ink-hi)}
+.citem{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:4px 10px;align-items:center;padding:5px 8px;
+  background:linear-gradient(180deg,#2a2c24,#1d1f19);border:1px solid #3f4234}
+.citem.idle{opacity:.82}
+.citem .cn{font:600 12px var(--f-mono);color:var(--muted);min-width:1.4em}
+.citem .cstate{font-weight:600;color:var(--ink-hi);min-width:0}
+.citem .cstate .ed-select{width:100%;max-width:none}
+.cb{position:relative;display:inline-flex}
+.cb .dslot-ico{width:32px;height:32px;color:#ffd08a;background:radial-gradient(circle at 35% 30%,#a8642a,#4a2a12 75%)}
+.cb .dslot-ico svg{width:21px;height:21px}
+.b-arms_factory .cb .dslot-ico{color:#cfe7c4;background:radial-gradient(circle at 35% 30%,#6a7d55,#2b3a22 75%)}
+.b-infrastructure .cb .dslot-ico,.b-rail_way .cb .dslot-ico{color:#e6dfc3;background:radial-gradient(circle at 35% 30%,#6b6a5c,#2c2b24 75%)}
+.cb i{position:absolute;right:-5px;bottom:-4px;font:600 11px var(--f-mono);font-style:normal;color:#fff;background:#111;border:1px solid #555;padding:0 4px}
+.cfac{display:flex;flex-direction:column;align-items:stretch;gap:3px;min-width:64px}
+.cfac b{font:600 12px var(--f-mono);text-align:center;color:var(--ink-hi);background:#111;border:1px solid #444;padding:1px 6px}
+.cbar{height:4px;background:#111;border:1px solid #333}
+.cbar span{display:block;height:100%;background:var(--green)}
+.citem .pl-tools{grid-column:2 / -1;padding:0}
+.ctotals{margin-top:10px}
+.cstrow{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:0 10px;padding:4px 0;border-bottom:1px solid var(--line);font-size:13px}
+.cstrow b{color:var(--ink-hi)}
+.cstrow span{color:var(--brass-lt)}
+.cstrow i{grid-column:2;font-style:normal;font-size:12px;color:var(--muted)}
+@media (max-width:900px){ .cwrap{grid-template-columns:1fr} }
+
 /* editing the guide */
 .editbar,.editnote{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 14px;font-size:13.5px;
   background:linear-gradient(180deg,#4a4130,#2e2a1e);border:1px solid var(--brass);box-shadow:var(--bevel),var(--drop)}
@@ -592,6 +622,7 @@ label.item.done .fd{color:var(--green-ink)}
     <button role="tab" data-tab="designs" aria-selected="false" hidden>Designs</button>
     <button role="tab" data-tab="divisions" aria-selected="false" hidden>Divisions</button>
     <button role="tab" data-tab="production" aria-selected="false" hidden>Production</button>
+    <button role="tab" data-tab="construction" aria-selected="false" hidden>Construction</button>
     <button role="tab" data-tab="builds" aria-selected="false">Builds &amp; numbers</button>
   </nav>
 
@@ -686,6 +717,11 @@ label.item.done .fd{color:var(--green-ink)}
     <div class="pcompare" id="pCompare"></div>
   </div>
 
+  <div data-panel="construction" hidden>
+    <div class="ptimeline" id="cTimeline" role="tablist" aria-label="Construction lists"></div>
+    <div class="cwrap" id="cWrap"></div>
+  </div>
+
   <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
@@ -708,11 +744,11 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-28.6"></script>
-<script src="guides/glossary.js?v=2026-10-28.6"></script>
+<script src="guides/index.js?v=2026-10-28.7"></script>
+<script src="guides/glossary.js?v=2026-10-28.7"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-28.6";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.7";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
@@ -720,6 +756,8 @@ function registerTree(t){ TREE = t; }
 let RES = null, DES = null;
 function registerResearch(r){ RES = r; }
 function registerDesigners(d){ DES = d; }
+let CONS = null;
+function registerConstruction(c){ CONS = c; }
 let EQUIP = null;
 function registerEquipment(e){ EQUIP = e; }
 let UNITS = null;
@@ -1984,6 +2022,149 @@ function prodPanel(st, title, o){
   return w;
 }
 
+/* construction: the guide's construction queues, each tied to a plan step, drawn like the in-game queue.
+   Each item gets up to 15 civilian factories in queue order from what's left after consumer goods and the like. */
+let consSel = null;
+const C_MAX = 15;   // civilian factories one queue item can use
+const bIcon = b => ({infrastructure: "road", industrial_complex: "factory", arms_factory: "factory", synthetic_refinery: "oil", fuel_silo: "oil",
+  dockyard: "ship", floating_harbor: "ship", naval_base: "ship", air_base: "plane", anti_air_building: "plane", radar_station: "eye",
+  bunker: "fort", coastal_bunker: "fort", rail_way: "train", supply_node: "gear", nuclear_reactor: "flask", rocket_site: "bolt"})[b] || "factory";
+const stName = id => (CONS.states[id] || {}).name || "State " + id;
+function consAlloc(list){
+  let left = Math.max(0, (list.civs || 0) - (list.uses || []).reduce((a, u) => a + (+u.n || 0), 0));
+  const free = left;
+  return {free, per: list.items.map(() => { const n = Math.min(C_MAX, left); left -= n; return n; })};
+}
+const bCost = (b, n) => { const d = CONS.buildings[b]; if (!d) return 0; let t = 0; for (let i = 0; i < n; i++) t += d.cost + (d.extra || 0) * i; return t; };
+
+function buildConstruction(){
+  if (!CONS || !G.construction || !(G.construction.lists || []).length) return;
+  document.querySelector('[data-tab="construction"]').hidden = false;
+  renderConstruction();
+}
+function renderConstruction(){
+  const lists = G.construction.lists, steps = planSteps();
+  const nextIdx = lists.findIndex(l => !store.ticks[l.step]);
+  if (consSel == null || consSel >= lists.length) consSel = nextIdx < 0 ? lists.length - 1 : nextIdx;
+  const tl = document.getElementById("cTimeline"); tl.innerHTML = "";
+  lists.forEach((l, i) => {
+    const link = steps[l.step], done = !!store.ticks[l.step], b = el("button", "pstate" + (done ? " done" : "") + (i === nextIdx ? " next" : ""));
+    b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", i === consSel);
+    b.innerHTML = "<span class='pn'></span><b></b><span class='pd'></span>";
+    b.querySelector(".pn").textContent = done ? "✓" : i + 1;
+    b.querySelector("b").textContent = l.title || "List " + (i + 1);
+    b.querySelector(".pd").textContent = link ? (link.g.by ? (link.g.approx ? "≈ " : "") + fmtDate(link.g.by) : link.g.title) : "no plan step";
+    b.addEventListener("click", () => { consSel = i; renderConstruction(); });
+    tl.appendChild(b);
+  });
+  if (EDITING) tl.appendChild(edBtn("+ List", "Add a construction list after the selected one", () => {
+    lists.splice(consSel + 1, 0, {id: uid("cons."), step: lists[consSel].step, title: "New list", civs: lists[consSel].civs,
+      uses: JSON.parse(JSON.stringify(lists[consSel].uses || [])), items: []});
+    consSel++; saveEdits(); renderConstruction();
+  }, "dadd"));
+  const list = lists[consSel], wrap = document.getElementById("cWrap"); wrap.innerHTML = "";
+  wrap.append(consQueue(list), consSide(list, steps[list.step]));
+}
+
+function consQueue(list){
+  const w = el("section", "pwin cqueue"), al = consAlloc(list), redo = () => { saveEdits(); renderConstruction(); };
+  w.appendChild(el("div", "dtitle", "Construction"));
+  const h = el("div", "phead");
+  if (EDITING){
+    h.append(el("span", null, "Civilian factories"), edInput(list.civs != null ? String(list.civs) : "", "Civilian factories", v => { const n = parseInt(v, 10); if (n >= 0) list.civs = n; else delete list.civs; saveEdits(); }, "ed-small", "5em"));
+  } else { h.innerHTML = "<span>Civilian factories</span><b></b>"; h.querySelector("b").textContent = list.civs != null ? list.civs + " · " + al.free + " free for the queue" : "not given"; }
+  w.appendChild(h);
+  const ol = el("ol", "clines");
+  (list.uses || []).forEach((u, i) => {
+    const li = el("li", "cuse");
+    if (EDITING) li.append(edInput(u.name, "Used for", v => { u.name = v; saveEdits(); }), edInput(String(u.n), "Factories", v => { const n = parseInt(v, 10); if (n >= 0){ u.n = n; saveEdits(); } }, "ed-small", "4em"),
+      edBtn("✕", "Remove", () => { list.uses.splice(i, 1); redo(); }, "del"));
+    else { li.innerHTML = "<span></span><b></b>"; li.querySelector("span").textContent = u.name; li.querySelector("b").textContent = u.n; }
+    ol.appendChild(li);
+  });
+  if (EDITING){ const li = el("li", "cuse"); li.appendChild(edBtn("+ Factories used elsewhere", "Add consumer goods, trade or national projects", () => { (list.uses = list.uses || []).push({name: "Consumer Goods", n: 0}); redo(); })); ol.appendChild(li); }
+  list.items.forEach((it, i) => {
+    const b = CONS.buildings[it.b] || {}, got = al.per[i], li = el("li", "citem b-" + it.b + (got ? "" : " idle"));
+    li.innerHTML = `<span class="cn"></span><span class="cstate"></span><span class="cb"><span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${bIcon(it.b)}"/></svg></span><i></i></span>
+      <span class="cfac"><b></b><span class="cbar"><span></span></span></span>`;
+    li.querySelector(".cn").textContent = i + 1;
+    li.querySelector(".cb i").textContent = it.n;
+    li.querySelector(".cb").title = (b.name || it.b) + " × " + it.n;
+    li.querySelector(".cfac b").textContent = (list.civs != null ? got : "?") + "/" + C_MAX;
+    li.querySelector(".cbar span").style.width = (got / C_MAX * 100) + "%";
+    if (EDITING){
+      const ss = el("select", "ed-select"); ss.setAttribute("aria-label", "State");
+      const ger = el("optgroup"), oth = el("optgroup"); ger.label = "German states in 1936"; oth.label = "Other states";
+      Object.values(CONS.states).sort((a, b) => a.name.localeCompare(b.name)).forEach(s => { const o = el("option"); o.value = s.id; o.textContent = s.name; (s.owner === "GER" ? ger : oth).appendChild(o); });
+      ss.append(ger, oth); ss.value = it.state; ss.addEventListener("change", () => { it.state = +ss.value; redo(); });
+      li.querySelector(".cstate").appendChild(ss);
+      const bs = el("select", "ed-select"); bs.setAttribute("aria-label", "Building");
+      Object.values(CONS.buildings).sort((a, b) => a.name.localeCompare(b.name)).forEach(x => { const o = el("option"); o.value = x.id; o.textContent = x.name; bs.appendChild(o); });
+      bs.value = it.b; bs.addEventListener("change", () => { it.b = bs.value; redo(); });
+      const tools = el("div", "pl-tools");
+      tools.append(bs, edInput(String(it.n), "Levels", v => { const n = parseInt(v, 10); if (n > 0){ it.n = n; li.querySelector(".cb i").textContent = n; saveEdits(); } }, "ed-small", "3.5em"),
+        edBtn("▲", "Earlier in the queue", () => { if (i){ list.items.splice(i - 1, 0, list.items.splice(i, 1)[0]); redo(); } }),
+        edBtn("▼", "Later in the queue", () => { if (i < list.items.length - 1){ list.items.splice(i + 1, 0, list.items.splice(i, 1)[0]); redo(); } }),
+        confirmTwice(edBtn("✕", "Delete", () => {}, "del"), () => { list.items.splice(i, 1); redo(); }));
+      li.appendChild(tools);
+    } else li.querySelector(".cstate").textContent = stName(it.state);
+    ol.appendChild(li);
+  });
+  w.appendChild(ol);
+  if (!list.items.length && !EDITING) w.appendChild(el("p", "dsmall pempty", "No queue items listed for this moment."));
+  if (EDITING) w.appendChild(edBtn("+ Add to queue", "Add a building to the queue", () => {
+    const last = list.items[list.items.length - 1];
+    list.items.push({id: uid("cq."), state: last ? last.state : 57, b: last ? last.b : "arms_factory", n: 1}); redo();
+  }, "dadd"));
+  return w;
+}
+
+function consSide(list, link){
+  const box = el("div", "pchanges cside");
+  const head = el("div", "pch-h");
+  if (EDITING){
+    const lists = G.construction.lists, ssel = el("select", "ed-select"); ssel.setAttribute("aria-label", "Plan step");
+    (G.plan || []).forEach(g => { const og = el("optgroup"); og.label = g.title || ""; g.steps.forEach(s => { const o = el("option"); o.value = s.id; o.textContent = s.t.slice(0, 70); og.appendChild(o); }); ssel.appendChild(og); });
+    ssel.value = list.step; ssel.addEventListener("change", () => { list.step = ssel.value; saveEdits(); renderConstruction(); });
+    head.append(edInput(list.title, "List title", v => { list.title = v; saveEdits(); }, "ptitle"), ssel,
+      confirmTwice(edBtn("Delete list", "Delete this list", () => {}, "del"), () => { if (lists.length < 2) return; lists.splice(consSel, 1); consSel = Math.max(0, consSel - 1); saveEdits(); renderConstruction(); }));
+  } else {
+    head.innerHTML = "<b></b><span></span>";
+    head.querySelector("b").textContent = list.title;
+    head.querySelector("span").textContent = link ? (store.ticks[list.step] ? "✓ " : "") + link.s.t : "";
+  }
+  box.appendChild(head);
+  if (EDITING) box.appendChild(edText(list.n, "Note (optional)", v => { if (v) list.n = v; else delete list.n; saveEdits(); }, "ed-note"));
+  else if (list.n){ const p = el("p", "dsmall"); p.textContent = list.n; box.appendChild(p); }
+  if (!EDITING && list.img && G.images[list.img]){
+    const b = el("button", "shotbtn"); b.type = "button"; b.textContent = "▸ In-game screen"; b.addEventListener("click", () => openLB(list.img, b)); box.appendChild(b);
+    if (list.ts && G.meta.video){ box.appendChild(document.createTextNode(" ")); box.appendChild(tsLink(list.ts)); }
+  }
+  if (list.items.length){
+    // totals per building
+    const tot = {}; list.items.forEach(it => { const t = tot[it.b] = tot[it.b] || {n: 0, cp: 0}; t.n += it.n; t.cp += bCost(it.b, it.n); });
+    const tt = el("div", "ctotals"); tt.appendChild(el("div", "dcol-h", "In this queue"));
+    Object.entries(tot).forEach(([b, t]) => { const r = el("div", "dstat"); r.innerHTML = "<span></span><b></b>";
+      r.querySelector("span").textContent = (CONS.buildings[b] || {}).name || b; r.querySelector("b").textContent = t.n + " · " + Math.round(t.cp).toLocaleString("en-GB") + " CP"; tt.appendChild(r); });
+    box.appendChild(tt);
+    // the states it builds in, with what they had on 1 Jan 1936
+    const short = {infrastructure: "infra", industrial_complex: "civ", arms_factory: "mil", synthetic_refinery: "refinery", dockyard: "dockyard", air_base: "air base"};
+    const st = el("div", "ctotals"); st.appendChild(el("div", "dcol-h", "States"));
+    [...new Set(list.items.map(it => it.state))].forEach(id => {
+      const s = CONS.states[id] || {b: {}}, add = {}; list.items.filter(it => it.state === id).forEach(it => add[it.b] = (add[it.b] || 0) + it.n);
+      const r = el("div", "cstrow"); r.innerHTML = "<b></b><span></span><i></i>";
+      r.querySelector("b").textContent = stName(id);
+      r.querySelector("span").textContent = "+ " + Object.entries(add).map(([b, n]) => n + " " + (short[b] || (CONS.buildings[b] || {}).name || b)).join(", ");
+      r.querySelector("i").textContent = "1936: " + (Object.entries(s.b).filter(([b]) => short[b]).map(([b, n]) => (b === "infrastructure" ? "infra " + n : n + " " + short[b])).join(", ") || "nothing");
+      st.appendChild(r);
+    });
+    box.appendChild(st);
+  }
+  box.appendChild(el("p", "dsmall", "Factories per item: each item takes up to " + C_MAX + " civilian factories, in queue order, from what's left after the factories used elsewhere. " +
+    "Costs are construction points per level from the patch " + esc(CONS.patch) + " files, before construction speed bonuses. The 1936 buildings come from the game's start date."));
+  return box;
+}
+
 /* lightbox */
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
 let lbReturn = null;
@@ -2008,6 +2189,7 @@ function showTab(name){
   if (name === "restree") researchShown();
   if (name === "divisions" && UNITS && G && G.divisions) renderDivisions();   // ticks on the plan change what's done
   if (name === "production" && EQUIP && G && G.production) renderProduction();
+  if (name === "construction" && CONS && G && G.construction) renderConstruction();
 }
 tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
 const wantTab = (location.hash || "").slice(1) || prefs.tab || "plan";   // the tree tab only exists once the guide has loaded
@@ -2043,7 +2225,7 @@ pick.addEventListener("change", () => {
 
 /* editable guide: your edits are a full copy of the editable sections, saved per guide on top of the original file.
    "base" fingerprints the original, so we can tell you when the guide file changed under your edits. */
-const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions", "production"];
+const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions", "production", "construction"];
 let G0 = null, EDITING = false, editKey = "", saveTimer = null;
 const hashStr = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
 const sections = g => { const o = {}; EDITABLE.forEach(k => { if (g[k]) o[k] = g[k]; }); return o; };
@@ -2241,6 +2423,7 @@ function enterEdit(){
   if (DES) renderDesigns();   // designer controls switch on in edit mode
   if (UNITS && G.divisions) renderDivisions();
   if (EQUIP && G.production) renderProduction();
+  if (CONS && G.construction) renderConstruction();
 }
 function leaveEdit(){ saveEdits(true); location.reload(); }   // reload so the tree, dates and counts all use the edits
 
@@ -2299,7 +2482,8 @@ function start(){
   buildDesigns();
   buildDivisions();
   buildProduction();
-  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS) || (wantTab === "production" && EQUIP)) showTab(wantTab);
+  buildConstruction();
+  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS) || (wantTab === "production" && EQUIP) || (wantTab === "construction" && CONS)) showTab(wantTab);
 
   const ul = document.getElementById("chapters");
   (G.chapters || []).forEach(c => {
@@ -2314,7 +2498,7 @@ const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
   // then the guide's game data files, one after another (focus tree, research tree)
-  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment].filter(Boolean) : [];
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction].filter(Boolean) : [];
   const next = () => {
     const f = files.shift(); if (!f) return start();
     const t = document.createElement("script");

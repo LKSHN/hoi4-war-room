@@ -488,6 +488,52 @@ label.item.done .fd{color:var(--green-ink)}
 .cstrow i{grid-column:2;font-style:normal;font-size:12px;color:var(--muted)}
 @media (max-width:900px){ .cwrap{grid-template-columns:1fr} }
 
+/* MIO trait tree */
+.mpick{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px}
+.mguide .pn{color:var(--brass-lt);border-color:var(--brass)}
+.mguide[aria-pressed="true"]{border-color:var(--brass);background:linear-gradient(180deg,#4c4430,#2e2a1e);box-shadow:inset 0 -3px 0 var(--brass)}
+.mall-l{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.mall{max-width:280px}
+.mwrap{display:grid;grid-template-columns:240px minmax(0,1fr);gap:12px;align-items:start}
+.minfo{padding:10px 12px;background:linear-gradient(180deg,var(--steel-1),var(--steel-2));border:1px solid var(--brass-dk);box-shadow:var(--bevel)}
+.minfo .dname{font-family:var(--f-display);font-size:20px;color:var(--brass-lt);margin-bottom:4px}
+.msec{margin-top:10px}
+.msec .ed-select{max-width:100%;margin:4px 0}
+.mdes{display:flex;flex-wrap:wrap;gap:4px 10px;margin:6px 0;font-size:13px}
+.mqueue{margin:6px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.mqueue li{font-size:13px}
+.mqueue li::marker{font-family:var(--f-mono);color:var(--brass-lt);font-weight:600}
+.mqueue li b{display:block;color:var(--ink-hi)}
+.mqueue li span{color:var(--muted);font-size:12px}
+.mqueue .ed-btn{padding:0 6px;margin-right:3px}
+.mdetail{margin-top:12px;padding-top:8px;border-top:1px solid var(--line)}
+.mtreewin{overflow:hidden}
+.mtree{overflow-x:auto;padding:10px 6px}
+.mcanvas{position:relative;margin:0 auto}
+.mhead{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap;font-weight:600;font-size:13px;color:var(--ink-hi);padding:3px 12px;
+  background:linear-gradient(180deg,#3d4036,#262822);border:1px solid #55584a}
+.mlinks{position:absolute;inset:0;pointer-events:none}
+.mlinks path{fill:none;stroke:#9aa0b4;stroke-width:2}
+.mlinks path.any{stroke-dasharray:3 4;stroke:#8d917f}
+.mlinks path.mlx{stroke:#7aa36a;stroke-width:2}
+.mlinks .mlxm{fill:#d0553e;stroke:#000;stroke-width:1}
+.mnode{position:absolute;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;background:none;border:0;box-shadow:none;color:var(--ink)}
+.mnode:hover{background:none}
+.mico{width:52px;height:52px;display:grid;place-items:center;border-radius:50%;color:#d6e3c8;
+  background:radial-gradient(circle at 35% 30%,#5d6650,#262a1f 75%);border:3px double #8d917f;box-shadow:0 2px 6px rgba(0,0,0,.7)}
+.mico svg{width:26px;height:26px}
+.mnode.special .mico{border-color:var(--brass);background:radial-gradient(circle at 35% 30%,#6e6440,#2c2716 75%)}
+.mnode.chosen .mico{border-color:var(--brass-lt);color:#fff3c8;box-shadow:0 0 0 2px var(--brass),0 0 12px rgba(240,213,138,.45)}
+.mnode.ex .mico{filter:grayscale(1) brightness(.6);border-color:#8c3a2a}
+.mnode.ex .mname{text-decoration:line-through;text-decoration-color:#d0553e;color:var(--muted)}
+.mnode.sel .mico{outline:2px solid var(--brass-lt);outline-offset:2px}
+.mname{font-size:11px;line-height:1.15;text-align:center;max-width:100%;padding:0 3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  text-shadow:0 1px 2px #000}
+.mnum{position:absolute;top:-4px;left:calc(50% + 18px);min-width:20px;height:20px;padding:0 4px;display:grid;place-items:center;font:700 12px var(--f-mono);
+  color:#1b1d17;background:var(--brass-lt);border:1px solid #000;border-radius:10px}
+.editing .mnode{cursor:copy}
+@media (max-width:900px){ .mwrap{grid-template-columns:1fr} }
+
 /* editing the guide */
 .editbar,.editnote{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 14px;font-size:13.5px;
   background:linear-gradient(180deg,#4a4130,#2e2a1e);border:1px solid var(--brass);box-shadow:var(--bevel),var(--drop)}
@@ -623,6 +669,7 @@ label.item.done .fd{color:var(--green-ink)}
     <button role="tab" data-tab="divisions" aria-selected="false" hidden>Divisions</button>
     <button role="tab" data-tab="production" aria-selected="false" hidden>Production</button>
     <button role="tab" data-tab="construction" aria-selected="false" hidden>Construction</button>
+    <button role="tab" data-tab="mio" aria-selected="false" hidden>MIOs</button>
     <button role="tab" data-tab="builds" aria-selected="false">Builds &amp; numbers</button>
   </nav>
 
@@ -722,6 +769,11 @@ label.item.done .fd{color:var(--green-ink)}
     <div class="cwrap" id="cWrap"></div>
   </div>
 
+  <div data-panel="mio" hidden>
+    <div class="mpick" id="mPick"></div>
+    <div class="mwrap"><aside class="minfo" id="mInfo"></aside><section class="pwin mtreewin"><div class="dtitle" id="mTitle">MIO</div><div class="mtree" id="mTree"></div></section></div>
+  </div>
+
   <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
@@ -744,11 +796,11 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-28.7"></script>
-<script src="guides/glossary.js?v=2026-10-28.7"></script>
+<script src="guides/index.js?v=2026-10-28.8"></script>
+<script src="guides/glossary.js?v=2026-10-28.8"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-28.7";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.8";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
@@ -756,6 +808,8 @@ function registerTree(t){ TREE = t; }
 let RES = null, DES = null;
 function registerResearch(r){ RES = r; }
 function registerDesigners(d){ DES = d; }
+let MIO = null;
+function registerMIO(m){ MIO = m; }
 let CONS = null;
 function registerConstruction(c){ CONS = c; }
 let EQUIP = null;
@@ -2165,6 +2219,166 @@ function consSide(list, link){
   return box;
 }
 
+/* MIOs: every German military industrial organisation's trait tree, from guides/trees/mio-*.js, with the guide's
+   trait queue numbered on it. Edit mode: click a trait to add it to the queue or take it out. */
+let mioSel = null, mioTrait = null;
+const mioGroup = o => { const t = o.types.join(" ");
+  return /plane|airframe|fighter|bomber|helicopter/.test(t) ? "Aircraft" : /ship|submarine|cruiser|battleship|carrier|screen/.test(t) ? "Naval"
+    : /tank|armor|chassis/.test(t) ? "Tanks" : "Land equipment"; };
+const guideMio = id => (G.mios || []).find(m => m.org === id);
+function mioIssues(org, gm){   // queue order checks: parents before, nothing exclusive
+  const by = {}, at = {}; org.traits.forEach(t => by[t.id] = t); gm.order.forEach((id, i) => at[id] = i);
+  const nm = id => (by[id] || {}).name || id, out = [];
+  gm.order.forEach((id, i) => {
+    const t = by[id]; if (!t){ out.push("Unknown trait " + id); return; }
+    (t.all || []).forEach(p => { if (!(at[p] < i)) out.push(t.name + " needs " + nm(p) + " first"); });
+    if (t.any && t.any.length){ const n = t.any.filter(p => at[p] < i).length; if (n < (t.need || 1)) out.push(t.name + " needs " + (t.need > 1 ? t.need + " of " : "one of ") + t.any.map(nm).join(", ") + " first"); }
+    (t.ex || []).forEach(x => { if (at[x] != null && at[x] > i) out.push(t.name + " and " + nm(x) + " can't both be taken"); });
+  });
+  return out;
+}
+
+function buildMIO(){
+  if (!MIO || !Object.keys(MIO.orgs).length) return;
+  document.querySelector('[data-tab="mio"]').hidden = false;
+  renderMIO();
+}
+function renderMIO(){
+  const orgs = MIO.orgs, gms = G.mios || [];
+  if (!mioSel || !orgs[mioSel]) mioSel = (gms.find(m => orgs[m.org]) || {}).org || Object.keys(orgs)[0];
+  // picker: the guide's MIOs as buttons, every other one in a list by kind
+  const pick = document.getElementById("mPick"); pick.innerHTML = "";
+  gms.filter(m => orgs[m.org]).forEach(m => {
+    const b = el("button", "pstate mguide"); b.type = "button"; b.setAttribute("aria-pressed", m.org === mioSel);
+    b.innerHTML = "<span class='pn'>★</span><b></b><span class='pd'></span>";
+    b.querySelector("b").textContent = orgs[m.org].name; b.querySelector(".pd").textContent = m.order.length + " traits queued";
+    b.addEventListener("click", () => { mioSel = m.org; mioTrait = null; renderMIO(); });
+    pick.appendChild(b);
+  });
+  const sel = el("select", "ed-select mall"); sel.setAttribute("aria-label", "All German MIOs");
+  const groups = {}; Object.values(orgs).forEach(o => (groups[mioGroup(o)] = groups[mioGroup(o)] || []).push(o));
+  Object.entries(groups).forEach(([g, os]) => { const og = el("optgroup"); og.label = g;
+    os.sort((a, b) => a.name.localeCompare(b.name)).forEach(o => { const op = el("option"); op.value = o.id; op.textContent = o.name + (guideMio(o.id) ? " ★" : ""); og.appendChild(op); });
+    sel.appendChild(og); });
+  sel.value = mioSel; sel.addEventListener("change", () => { mioSel = sel.value; mioTrait = null; renderMIO(); });
+  const lab = el("label", "mall-l"); lab.append(document.createTextNode("All " + Object.keys(orgs).length + " German MIOs "), sel);
+  pick.appendChild(lab);
+  renderMioInfo(); renderMioTree();
+}
+
+function renderMioInfo(){
+  const org = MIO.orgs[mioSel], gm = guideMio(mioSel), box = document.getElementById("mInfo"); box.innerHTML = "";
+  const by = {}; org.traits.forEach(t => by[t.id] = t);
+  const h = el("div", "dname"); h.textContent = org.name; box.appendChild(h);
+  const sec = (title, fill) => { const s = el("div", "msec"); s.appendChild(el("div", "dcol-h", title)); fill(s); box.appendChild(s); return s; };
+  sec("Equipment", s => s.appendChild(el("p", "dsmall", esc(org.types.map(t => MIO.types[t] || t).join(", ")))));
+  if (org.initial) sec("Initial trait", s => { const p = el("p", "dsmall"); p.innerHTML = "<b></b><br>"; p.querySelector("b").textContent = org.initial.name;
+    p.appendChild(document.createTextNode(org.initial.fx.join(", "))); s.appendChild(p); });
+  if (gm){
+    const steps = planSteps(), link = steps[gm.step];
+    sec("In the guide", s => {
+      if (EDITING){
+        const ssel = el("select", "ed-select"); ssel.setAttribute("aria-label", "Plan step");
+        (G.plan || []).forEach(g => { const og = el("optgroup"); og.label = g.title || ""; g.steps.forEach(st => { const o = el("option"); o.value = st.id; o.textContent = st.t.slice(0, 60); og.appendChild(o); }); ssel.appendChild(og); });
+        ssel.value = gm.step || ""; ssel.addEventListener("change", () => { gm.step = ssel.value; saveEdits(); });
+        s.append(ssel, edText(gm.n, "Note (optional)", v => { if (v) gm.n = v; else delete gm.n; saveEdits(); }, "ed-note"));
+        const ds = el("div", "mdes"); ds.appendChild(el("span", "dsmall", "Assigned to: "));
+        (G.designs || []).forEach(d => { const l = el("label"), cb = el("input"); cb.type = "checkbox"; cb.checked = (gm.designs || []).includes(d.id);
+          cb.addEventListener("change", () => { gm.designs = (G.designs || []).filter(x => x.id === d.id ? cb.checked : (gm.designs || []).includes(x.id)).map(x => x.id); saveEdits(); });
+          l.append(cb, document.createTextNode(" " + d.name)); ds.appendChild(l); });
+        s.appendChild(ds);
+        s.appendChild(confirmTwice(edBtn("Remove from guide", "Stop using this MIO in the guide", () => {}, "del"), () => { G.mios.splice(G.mios.indexOf(gm), 1); saveEdits(); renderMIO(); }));
+      } else {
+        if (link){ const p = el("p", "dsmall"); p.textContent = (store.ticks[gm.step] ? "✓ " : "") + link.s.t; s.appendChild(p); }
+        const des = (gm.designs || []).map(id => (G.designs || []).find(d => d.id === id)).filter(Boolean);
+        if (des.length){ const p = el("p", "dsmall"); p.innerHTML = "Assign to: <b></b>"; p.querySelector("b").textContent = des.map(d => d.name).join(", "); s.appendChild(p); }
+        if (gm.n){ const p = el("p", "dsmall"); p.textContent = gm.n; s.appendChild(p); }
+        if (gm.img && G.images[gm.img]){ const b = el("button", "shotbtn"); b.type = "button"; b.textContent = "▸ In-game screen"; b.addEventListener("click", () => openLB(gm.img, b)); s.appendChild(b);
+          if (gm.ts && G.meta.video){ s.appendChild(document.createTextNode(" ")); s.appendChild(tsLink(gm.ts)); } }
+      }
+    });
+    sec("Trait queue (" + gm.order.length + ")", s => {
+      const ol = el("ol", "mqueue");
+      gm.order.forEach((id, i) => {
+        const t = by[id] || {name: id, fx: []}, li = el("li");
+        li.innerHTML = "<b></b><span></span>"; li.querySelector("b").textContent = t.name; li.querySelector("span").textContent = t.fx.join(", ");
+        if (EDITING) li.append(edBtn("▲", "Earlier", () => { if (i){ gm.order.splice(i - 1, 0, gm.order.splice(i, 1)[0]); saveEdits(); renderMIO(); } }),
+          edBtn("▼", "Later", () => { if (i < gm.order.length - 1){ gm.order.splice(i + 1, 0, gm.order.splice(i, 1)[0]); saveEdits(); renderMIO(); } }),
+          edBtn("✕", "Take out of the queue", () => { gm.order.splice(i, 1); saveEdits(); renderMIO(); }, "del"));
+        li.addEventListener("mouseenter", () => { mioTrait = id; renderMioDetail(); });
+        ol.appendChild(li);
+      });
+      s.appendChild(ol);
+      if (EDITING) s.appendChild(el("p", "dsmall", "Click a trait in the tree to add it to the end of the queue, or click it again to take it out."));
+      mioIssues(org, gm).forEach(w => s.appendChild(el("div", "dwarn", "⚠ " + esc(w))));
+    });
+  } else if (EDITING){
+    box.appendChild(edBtn("+ Use this MIO in the guide", "Add this MIO to the guide", () => {
+      (G.mios = G.mios || []).push({id: uid("mio."), org: mioSel, order: [], designs: []}); saveEdits(); renderMIO();
+    }, "dadd"));
+  }
+  box.appendChild(el("div", "mdetail", ""));
+  renderMioDetail();
+}
+function renderMioDetail(){
+  const box = document.querySelector("#mInfo .mdetail"); if (!box) return;
+  const org = MIO.orgs[mioSel], by = {}; org.traits.forEach(t => by[t.id] = t);
+  const t = by[mioTrait]; box.innerHTML = "";
+  if (!t){ box.appendChild(el("p", "dsmall", "Hover or click a trait to see what it does.")); return; }
+  const nm = id => (by[id] || {}).name || id;
+  box.appendChild(el("div", "dcol-h", esc(t.name)));
+  const lines = [...t.fx];
+  if (t.all) lines.push("Needs " + t.all.map(nm).join(" and "));
+  if (t.any) lines.push("Needs " + (t.need > 1 ? t.need + " of " : "one of ") + t.any.map(nm).join(", "));
+  if (t.ex) lines.push("Can't take with " + t.ex.map(nm).join(", "));
+  if (t.for) lines.push("Only for " + t.for.map(x => MIO.types[x] || x).join(", "));
+  lines.forEach(l => box.appendChild(el("p", "dsmall", esc(l))));
+}
+
+function renderMioTree(){
+  const org = MIO.orgs[mioSel], gm = guideMio(mioSel), wrap = document.getElementById("mTree"); wrap.innerHTML = "";
+  document.getElementById("mTitle").textContent = org.name;
+  const ts = org.traits, xs = ts.map(t => t.x).concat(org.headers.map(h => h.x)), minX = Math.min(...xs), maxX = Math.max(...xs), maxY = Math.max(...ts.map(t => t.y));
+  const cols = maxX - minX + 1, CW = Math.max(62, Math.min(110, Math.floor(((wrap.clientWidth || 800) - 14) / cols))), CH = 104, TOP = 34;
+  const W = cols * CW, H = TOP + (maxY + 1) * CH, cx = t => (t.x - minX) * CW + CW / 2, cy = t => TOP + t.y * CH + 28;
+  const order = gm ? gm.order : [], by = {}; ts.forEach(t => by[t.id] = t);
+  const ex = new Set(); order.forEach(id => ((by[id] || {}).ex || []).forEach(x => { if (!order.includes(x)) ex.add(x); }));
+  const inner = el("div", "mcanvas"); inner.style.width = W + "px"; inner.style.height = H + "px";
+  org.headers.forEach(h => { const d = el("div", "mhead"); d.textContent = h.t; d.style.left = ((h.x - minX) * CW + CW / 2) + "px"; inner.appendChild(d); });
+  // links: parent to child as elbows (dotted when any one parent will do), exclusives as a bar with a red mark
+  let svg = `<svg class="mlinks" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  ts.forEach(t => {
+    [["all", ""], ["any", " any"]].forEach(([k, cls]) => (t[k] || []).forEach(pid => { const p = by[pid]; if (!p) return;
+      const x1 = cx(p), y1 = cy(p) + 24, x2 = cx(t), y2 = cy(t) - 24, my = y2 - 14;
+      svg += `<path class="ml${cls}" d="M${x1} ${y1}V${my}H${x2}V${y2}"/>`; }));
+    (t.ex || []).forEach(xid => { const o = by[xid]; if (!o || xid < t.id) return;
+      const x1 = cx(t), x2 = cx(o), y1 = cy(t), y2 = cy(o), mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      svg += `<path class="mlx" d="M${x1 + (x2 > x1 ? 26 : -26)} ${y1}L${x2 + (x2 > x1 ? -26 : 26)} ${y2}"/><rect class="mlxm" x="${mx - 3}" y="${my - 8}" width="6" height="16"/>`; });
+  });
+  inner.insertAdjacentHTML("beforeend", svg + "</svg>");
+  ts.forEach(t => {
+    const n = order.indexOf(t.id), b = el("button", "mnode" + (n >= 0 ? " chosen" : "") + (ex.has(t.id) ? " ex" : "") + (t.special ? " special" : "") + (t.id === mioTrait ? " sel" : ""));
+    b.type = "button"; b.style.left = (cx(t) - CW / 2) + "px"; b.style.top = (cy(t) - 26) + "px"; b.style.width = CW + "px";
+    b.innerHTML = `<span class="mico"><svg viewBox="0 0 24 24"><use href="#ic-${esc(t.ic)}"/></svg></span><span class="mname"></span>`;
+    b.querySelector(".mname").textContent = t.name;
+    b.setAttribute("aria-label", t.name + (n >= 0 ? ", queued " + (n + 1) : ""));
+    if (n >= 0){ const k = el("span", "mnum"); k.textContent = n + 1; b.appendChild(k); }
+    const show = () => { mioTrait = t.id; renderMioDetail(); inner.querySelectorAll(".mnode.sel").forEach(x => x.classList.remove("sel")); b.classList.add("sel"); };
+    b.addEventListener("mouseenter", show); b.addEventListener("focus", show);
+    b.addEventListener("click", () => {
+      show();
+      if (!EDITING || !gm) return;
+      const i = gm.order.indexOf(t.id); if (i >= 0) gm.order.splice(i, 1); else gm.order.push(t.id);
+      saveEdits(); renderMIO();
+    });
+    inner.appendChild(b);
+  });
+  wrap.appendChild(inner);
+  const legend = el("p", "foot", "Numbers are the guide's trait queue. Solid lines: needs every parent; dotted: any one of them. A red mark between two traits: you can only take one; " +
+    "struck-through traits are ruled out by the guide's picks. Trees from the patch " + esc(MIO.patch) + " files.");
+  wrap.appendChild(legend);
+}
+
 /* lightbox */
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
 let lbReturn = null;
@@ -2190,6 +2404,7 @@ function showTab(name){
   if (name === "divisions" && UNITS && G && G.divisions) renderDivisions();   // ticks on the plan change what's done
   if (name === "production" && EQUIP && G && G.production) renderProduction();
   if (name === "construction" && CONS && G && G.construction) renderConstruction();
+  if (name === "mio" && MIO) renderMIO();
 }
 tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
 const wantTab = (location.hash || "").slice(1) || prefs.tab || "plan";   // the tree tab only exists once the guide has loaded
@@ -2225,7 +2440,7 @@ pick.addEventListener("change", () => {
 
 /* editable guide: your edits are a full copy of the editable sections, saved per guide on top of the original file.
    "base" fingerprints the original, so we can tell you when the guide file changed under your edits. */
-const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions", "production", "construction"];
+const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions", "production", "construction", "mios"];
 let G0 = null, EDITING = false, editKey = "", saveTimer = null;
 const hashStr = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
 const sections = g => { const o = {}; EDITABLE.forEach(k => { if (g[k]) o[k] = g[k]; }); return o; };
@@ -2424,6 +2639,7 @@ function enterEdit(){
   if (UNITS && G.divisions) renderDivisions();
   if (EQUIP && G.production) renderProduction();
   if (CONS && G.construction) renderConstruction();
+  if (MIO) renderMIO();
 }
 function leaveEdit(){ saveEdits(true); location.reload(); }   // reload so the tree, dates and counts all use the edits
 
@@ -2483,7 +2699,8 @@ function start(){
   buildDivisions();
   buildProduction();
   buildConstruction();
-  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS) || (wantTab === "production" && EQUIP) || (wantTab === "construction" && CONS)) showTab(wantTab);
+  buildMIO();
+  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS) || (wantTab === "production" && EQUIP) || (wantTab === "construction" && CONS) || (wantTab === "mio" && MIO)) showTab(wantTab);
 
   const ul = document.getElementById("chapters");
   (G.chapters || []).forEach(c => {
@@ -2498,7 +2715,7 @@ const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
   // then the guide's game data files, one after another (focus tree, research tree)
-  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction].filter(Boolean) : [];
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction, G.meta.mio].filter(Boolean) : [];
   const next = () => {
     const f = files.shift(); if (!f) return start();
     const t = document.createElement("script");

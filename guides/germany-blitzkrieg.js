@@ -21,6 +21,8 @@
    - construction: {lists: [{id, step (plan step id), title, civs? (civilian factories), uses? [{name, n}] (factories
      taken before the queue: consumer goods, trade...), img?, ts?, n?, items: [{id, state (game state id), b (building id),
      n (levels)}]}]}; items in queue order; buildings and states come from meta.construction
+   - mios: [{id, org (game MIO id), step? (plan step id), order: [trait ids in queue order], designs?: [designs ids it's
+     assigned to], img?, ts?, n?}]; trees come from meta.mio
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -41,6 +43,7 @@ registerGuide({
     "units": "guides/trees/units-1.19.1.js",
     "equipment": "guides/trees/equipment-1.19.1.js",
     "construction": "guides/trees/construction-1.19.1.js",
+    "mio": "guides/trees/mio-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -468,6 +471,10 @@ registerGuide({
     ]
   },
 
+  "mios": [
+    {"id": "mio.alkett", "org": "GER_alkett_organization", "step": "plan.queue-7-alkett-mio", "order": ["GER_mio_trait_hoesch_facilities", "GER_mio_trait_sturmhaubitze", "generic_mio_trait_medium_assault_gun_improvements", "generic_mio_medium_assault_gun_75_mm_43M_tank_gun", "generic_mio_armor_hardening_process_assault_guns", "generic_mio_medium_assault_gun_low_slung_superstructure_and_fighting_compartment", "GER_mio_trait_armored_superstructure_specialist"], "designs": ["design.spg1"], "img": "mio", "ts": "15:03", "n": "Pick it for the SPG after sticking with Todt, assign it to the SPG design and queue the 7 traits."}
+  ],
+
   "designs": [
     {"id":"design.spg1", "name":"SPG1 (7/4)", "frame":"medium_tank_chassis_1", "role":"medium_tank_artillery_chassis",
      "modules":{"turret_type_slot":"tank_medium_three_man_tank_turret", "main_armament_slot":"tank_medium_howitzer",
@@ -512,10 +519,6 @@ registerGuide({
   ],
 
   "builds": [
-    {"title": "Panzer division", "items": [
-      {"type":"fig", "img":"mio", "title":"Alkett MIO", "sub":"trait queue", "ts":"15:03",
-       "text":"The small numbers next to each trait are his queue order, 1 to 7. Take the Alkett MIO for tanks and set the same queue."}
-    ]},
     {"title": "Doctrines", "items": [
       {"type":"fig", "img":"land", "wide":true, "title":"Land · Mobile Warfare", "ts":"9:40",
        "text":"Favourite tactic first, then in order: **Grand Assault** (Operations), **Assault Infantry** (Infantry, off screen to the left), **Self-propelled Support**, **Streamlined Deployment**. Maneuver Warfare later."},

@@ -1,0 +1,268 @@
+/*
+ * MIOs tab.
+ *
+ * MIO trait tree
+ */
+
+.mpick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mguide .pn {
+  color: var(--brass-lt);
+  border-color: var(--brass);
+}
+
+.mguide[aria-pressed="true"] {
+  border-color: var(--brass);
+  background: linear-gradient(180deg, #4c4430, #2e2a1e);
+  box-shadow: inset 0 -3px 0 var(--brass);
+}
+
+.mall-l {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.mall {
+  max-width: 280px;
+}
+
+.mwrap {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.minfo {
+  padding: 10px 12px;
+  background: linear-gradient(180deg, var(--steel-1), var(--steel-2));
+  border: 1px solid var(--brass-dk);
+  box-shadow: var(--bevel);
+}
+
+.minfo .dname {
+  font-family: var(--f-display);
+  font-size: 20px;
+  color: var(--brass-lt);
+  margin-bottom: 4px;
+}
+
+.msec {
+  margin-top: 10px;
+}
+
+.msec .ed-select {
+  max-width: 100%;
+  margin: 4px 0;
+}
+
+.mdes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 6px 0;
+  font-size: 13px;
+}
+
+.mqueue {
+  margin: 6px 0 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mqueue li {
+  font-size: 13px;
+}
+
+.mqueue li::marker {
+  font-family: var(--f-mono);
+  color: var(--brass-lt);
+  font-weight: 600;
+}
+
+.mqueue li b {
+  display: block;
+  color: var(--ink-hi);
+}
+
+.mqueue li span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mqueue .ed-btn {
+  padding: 0 6px;
+  margin-right: 3px;
+}
+
+.mdetail {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.mtreewin {
+  overflow: hidden;
+}
+
+.mtree {
+  overflow-x: auto;
+  padding: 10px 6px;
+}
+
+.mcanvas {
+  position: relative;
+  margin: 0 auto;
+}
+
+.mhead {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ink-hi);
+  padding: 3px 12px;
+  background: linear-gradient(180deg, #3d4036, #262822);
+  border: 1px solid #55584a;
+}
+
+.mlinks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mlinks path {
+  fill: none;
+  stroke: #9aa0b4;
+  stroke-width: 2;
+}
+
+.mlinks path.any {
+  stroke-dasharray: 3 4;
+  stroke: #8d917f;
+}
+
+.mlinks path.mlx {
+  stroke: #7aa36a;
+  stroke-width: 2;
+}
+
+.mlinks .mlxm {
+  fill: #d0553e;
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.mnode {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  color: var(--ink);
+}
+
+.mnode:hover {
+  background: none;
+}
+
+.mico {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #d6e3c8;
+  background: radial-gradient(circle at 35% 30%, #5d6650, #262a1f 75%);
+  border: 3px double #8d917f;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .7);
+}
+
+.mico svg {
+  width: 26px;
+  height: 26px;
+}
+
+.mnode.special .mico {
+  border-color: var(--brass);
+  background: radial-gradient(circle at 35% 30%, #6e6440, #2c2716 75%);
+}
+
+.mnode.chosen .mico {
+  border-color: var(--brass-lt);
+  color: #fff3c8;
+  box-shadow: 0 0 0 2px var(--brass), 0 0 12px rgba(240, 213, 138, .45);
+}
+
+.mnode.ex .mico {
+  filter: grayscale(1) brightness(.6);
+  border-color: #8c3a2a;
+}
+
+.mnode.ex .mname {
+  text-decoration: line-through;
+  text-decoration-color: #d0553e;
+  color: var(--muted);
+}
+
+.mnode.sel .mico {
+  outline: 2px solid var(--brass-lt);
+  outline-offset: 2px;
+}
+
+.mname {
+  font-size: 11px;
+  line-height: 1.15;
+  text-align: center;
+  max-width: 100%;
+  padding: 0 3px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 2px #000;
+}
+
+.mnum {
+  position: absolute;
+  top: -4px;
+  left: calc(50% + 18px);
+  min-width: 20px;
+  height: 20px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  font: 700 12px var(--f-mono);
+  color: #1b1d17;
+  background: var(--brass-lt);
+  border: 1px solid #000;
+  border-radius: 10px;
+}
+
+.editing .mnode {
+  cursor: copy;
+}
+
+@media (max-width:900px) {
+  .mwrap {
+    grid-template-columns: 1fr;
+  }
+}

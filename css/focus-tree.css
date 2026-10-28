@@ -1,0 +1,425 @@
+/*
+ * Focus tree tab.
+ *
+ * Focus tree, after the in-game look: charcoal board, round emblem over a rounded name plate, steel-blue elbow lines
+ */
+
+.fd {
+  display: table;
+  font: 500 11px var(--f-mono);
+  color: var(--muted);
+  margin-top: 1px;
+  cursor: help;
+  text-decoration: underline dotted rgba(240, 213, 138, .45);
+  text-underline-offset: 3px;
+}
+
+.fd:hover,
+.fd[aria-describedby] {
+  color: var(--brass-lt);
+}
+
+.tip-fx {
+  margin: 6px 0;
+  padding: 6px 0 6px 14px;
+  border-top: 1px solid #3a3a2b;
+  border-bottom: 1px solid #3a3a2b;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tip-fx li {
+  font-size: 13px;
+}
+
+.tip-fx li::marker {
+  color: var(--brass);
+}
+
+.tip-fx li.up {
+  color: #8fd16a;
+}
+
+.tip-fx li.down {
+  color: #ff8a6e;
+}
+
+.tip-line {
+  margin-top: 3px;
+}
+
+.tip-fx li.alt {
+  font-style: italic;
+  color: #c9c3a8;
+}
+
+.tip-ai {
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.tip-sec {
+  margin-top: 6px;
+  font: 500 10.5px var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--brass);
+}
+
+.tip-req {
+  margin: 2px 0 0;
+  padding-left: 14px;
+  font-size: 12.5px;
+  color: #d8d2b8;
+}
+
+.tip-req li::marker {
+  color: var(--brass);
+}
+
+.tip-req+.tip-fx {
+  margin-top: 6px;
+}
+
+.tip-none {
+  margin: 6px 0;
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+label.item.done .fd {
+  color: var(--green-ink);
+}
+
+.treecol .colhead {
+  position: static;
+}
+
+.treebar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.treebar button {
+  padding: 4px 10px;
+}
+
+.legend-tree {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: center;
+  font: 500 11px var(--f-mono);
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.lg {
+  display: inline-block;
+  width: 14px;
+  height: 9px;
+  border-radius: 3px;
+  margin-right: 4px;
+  vertical-align: -1px;
+  border: 1px solid #000;
+}
+
+.lg.done {
+  background: linear-gradient(#d9b45a, #8a6a2a);
+}
+
+.lg.next {
+  background: #3a3a3a;
+  box-shadow: 0 0 6px var(--brass-lt);
+  border-color: var(--brass-lt);
+}
+
+.lg.avail {
+  background: linear-gradient(#444, #2a2a2a);
+}
+
+.lg.locked {
+  background: linear-gradient(#5a4430, #33271b);
+}
+
+.lg.off {
+  background: #2a2a2a;
+  opacity: .45;
+}
+
+.lg.ex {
+  background: linear-gradient(#4a2a26, #2a1816);
+  border-color: #6e3a32;
+  opacity: .6;
+}
+
+.treeview {
+  position: relative;
+  height: calc(100vh - 230px);
+  min-height: 420px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  background: #1c1d1b radial-gradient(ellipse at 50% 0%, #2a2b27, #1c1d1b 70%);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .7);
+}
+
+.treeview.panning {
+  cursor: grabbing;
+}
+
+.treeview.hide-ex .fn.ex,
+.treeview.hide-ex #treeLines path.ex,
+.treeview.hide-ex .fx.ex {
+  display: none;
+}
+
+.fn[data-state="excluded"] {
+  opacity: .32;
+}
+
+.fn[data-state="excluded"] .fn-name {
+  background: linear-gradient(180deg, #4a2a26, #2a1816);
+  border-color: #6e3a32;
+  color: #c9a9a0;
+  text-decoration: line-through;
+  text-decoration-color: rgba(224, 120, 100, .6);
+}
+
+.fn[data-state="excluded"] .fn-ico {
+  filter: grayscale(.8);
+}
+
+#treeLines path.ex {
+  opacity: .15;
+}
+
+.treecanvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+}
+
+#treeLines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+#treeLines path {
+  fill: none;
+  stroke: #6a8bab;
+  stroke-width: 2.2;
+  opacity: .3;
+}
+
+#treeLines path.g {
+  opacity: .95;
+}
+
+#treeLines path.or {
+  stroke-dasharray: 5 5;
+}
+
+#treeLines path.done {
+  stroke: #7cc04f;
+}
+
+.fn {
+  position: absolute;
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.fn.off {
+  opacity: .4;
+}
+
+.fn.off:hover {
+  opacity: 1;
+}
+
+.fn.guide {
+  cursor: pointer;
+}
+
+.fn.guide:focus-visible {
+  outline: 2px solid var(--brass-lt);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
+.fn-ico {
+  position: relative;
+  z-index: 1;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  line-height: 1;
+  color: #f1e8cc;
+  background: radial-gradient(circle at 35% 30%, #6a6f63, #33362e 70%);
+  border: 2px solid #8a7440;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .25);
+  text-shadow: 0 1px 1px #000;
+}
+
+.fn-ico svg {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .85));
+}
+
+.fn-ico:is([data-ic="tank"], [data-ic="helmet"], [data-ic="artillery"], [data-ic="fort"]) {
+  background: radial-gradient(circle at 35% 30%, #7d8a55, #3c4426 70%);
+}
+
+.fn-ico:is([data-ic="ship"], [data-ic="sub"]) {
+  background: radial-gradient(circle at 35% 30%, #5d7ea6, #253a55 70%);
+}
+
+.fn-ico[data-ic="plane"] {
+  background: radial-gradient(circle at 35% 30%, #7a99b8, #33475e 70%);
+}
+
+.fn-ico:is([data-ic="factory"], [data-ic="gear"], [data-ic="road"], [data-ic="oil"], [data-ic="coin"]) {
+  background: radial-gradient(circle at 35% 30%, #a08758, #4d3d22 70%);
+}
+
+.fn-ico[data-ic="flask"] {
+  background: radial-gradient(circle at 35% 30%, #5f9c97, #24423f 70%);
+}
+
+.fn-ico[data-ic="rings"] {
+  background: radial-gradient(circle at 35% 30%, #6f9a6a, #2b4428 70%);
+}
+
+.fn-ico:is([data-ic="swords"], [data-ic="flag"]) {
+  background: radial-gradient(circle at 35% 30%, #b0574a, #57211a 70%);
+}
+
+.fn-ico:is([data-ic="eagle"], [data-ic="horn"], [data-ic="eye"], [data-ic="people"]) {
+  background: radial-gradient(circle at 35% 30%, #8c7aa6, #3d3150 70%);
+}
+
+.fn-ico[data-ic="star"] {
+  background: radial-gradient(circle at 35% 30%, #c0473a, #5e1510 70%);
+}
+
+.fn-ico[data-ic="crown"] {
+  background: radial-gradient(circle at 35% 30%, #a79250, #4e4119 70%);
+}
+
+.fn-name {
+  margin-top: -7px;
+  width: 100%;
+  min-height: 34px;
+  padding: 9px 6px 5px;
+  text-align: center;
+  font: 600 11px/1.15 var(--f-body);
+  color: #ece7d8;
+  background: linear-gradient(180deg, #444541, #272825);
+  border: 1px solid #63645c;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .7), inset 0 1px 0 rgba(255, 255, 255, .1);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.fn-days {
+  font: 500 10px var(--f-mono);
+  color: #a9a691;
+  margin-top: 2px;
+  text-shadow: 0 1px 1px #000;
+}
+
+.fn-num {
+  position: absolute;
+  z-index: 2;
+  top: -5px;
+  left: 24px;
+  min-width: 21px;
+  height: 21px;
+  padding: 0 5px;
+  border-radius: 11px;
+  background: radial-gradient(circle at 35% 30%, var(--brass-lt), var(--brass) 60%, #7a5c22);
+  color: #1b1608;
+  font: 700 11px/21px var(--f-mono);
+  text-align: center;
+  box-shadow: 0 0 0 2px #000;
+}
+
+.fn[data-state="done"] .fn-name {
+  background: linear-gradient(180deg, #d7b35c, #8c6b29);
+  border-color: #f3dc98;
+  color: #1b1608;
+}
+
+.fn[data-state="done"] .fn-ico {
+  border-color: #f3dc98;
+}
+
+.fn[data-state="locked"] .fn-name {
+  background: linear-gradient(180deg, #584430, #30251a);
+  border-color: #715639;
+  color: #d2bea0;
+}
+
+.fn[data-state="next"] .fn-name {
+  border-color: var(--brass-lt);
+  box-shadow: 0 0 0 1px #000, 0 0 16px rgba(240, 213, 138, .65);
+  background: linear-gradient(105deg, #3b3c38 35%, #7a6835 50%, #3b3c38 65%);
+  background-size: 300% 100%;
+  animation: fn-shine 2.6s linear infinite;
+}
+
+.fn[data-state="next"] .fn-ico {
+  border-color: var(--brass-lt);
+}
+
+@keyframes fn-shine {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.fx {
+  position: absolute;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #e0503c, #8c1f14);
+  color: #fff;
+  font: 700 12px/18px var(--f-mono);
+  text-align: center;
+  box-shadow: 0 0 0 2px #000;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .fn[data-state="next"] .fn-name {
+    animation: none;
+    background: #5a4e2c;
+  }
+}

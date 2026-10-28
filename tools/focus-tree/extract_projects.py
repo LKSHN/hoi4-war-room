@@ -5,7 +5,7 @@ Usage: extract_projects.py <game dir> <out.js> <patch> [TAG]"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
-from gamedata import load_loc, load_scripted, make_clean
+from gamedata import load_loc, load_scripted, make_clean, write_register
 from effects import Summariser
 
 game, out, patch = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -118,12 +118,12 @@ for p in sorted(glob.glob(os.path.join(SP, "projects", "*.txt"))):
              "cost": cost, "time": const.get(pt, int(pt) if isnum(pt) else None), "complexity": const.get(cx, int(cx) if isnum(cx) else None),
              "res": {r: int(float(n)) for r, _, n in res if isnum(n)}, "out": output(first(v, "project_output", []) or [])}
         projects[k] = o
-spec_names = {s: clean(loc.get(s, "")) or s.replace("specialization_", "").capitalize() for s in {"specialization_" + p["spec"] for p in projects.values()}}
+spec_names = {s: clean(loc.get(s, "")) or s.replace("specialization_", "").capitalize() for s in sorted({"specialization_" + p["spec"] for p in projects.values()})}
 spec_names = {k.replace("specialization_", ""): v for k, v in spec_names.items()}
-tag_names = {t: clean(loc.get("sp_tag_" + t, "")) or t.replace("_", " ").capitalize() for t in {p["tag"] for p in projects.values()} if t}
+tag_names = {t: clean(loc.get("sp_tag_" + t, "")) or t.replace("_", " ").capitalize() for t in sorted({p["tag"] for p in projects.values()}) if t}
 head = (f"/* Special projects for {TAG}, facts only, extracted from the HoI4 {patch} game files (common/special_projects,\n"
         f"   script_constants) with every DLC enabled. time = days per prototype iteration; complexity = progress per iteration (min, max). */\n")
-open(out, "w", encoding="utf-8", newline="\n").write(head + "registerProjects(" + json.dumps({"patch": patch, "projects": projects, "specs": spec_names, "tags": tag_names}, ensure_ascii=False, separators=(",", ":")) + ");\n")
+write_register(out, head, "registerProjects", {"patch": patch, "projects": projects, "specs": spec_names, "tags": tag_names})
 print("projects", len(projects), spec_names, tag_names)
 for k in ("sp_land_flamethrower_tank", "sp_land_military_engineering_vehicles"):
     print(json.dumps(projects.get(k), ensure_ascii=False, indent=1))

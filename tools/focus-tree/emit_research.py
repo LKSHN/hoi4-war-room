@@ -1,6 +1,8 @@
 """Write guides/trees/research-<patch>.js from extract_research.py's JSON.
 Usage: emit_research.py <research.json> <out.js> <patch>"""
-import json, sys
+import json, sys, os
+sys.path.insert(0, os.path.dirname(__file__))
+from gamedata import write_register
 src, out, patch = sys.argv[1:4]
 d = json.load(open(src, encoding="utf-8"))
 d["techs"].sort(key=lambda t: (t["f"][0][0], t["f"][0][2], t["f"][0][1]))
@@ -9,12 +11,6 @@ head = f"""/* Research tree, facts only, extracted from the HoI4 {patch} game fi
    folders: id, name, rows ({{y: year}} labels). techs: id, name, f ([folder, x, y] per folder it shows in), year,
    cost (research cost as the game lists it), leads (techs it unlocks), xor (mutually exclusive), cat (categories),
    ic (our icon theme), fx (effects in our own words). start: techs the country has on 1 Jan 1936. */
-registerResearch({{
-  "patch": "{patch}",
-  "folders": {json.dumps(d["folders"], ensure_ascii=False)},
-  "start": {json.dumps(d["start"])},
-  "techs": [
 """
-lines = ",\n".join("    " + json.dumps(t, ensure_ascii=False, separators=(",", ":")) for t in d["techs"])
-open(out, "w", encoding="utf-8", newline="\n").write(head + lines + "\n  ]\n});\n")
+write_register(out, head, "registerResearch", {"patch": patch, "folders": d["folders"], "start": d["start"], "techs": d["techs"]})
 print("techs", len(d["techs"]))

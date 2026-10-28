@@ -1,0 +1,268 @@
+/*
+ * Edit mode controls.
+ *
+ * Editing the guide
+ */
+
+.editbar,
+.editnote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 9px 14px;
+  font-size: 13.5px;
+  background: linear-gradient(180deg, #4a4130, #2e2a1e);
+  border: 1px solid var(--brass);
+  box-shadow: var(--bevel), var(--drop);
+}
+
+.editnote {
+  background: linear-gradient(180deg, #34372b, #24271f);
+  border-color: var(--brass-dk);
+  color: var(--muted);
+}
+
+.editnote b,
+.editbar b {
+  color: var(--brass-lt);
+}
+
+.editnote .warn {
+  color: #ff9a7f;
+}
+
+.editbar-text {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.editbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.ed-import {
+  font: 500 13px var(--f-body);
+  color: var(--ink);
+  background: linear-gradient(180deg, #454a3c, #2b2e25);
+  border: 1px solid #5d604c;
+  padding: 6px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 2px rgba(0, 0, 0, .6);
+}
+
+.ed-import:hover,
+.ed-import:focus-within {
+  border-color: var(--brass);
+}
+
+.ed-import input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ed-done {
+  border-color: var(--brass);
+  color: var(--brass-lt);
+  background: linear-gradient(180deg, #5a4e2c, #3a321d);
+}
+
+.ed-link {
+  padding: 2px 10px;
+  font-size: 12.5px;
+}
+
+.ed-phase {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 14px 2px 6px;
+  border-bottom: 1px solid var(--brass-dk);
+}
+
+.ed-phase .ed-title {
+  flex: 1 1 200px;
+  font: 500 12.5px var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--brass-lt);
+}
+
+.ed-tools,
+.ed-extra {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ed-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 7px 10px;
+  background: linear-gradient(180deg, var(--node-1), var(--node-2));
+  border: 1px solid var(--node-edge);
+}
+
+#planCol .ed-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.ed-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.ed-text {
+  display: block;
+  min-height: 1.4em;
+  padding: 2px 6px;
+  border: 1px dashed #5d604c;
+  border-radius: 2px;
+  background: #1b1d17;
+  color: var(--ink-hi);
+  outline: none;
+  word-break: break-word;
+}
+
+.ed-text:focus {
+  border-color: var(--brass-lt);
+  border-style: solid;
+  background: #14160f;
+}
+
+.ed-text:empty::before {
+  content: attr(data-ph);
+  color: #77775f;
+  font-style: italic;
+}
+
+.ed-note {
+  font-size: 12.5px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.ed-input,
+.ed-select {
+  font: 500 13px var(--f-body);
+  color: var(--ink);
+  background: #14160f;
+  border: 1px solid #5d604c;
+  border-radius: 2px;
+  padding: 3px 6px;
+  min-width: 0;
+  max-width: 100%;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .8);
+}
+
+.ed-input:focus,
+.ed-select:focus {
+  outline: 2px solid var(--brass-lt);
+  outline-offset: 1px;
+}
+
+.ed-input.bad {
+  border-color: #d0553e;
+}
+
+.ed-focus {
+  width: 100%;
+}
+
+.ed-small {
+  font: 500 12px var(--f-mono);
+}
+
+.ed-select {
+  max-width: 170px;
+}
+
+.ed-check {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font: 500 11.5px var(--f-mono);
+  color: var(--muted);
+}
+
+.ed-check input {
+  accent-color: var(--brass);
+}
+
+.ed-btn {
+  padding: 1px 7px;
+  min-width: 26px;
+  font: 600 13px var(--f-mono);
+  line-height: 1.5;
+}
+
+.ed-btn.del:hover,
+.ed-btn.armed {
+  border-color: #d0553e;
+  color: #fff;
+  background: linear-gradient(180deg, #9b3a28, #6a2418);
+}
+
+.ed-add {
+  padding: 4px 0 6px;
+}
+
+.ed-add .ed-btn {
+  border-style: dashed;
+  color: var(--brass-lt);
+  padding: 3px 12px;
+  font-family: var(--f-body);
+}
+
+.ed-add-phase {
+  padding-top: 12px;
+}
+
+.editing #builds [contenteditable] {
+  outline: 1px dashed rgba(240, 213, 138, .45);
+  outline-offset: 2px;
+  cursor: text;
+}
+
+.editing #builds [contenteditable]:focus {
+  outline: 2px solid var(--brass-lt);
+  background: rgba(20, 22, 15, .6);
+}
+
+.editing .colhead .next,
+.editing .colhead .due-line {
+  display: none;
+}
+
+#editBtn[aria-pressed="true"] {
+  background: linear-gradient(180deg, #5a4e2c, #3a321d);
+  border-color: var(--brass);
+  color: var(--brass-lt);
+}
+
+@media (max-width:560px) {
+  .ed-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ed-row .num {
+    display: none;
+  }
+
+  .ed-extra {
+    justify-content: flex-end;
+  }
+}

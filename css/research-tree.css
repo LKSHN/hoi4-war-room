@@ -1,0 +1,228 @@
+/*
+ * Research tree tab.
+ *
+ * Research tree, after the in-game one: folder tabs, year columns, tech cards with an icon block and name
+ */
+
+.rescol .colhead {
+  position: static;
+}
+
+.folderbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.fbtn {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  font-family: var(--f-display);
+  font-size: 14px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  background: linear-gradient(180deg, #33372b, #23261e);
+  border-color: #4b4e3d;
+}
+
+.fbtn i {
+  font: 500 11px var(--f-mono);
+  font-style: normal;
+  color: var(--muted);
+}
+
+.fbtn[aria-selected="true"] {
+  color: var(--brass-lt);
+  border-color: var(--brass);
+  background: linear-gradient(180deg, #4c4430, #2e2a1e);
+  box-shadow: inset 0 -3px 0 var(--brass);
+}
+
+.fbtn[aria-selected="true"] i {
+  color: var(--brass);
+}
+
+.resview {
+  position: relative;
+  height: calc(100vh - 250px);
+  min-height: 420px;
+  overflow: auto;
+  cursor: grab;
+  background: #1c1d1b radial-gradient(ellipse at 50% 0%, #2a2b27, #1c1d1b 70%);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .7);
+}
+
+.resview.panning {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.fbtn.hasnext span::after {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--brass-lt);
+  box-shadow: 0 0 6px var(--brass-lt);
+}
+
+.rt.flash {
+  outline: 3px solid var(--brass-lt);
+  outline-offset: 4px;
+}
+
+.rescanvas {
+  position: relative;
+}
+
+.rlab {
+  position: absolute;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.rlab.year {
+  font-family: var(--f-display);
+  font-size: 24px;
+  letter-spacing: .04em;
+  color: rgba(240, 213, 138, .28);
+}
+
+.rlab.title {
+  font: 500 12px var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--brass);
+}
+
+.reslines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.reslines path {
+  fill: none;
+  stroke: #6a8bab;
+  stroke-width: 2;
+  opacity: .55;
+}
+
+.reslines path.done {
+  stroke: #7cc04f;
+  opacity: .9;
+}
+
+.rt {
+  position: absolute;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  grid-template-rows: 1fr auto;
+  column-gap: 6px;
+  padding: 4px 6px 3px 4px;
+  background: linear-gradient(180deg, #3d3f3a, #262824);
+  border: 1px solid #5d604c;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .65), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+
+.rt-ico {
+  grid-row: 1 / span 2;
+  align-self: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 3px;
+  display: grid;
+  place-items: center;
+  color: #f1e8cc;
+  background: linear-gradient(180deg, #5d6252, #33362e);
+  border: 1px solid #000;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2);
+}
+
+.rt-ico svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .8));
+}
+
+.rt-name {
+  align-self: center;
+  font: 600 10.5px/1.12 var(--f-body);
+  color: #ece7d8;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rt-year {
+  font: 500 10px var(--f-mono);
+  color: #a9a691;
+  text-align: right;
+}
+
+.rt .fn-num {
+  top: -9px;
+  left: -8px;
+}
+
+.rt.off {
+  opacity: .45;
+}
+
+.rt.off:hover {
+  opacity: 1;
+}
+
+.rt.guide {
+  cursor: pointer;
+  border-color: #8a7440;
+}
+
+.rt.guide:focus-visible {
+  outline: 2px solid var(--brass-lt);
+  outline-offset: 3px;
+}
+
+.rt[data-state="owned"],
+.rt[data-state="done"] {
+  background: linear-gradient(180deg, #3d5a2c, #253a1b);
+  border-color: #7cc04f;
+}
+
+.rt[data-state="owned"] .rt-ico,
+.rt[data-state="done"] .rt-ico {
+  background: linear-gradient(180deg, #6f9a4a, #3b5a25);
+}
+
+.rt[data-state="locked"] {
+  background: linear-gradient(180deg, #30312d, #1f201c);
+}
+
+.rt[data-state="next"] {
+  border-color: var(--brass-lt);
+  box-shadow: 0 0 0 1px #000, 0 0 14px rgba(240, 213, 138, .6);
+  background: linear-gradient(105deg, #3b3c38 35%, #7a6835 50%, #3b3c38 65%);
+  background-size: 300% 100%;
+  animation: fn-shine 2.6s linear infinite;
+}
+
+.lg.owned {
+  background: linear-gradient(#5c8a3c, #2e4a1e);
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .rt[data-state="next"] {
+    animation: none;
+    background: #5a4e2c;
+  }
+}

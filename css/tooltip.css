@@ -1,0 +1,75 @@
+/*
+ * Glossary terms and the shared tooltip.
+ *
+ * Glossary terms and the tooltip
+ */
+
+.gl {
+  text-decoration: underline dotted rgba(240, 213, 138, .6);
+  text-underline-offset: 3px;
+  cursor: help;
+  border-radius: 2px;
+}
+
+.gl:hover,
+.gl[aria-describedby] {
+  color: var(--brass-lt);
+  text-decoration-style: solid;
+}
+
+.gl:focus-visible {
+  outline: 2px solid var(--brass-lt);
+  outline-offset: 1px;
+}
+
+.tip {
+  position: fixed;
+  z-index: 60;
+  max-width: min(380px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow: hidden;
+  padding: 8px 11px 9px;
+  font: 13.5px/1.45 var(--f-body);
+  color: #ddd7bd;
+  background: linear-gradient(180deg, rgba(26, 28, 21, .97), rgba(13, 14, 10, .97));
+  border: 1px solid var(--brass-dk);
+  box-shadow: inset 0 1px 0 rgba(240, 213, 138, .15), 0 0 0 1px #000, 0 6px 18px rgba(0, 0, 0, .7);
+  pointer-events: none;
+}
+
+.tip-h {
+  font: 500 12px var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--brass-lt);
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #3a3a2b;
+}
+
+.tip .k {
+  color: #f2cf68;
+  font-weight: 600;
+}
+
+.tip .g {
+  color: #8fd16a;
+  font-weight: 600;
+}
+
+.tip .r {
+  color: #ff8a6e;
+  font-weight: 600;
+}
+
+.tip-f {
+  margin-top: 6px;
+  font: italic 12px var(--f-body);
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .bar i {
+    transition: none;
+  }
+}

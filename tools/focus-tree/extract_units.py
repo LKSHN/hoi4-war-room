@@ -4,7 +4,7 @@ Usage: extract_units.py <game dir> <out.js> <patch>"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
-from gamedata import load_loc, load_scripted, make_clean
+from gamedata import load_loc, load_scripted, make_clean, write_register
 from effects import Summariser
 
 game, out, patch = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -34,7 +34,7 @@ for path in sorted(glob.glob(os.path.join(game, "common", "units", "*.txt"))):
 eqnames = {e: summ.name(e) for e in sorted(equipment)}
 head = (f"/* Land battalions and support companies, facts only, extracted from the HoI4 {patch} game files (common/units)\n"
         f"   with every DLC enabled. Combat values here are battalion modifiers; most attack and defense comes from equipment. */\n")
-open(out, "w", encoding="utf-8", newline="\n").write(head + "registerUnits(" + json.dumps({"patch": patch, "units": units, "equipment": eqnames}, ensure_ascii=False, separators=(",", ":")) + ");\n")
+write_register(out, head, "registerUnits", {"patch": patch, "units": units, "equipment": eqnames})
 print("units", len(units), "support", sum(1 for u in units.values() if u["group"] == "support"), "equipment types", len(eqnames))
 for k in ("motorized", "medium_sp_artillery_brigade", "recon", "mot_recon", "engineer", "artillery", "logistics_company", "cavalry", "infantry"):
     if k in units: print(k, {x: units[k][x] for x in units[k] if x not in ("type",)})

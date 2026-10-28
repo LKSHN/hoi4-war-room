@@ -4,7 +4,7 @@ Usage: extract_production.py <game dir> <out.js> <patch>"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
-from gamedata import load_loc, load_scripted, make_clean
+from gamedata import load_loc, load_scripted, make_clean, write_register
 from effects import Summariser
 
 game, out, patch = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -58,7 +58,7 @@ for eid, v in raw.items():
     eq[eid] = o
 head = (f"/* Land and air equipment for production lines, facts only, extracted from the HoI4 {patch} game files\n"
         f"   (common/units/equipment, localisation for Germany's own names) with every DLC enabled. cost = production cost in IC. */\n")
-open(out, "w", encoding="utf-8", newline="\n").write(head + "registerEquipment(" + json.dumps({"patch": patch, "equipment": eq}, ensure_ascii=False, separators=(",", ":")) + ");\n")
+write_register(out, head, "registerEquipment", {"patch": patch, "equipment": eq})
 print("equipment", len(eq))
 for k in ("infantry_equipment_1", "support_equipment_1", "artillery_equipment_1", "motorized_equipment_1", "mechanized_equipment_1",
           "train_equipment_1", "armored_support_vehicle", "small_plane_airframe_1", "small_plane_cas_airframe_1", "small_plane_naval_bomber_airframe_1", "cas_equipment_1"):

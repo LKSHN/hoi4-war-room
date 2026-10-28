@@ -6,7 +6,7 @@ Usage: extract_equipment.py <game dir> <out.json | out.js> [patch]"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
-from gamedata import load_loc, load_scripted, make_clean
+from gamedata import load_loc, load_scripted, make_clean, write_register
 from effects import Summariser
 
 game, out = sys.argv[1], sys.argv[2]
@@ -194,7 +194,7 @@ if out.endswith(".js"):
     head = (f"/* Tank, plane and ship designers, facts only, extracted from the HoI4 {patch} game files (common/units/equipment, modules,\n"
             f"   upgrades, common/units for which battalions use what) with every DLC enabled.\n"
             f"   Stats: (base + module and upgrade adds) x (1 + multipliers); research and MIO bonuses are not included. */\n")
-    open(out, "w", encoding="utf-8", newline="\n").write(head + "registerDesigners(" + json.dumps({"patch": patch, **data}, ensure_ascii=False, separators=(",", ":")) + ");\n")
+    write_register(out, head, "registerDesigners", {"patch": patch, **data})
 else:
     json.dump(data, open(out, "w", encoding="utf-8"), ensure_ascii=False)
 print("archetypes", len(archetypes), "frames", len(frames), "modules", len(modules), "upgrades", len(upgrades))

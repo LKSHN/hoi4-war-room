@@ -1,5 +1,5 @@
 """Shared game-file helpers for the extractors: English localisation and turning game text into plain names."""
-import os, re, glob
+import os, re, glob, json
 from pdx import parse, get, first
 
 
@@ -46,3 +46,26 @@ def make_clean(loc, scripted):
         s = re.sub(r"§.|£\w+|\\n", " ", s)
         return re.sub(r"\s+", " ", s).strip()
     return clean
+
+
+
+WIDTH = 150   # data files: values longer than this are split over lines
+
+
+def to_js(v, indent=0):
+    """JSON text for the page's data files: short values stay on one line, longer objects and lists get one entry per
+    line (nested as deep as needed), so the files can be read and diffed."""
+    flat = json.dumps(v, ensure_ascii=False, separators=(",", ":"))
+    if len(flat) + indent <= WIDTH or not isinstance(v, (dict, list)) or not v:
+        return flat
+    pad = " " * (indent + 2)
+    if isinstance(v, dict):
+        rows = [pad + json.dumps(k, ensure_ascii=False) + ": " + to_js(x, indent + 2) for k, x in v.items()]
+        return "{\n" + ",\n".join(rows) + "\n" + " " * indent + "}"
+    return "[\n" + ",\n".join(pad + to_js(x, indent + 2) for x in v) + "\n" + " " * indent + "]"
+
+
+def write_register(path, head, fn, data):
+    """Write a data file for the page: the header comment, then fn({...}); laid out by to_js()."""
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(head + fn + "(" + to_js(data) + ");\n")

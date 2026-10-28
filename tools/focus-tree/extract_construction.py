@@ -5,7 +5,7 @@ Usage: extract_construction.py <game dir> <out.js> <patch>"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
-from gamedata import load_loc, load_scripted, make_clean
+from gamedata import load_loc, load_scripted, make_clean, write_register
 from effects import Summariser
 
 game, out, patch = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -52,7 +52,7 @@ for p in glob.glob(os.path.join(game, "history", "states", "*.txt")):
 head = (f"/* Buildings and states for construction queues, facts only, extracted from the HoI4 {patch} game files\n"
         f"   (common/buildings, common/state_category, history/states) with every DLC enabled. cost = construction points per level;\n"
         f"   b = state buildings on 1 Jan 1936; slots = building slots from the state category, before research and focus bonuses. */\n")
-open(out, "w", encoding="utf-8", newline="\n").write(head + "registerConstruction(" + json.dumps({"patch": patch, "buildings": buildings, "states": states}, ensure_ascii=False, separators=(",", ":")) + ");\n")
+write_register(out, head, "registerConstruction", {"patch": patch, "buildings": buildings, "states": states})
 print("buildings", len(buildings), "states", len(states), "german", sum(1 for s in states.values() if s["owner"] == "GER"))
 for k in ("infrastructure", "arms_factory", "industrial_complex", "synthetic_refinery", "fuel_silo", "dockyard", "air_base"):
     print(k, buildings.get(k))

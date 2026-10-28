@@ -1,5 +1,7 @@
 """Write guides/trees/<name>.js from the extracted JSON, and add "focus" ids to the guide's focus steps."""
-import json, sys, re, unicodedata
+import json, sys, re, unicodedata, os
+sys.path.insert(0, os.path.dirname(__file__))
+from gamedata import write_register
 tree_json, out_js, guide_path, patch = sys.argv[1:5]
 tree = json.load(open(tree_json, encoding="utf-8"))
 tree.sort(key=lambda r: (r["y"], r["x"]))
@@ -11,14 +13,9 @@ head = f"""/* German national focus tree, facts only (names, positions, duration
    mx (mutually exclusive), bypass (1 = can be bypassed), tags (search filters), ic (our emblem theme),
    fx (effects summarised in our own words by tools/focus-tree/effects.py, as for Germany at peace with all DLC),
    req (requirements to take it) and byp (when it gets bypassed), both written by tools/focus-tree/triggers.py. */
-registerTree({{
-  "id": "GER",
-  "patch": "{patch}",
-  "assumptions": "All DLC enabled, default game rules, tree as at game start.",
-  "focuses": [
 """
-lines = ",\n".join("    " + json.dumps(r, ensure_ascii=False, separators=(",", ":")) for r in tree)
-open(out_js, "w", encoding="utf-8", newline="\n").write(head + lines + "\n  ]\n});\n")
+write_register(out_js, head, "registerTree", {"id": "GER", "patch": patch,
+                                               "assumptions": "All DLC enabled, default game rules, tree as at game start.", "focuses": tree})
 
 # link guide steps to tree ids
 norm = lambda s: re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode().lower())

@@ -6,7 +6,7 @@ It started as a single-page checklist built from MachiavellianStrategist's "Ulti
 
 ## Current state
 
-`index.html` is the player (CSS, markup and script). Guide content lives in `guides/`, and cropped game screenshots are in `img/`. No build step and no dependencies. Open the file in a browser and it works. The fonts come from Google Fonts.
+`index.html` is the page: markup and the `#ic-*` SVG icon sprite. Styles are in `css/` (one file per tab plus `base.css`, `edit.css`, `tooltip.css`, linked in cascade order) and the app is in `js/` (one file per tab plus `core.js`, `lists.js`, `ui.js`, `edit.js`, and `main.js`, which loads the guide and starts everything and must stay last). The JS files are plain `<script>` tags sharing one global scope, not modules, so `file://` keeps working; a file may only use, at load time, what earlier files define (inside functions anything goes). Guide content lives in `guides/`, and cropped game screenshots are in `img/`. No build step and no dependencies. Open the file in a browser and it works. The fonts come from Google Fonts. Code is formatted conventionally (2-space indent, one statement per line); keep new code that way.
 
 Three tabs:
 - **Game plan**: about 90 steps grouped into phases. Each phase links to its video timestamp. The next unticked step is highlighted, and some steps have a "▸ Show screen" reveal with a screenshot.
@@ -17,7 +17,7 @@ Where things are:
 - `guides/index.js` lists the guides for the picker (`GUIDES`). Each guide is a `.js` file that calls `registerGuide({...})` with JSON-shaped data. It's loaded with a `<script>` tag, not `fetch`, so `file://` keeps working. The format is documented at the top of `guides/germany-blitzkrieg.js`.
 - A guide has `meta`, `images`, `plan`/`focus`/`research` (groups of steps with stable `id`s, plus optional `n`, `tag`, `img` and `date`), `chapters`, `builds` (sections of `fig`/`card` items, text allows `**bold**`) and `legacy`.
 - Step IDs are permanent. Rewording a step keeps its ID, and a new step gets a new ID. Never reuse one.
-- In `index.html`: `build()` renders a list, `refresh()` updates counts, progress bar and the "next" highlight, and `buildBuilds()` renders the Builds tab from data. Pick a guide with `?guide=<id>`.
+- In `js/lists.js`: `build()` renders a list, `refresh()` updates counts, progress bar and the "next" highlight, and `buildBuilds()` (`js/builds.js`) renders the Builds tab from data. Pick a guide with `?guide=<id>`.
 - Date tracker: plan groups carry `by` (done-by date) and `approx`. `applyDates()` marks steps `behind` (unticked and past `by`) and `later` (phase not started), and tags each phase as past/now/later. Focus and research have no dates yet.
 - Glossary: `guides/glossary.js` (`GLOSSARY`) holds shared game terms, and `guide.glossary` adds guide-specific ones (same `id` overrides). `glossify()` wraps matching phrases in rendered text in `.gl` spans, and one shared `#tip` element shows the definition on hover, focus or tap. Clicking a term doesn't tick its step. In definitions, `**x**` is gold, `{+x}` green, `{-x}` red, and `patch: true` adds a "may differ between patches" line.
 - Focus tree: `guides/trees/germany-1.19.1.js` (`registerTree`) holds the full German tree as facts only (names, x/y grid positions, days, prerequisites, mutually exclusive, bypass), extracted from the user's 1.19.1 game files with all DLC and default rules. The guide points at it with `meta.focusTree`, and each focus step links to a game id with `"focus"`. `projectFocuses()` chains the guide's focuses back to back from 1 Jan 1936 for projected dates (also used by the date tracker on the focus list). `buildTree()`/`updateTree()` draw the "Focus tree" tab, where clicking a numbered guide focus ticks it. No game textures or icons: each focus has an `ic` theme (tank, plane, ship, flag, rings, swords, eagle... 22 in all) picked by `ICON_RULES` in the extractor from the *name* of its in-game icon, drawn with our own SVG symbols (`#ic-*` sprite at the top of `index.html`). `computeExcluded()` marks what the guide's choices rule out (`EX`): focuses mutually exclusive with a guide focus, then anything only reachable through those. They show struck through in red, and the "Complete tree" toggle (`prefs.treeHideEx`) hides them.
@@ -65,7 +65,25 @@ From the user's list (2026-10-28). Each item is its own branch and commit. Share
 7. **(Done.)** **Military Industrial Organisations.** Each MIO's trait tree like in game (positions, links, exclusive traits), the guide's trait order numbered, and which equipment type to assign it to. Data from `common/military_industrial_organization`. The Alkett MIO screenshot becomes a real tree.
 8. **(Done.)** **Special projects.** The list of special projects, the guide's recommended ones highlighted. Data from the game's special project files.
 
-Still open from the old roadmap, after the list above: save slots per playthrough plus notes, political power planner, progress that follows the user between PCs.
+### Second list (2026-10-28)
+
+Same shared rules as above. Each item is its own branch and commit.
+
+1. **Research tree: mouse wheel.** The wheel should zoom the research tree like it does on the focus tree.
+2. **Designs: closer to the game.**
+   - Lay the designer out more like the in-game one, e.g. a gap between the lower components and the modules above them.
+   - Better icons for modules and slots (still our own drawings).
+3. **Divisions: editable regiments.** The battalions and support companies in a template can't be changed yet; make them editable.
+4. **Special projects: highlight the picks.** Make the guide's recommended projects stand out more in the list.
+5. **Production: naval tab.** A tab for dockyards (naval production lines), like the military factory one.
+6. **Doctrines and subdoctrines.**
+   - An overview of the doctrine spirits with their stats.
+   - A view for each of the 4 types (army, navy, air, special) showing the grand doctrines and their subdoctrines.
+7. **Political decisions.**
+   - A tab listing the decisions to take.
+   - A tab for Laws & Government, Research & Production and Military Staff (advisors).
+
+Still open from the old roadmap, after the lists above: save slots per playthrough plus notes, political power planner, progress that follows the user between PCs.
 
 Keep the site static; host on GitHub Pages.
 
@@ -76,6 +94,7 @@ Keep the site static; host on GitHub Pages.
 - Never add Claude as author or co-author: no `Co-Authored-By` trailers, no "Generated with Claude" lines in commits or PRs.
 - Prefer targeted, scoped edits over rewrites. Don't over-deliver beyond the step being worked on.
 - Keep it working without a build step unless there's a clear reason to add one, and discuss that first.
-- Cache busting: GitHub Pages lets browsers cache files for 10 minutes, so a new page can run with old data. Whenever anything in `guides/` changes, bump `BUILD` in `index.html` and the matching `?v=` on its two `<script src>` tags (all three must match).
+- Cache busting: GitHub Pages lets browsers cache files for 10 minutes, so a new page can run with old scripts or data. Whenever anything in `css/`, `js/` or `guides/` changes, run `python tools/bump_build.py`: it sets a new `BUILD` in `js/core.js` and the matching `?v=` on every `<link>`/`<script>` in `index.html` (they must all match).
+- Generated data files (`guides/trees/*.js`) are written by `write_register()` in `tools/focus-tree/gamedata.py`: one entry per line, longer values split over lines, so they stay readable and diffable. New extractors use it too, with deterministic (sorted) ordering so a rerun gives the same file.
 - The user plays on Windows and uses the tool on a second monitor, so test at roughly 1280–1920 px wide as well as narrow widths.
 - Game facts drift with patches. When a number or mechanic is uncertain or from an older source, say so in the UI rather than presenting it as fact.

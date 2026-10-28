@@ -6,7 +6,7 @@ Usage: extract_mio.py <game dir> <out.js> <patch> [TAG]"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
-from gamedata import load_loc, load_scripted, make_clean
+from gamedata import load_loc, load_scripted, make_clean, write_register
 from effects import Summariser
 
 game, out, patch = sys.argv[1], sys.argv[2], sys.argv[3]
@@ -153,7 +153,7 @@ for oid, (v, fname) in orgs.items():
 eq_names = {e: clean(loc.get(e, "")) or summ.name(e) for o in data.values() for e in o["types"]}
 head = (f"/* Military industrial organisations for {TAG}, facts only, extracted from the HoI4 {patch} game files\n"
         f"   (common/military_industrial_organization) with every DLC enabled. x/y = trait grid position, absolute. */\n")
-open(out, "w", encoding="utf-8", newline="\n").write(head + "registerMIO(" + json.dumps({"patch": patch, "tag": TAG, "orgs": data, "types": eq_names}, ensure_ascii=False, separators=(",", ":")) + ");\n")
+write_register(out, head, "registerMIO", {"patch": patch, "tag": TAG, "orgs": data, "types": eq_names})
 print("orgs", len(data))
 a = data.get("GER_alkett_organization")
 if a:

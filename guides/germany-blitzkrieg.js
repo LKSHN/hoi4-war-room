@@ -14,6 +14,10 @@
      data comes from meta.designers
    - divisions: {templates: [{id, name, icon, support: [unit ids], combat: [columns of unit ids], img?, ts?, n?, seen?}],
      training: [{id, step (plan step id it belongs to), template, count, n?}]}; units come from meta.units
+   - production: {states: [{id, step (plan step id), title, mils? (military factories), img?, ts?, n?,
+     lines: [{id, name, eq? (game equipment id) | design? (designs id), kind? (shown under the name), f? (factories),
+     cap? (in-game factory limit), rest? (gets every factory left), n?}]}]}; lines in priority order. A line keeps its id
+     from state to state so the page can show what changed; equipment comes from meta.equipment
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -32,6 +36,7 @@ registerGuide({
     "researchTree": "guides/trees/research-1.19.1.js",
     "designers": "guides/trees/designers-1.19.1.js",
     "units": "guides/trees/units-1.19.1.js",
+    "equipment": "guides/trees/equipment-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -336,6 +341,93 @@ registerGuide({
     ]
   },
 
+  "production": {
+    "states": [
+      {"id": "prod.1936", "step": "plan.production-train-1-bf", "title": "Day one", "mils": 28, "img": "prod36", "ts": "02:57", "lines":[
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.fighter", "name": "Bf 109 D", "eq": "small_plane_airframe_1", "kind": "Basic Small Airframe", "f": 1},
+        {"id": "pl.cas", "name": "Ju 87", "eq": "small_plane_airframe_1", "kind": "Basic Close Air Support", "f": 1},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 3},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 11, "cap": 150, "rest": true}
+      ]},
+      {"id": "prod.todt", "step": "plan.production-armored-support-vehicles", "title": "After Organisation Todt", "mils": 36, "img": "prodtodt", "ts": "08:10", "n": "F1 and C1 replace the Bf 109 and Ju 87 lines. The caps are the targets: new factories fill the lines in priority order.", "lines":[
+        {"id": "pl.asv", "name": "Minenräumer mit Pz…", "eq": "armored_support_vehicle", "f": 1, "n": "Top priority"},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 18, "cap": 25},
+        {"id": "pl.fighter", "name": "F1ca", "eq": "small_plane_airframe_1", "kind": "Basic Small Airframe", "f": 1, "cap": 25},
+        {"id": "pl.cas", "name": "C1", "eq": "small_plane_airframe_1", "kind": "Basic Close Air Support", "f": 1, "cap": 15},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3, "cap": 5},
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 3},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5}
+      ]},
+      {"id": "prod.china", "step": "plan.infantry-equipment-down-10", "title": "Sino-Japanese war starts", "n": "Lines the guide doesn't mention are assumed unchanged.", "lines":[
+        {"id": "pl.asv", "name": "Minenräumer mit Pz…", "eq": "armored_support_vehicle", "f": 1},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 10, "cap": 10},
+        {"id": "pl.cas", "name": "C1", "eq": "small_plane_airframe_1", "kind": "Basic Close Air Support", "f": 1, "cap": 15},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3, "cap": 5},
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 3},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5},
+        {"id": "pl.fighter", "name": "F1ca", "eq": "small_plane_airframe_1", "kind": "Basic Small Airframe", "rest": true, "n": "Lowest priority: every new factory"}
+      ]},
+      {"id": "prod.spg", "step": "plan.production-flame-tank-1", "title": "SPG unlocked", "n": "Lines the guide doesn't mention are assumed unchanged.", "lines":[
+        {"id": "pl.flame", "name": "Flammpanzer III", "design": "design.flammpanzer", "f": 1},
+        {"id": "pl.spg", "name": "SPG1 (7/4)", "design": "design.spg1", "rest": true, "n": "All the rest"},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 10, "cap": 10},
+        {"id": "pl.fighter", "name": "F1ca", "eq": "small_plane_airframe_1", "kind": "Basic Small Airframe", "f": 10},
+        {"id": "pl.cas", "name": "C1", "eq": "small_plane_airframe_1", "kind": "Basic Close Air Support", "f": 10},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3, "cap": 5},
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 3},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5}
+      ]},
+      {"id": "prod.f2", "step": "plan.design-f2-c2-f2", "title": "F2 and C2 designed", "n": "The fighter line switches to F2 and goes to 25 factories, taken from the SPG line. The guide doesn't say when C1 becomes C2.", "lines":[
+        {"id": "pl.flame", "name": "Flammpanzer III", "design": "design.flammpanzer", "f": 1},
+        {"id": "pl.spg", "name": "SPG1 (7/4)", "design": "design.spg1", "rest": true},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 10, "cap": 10},
+        {"id": "pl.fighter", "name": "F2", "design": "design.f2", "f": 25, "n": "Taken from SPG"},
+        {"id": "pl.cas", "name": "C1", "eq": "small_plane_airframe_1", "kind": "Basic Close Air Support", "f": 10},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3, "cap": 5},
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 3},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5}
+      ]},
+      {"id": "prod.uk", "step": "plan.production-infantry-c2-f2", "title": "After the UK falls", "n": "Infantry equipment, C2 and F2 to 50 each, trucks to 15, mechanized as soon as it's researched.", "lines":[
+        {"id": "pl.mech", "name": "Sonderkraftfahrzeug 11", "eq": "mechanized_equipment_1", "n": "As soon as possible"},
+        {"id": "pl.flame", "name": "Flammpanzer III", "design": "design.flammpanzer", "f": 1},
+        {"id": "pl.spg", "name": "SPG1 (7/4)", "design": "design.spg1", "rest": true},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 50},
+        {"id": "pl.fighter", "name": "F2", "design": "design.f2", "f": 50},
+        {"id": "pl.cas", "name": "C2", "design": "design.c2", "f": 50},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3, "cap": 5},
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 15},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5}
+      ]},
+      {"id": "prod.italy", "step": "plan.italy-crush-them-take", "title": "Italy", "n": "Mechanized goes up to 150 factories.", "lines":[
+        {"id": "pl.mech", "name": "Sonderkraftfahrzeug 11", "eq": "mechanized_equipment_1", "f": 150},
+        {"id": "pl.flame", "name": "Flammpanzer III", "design": "design.flammpanzer", "f": 1},
+        {"id": "pl.spg", "name": "SPG1 (7/4)", "design": "design.spg1", "rest": true},
+        {"id": "pl.inf", "name": "Karabiner 98k", "eq": "infantry_equipment_1", "f": 50},
+        {"id": "pl.fighter", "name": "F2", "design": "design.f2", "f": 50},
+        {"id": "pl.cas", "name": "C2", "design": "design.c2", "f": 50},
+        {"id": "pl.navbomber", "name": "Do 22", "eq": "small_plane_airframe_1", "kind": "Basic Naval Bomber", "f": 3, "cap": 5},
+        {"id": "pl.train", "name": "Class 18.4-5", "eq": "train_equipment_1", "f": 1},
+        {"id": "pl.art", "name": "10,5-cm leichte Feldhaubitze 18", "eq": "artillery_equipment_1", "f": 3},
+        {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 15},
+        {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5}
+      ]}
+    ]
+  },
+
   "designs": [
     {"id":"design.spg1", "name":"SPG1 (7/4)", "frame":"medium_tank_chassis_1", "role":"medium_tank_artillery_chassis",
      "modules":{"turret_type_slot":"tank_medium_three_man_tank_turret", "main_armament_slot":"tank_medium_howitzer",
@@ -399,20 +491,10 @@ registerGuide({
     {"title": "Economy", "layout": "narrow", "items": [
       {"type":"fig", "img":"build36", "title":"Construction, 1 Jan 1936", "ts":"2:57",
        "text":"Infrastructure in 4 western states, 1 civ in each, then military factories in Westfalen and Hessen."},
-      {"type":"fig", "img":"prod36", "title":"Production, 1 Jan 1936",
-       "text":"Train 1, Bf 109 1, Ju 87 1, Do 22 3, artillery 3, trucks 3, support 5, Kar 98k the rest."},
       {"type":"fig", "img":"navy36", "title":"Naval lines, 1936",
        "text":"Extra ships cancelled. Subs and destroyers at max, heavy ships at 2, convoys at 1."},
-      {"type":"fig", "img":"prodtodt", "title":"After Todt, Nov 1936", "ts":"8:10",
-       "text":"Armored support vehicle on top, Kar 98k capped at 25, F1 25, C1 15, Do 22 5."},
       {"type":"fig", "img":"build37", "title":"Construction, Jun 1937", "ts":"10:50",
-       "text":"Mils in the 100% states, 2 refineries each, then mils in the 80% states. Gives exactly enough rubber by 1939."},
-      {"type":"card", "title":"Production later on", "table":[
-        {"head":"Sino-Japanese war starts", "rows":[["Infantry equipment","10"],["New factories","F1, lowest"]]},
-        {"head":"SPG unlocked", "rows":[["Flame tank","1"],["SPG","the rest"],["F1 / C1","10 / 10"]]},
-        {"head":"F2 and C2 designed", "rows":[["F2 (taken from SPG)","25"]]},
-        {"head":"After the UK falls", "rows":[["Infantry eq., C2, F2","50 each"],["Trucks","15"],["Mechanized","150"]]}
-      ]}
+       "text":"Mils in the 100% states, 2 refineries each, then mils in the 80% states. Gives exactly enough rubber by 1939."}
     ]},
     {"title": "Reference", "layout": "cards", "items": [
       {"type":"card", "title":"Advisors & spirits, in order", "ordered":true, "list":[

@@ -37,11 +37,11 @@ Where things are:
 - Regenerating the tree for a new patch: `tools/focus-tree/` (Python, dev only, not a build step). Run `extract_tree.py <game dir> <germany.txt> <out.json>`, then `emit.py <out.json> guides/trees/germany-<patch>.js guides/germany-blitzkrieg.js <patch>`, then `validate.py` to check the guide order against prerequisites. Point `meta.focusTree` at the new file.
 - Editing: "Edit guide" (`enterEdit()`) swaps the plan/focus/research lists for edit rows (`editList()`) and makes Builds text editable in place (`editBuilds()`, via the `_bind` that `bindEl()` puts on rendered elements; `**bold**` is kept). Edits are a full copy of the `EDITABLE` sections (`plan`, `focus`, `research`, `builds`) saved in `hoi4-tool-edits:<guideId>` with a `base` hash of the original, applied by `applyEdits()` before anything renders (parts a saved section lacks, like a new `production.naval`, come from the file); if the original guide file changes later, a notice says so. Done saves and reloads so the tree, dates and counts use the edits. New steps and phases get `u-` ids. Export as JSON or as a `.js` guide file (a new guide once its `meta.id` changes and it's listed in `guides/index.js`), import either back, or reset to original. Future views (research tree, designers, production, construction, MIOs) should edit their data the same way: add the section to `EDITABLE` and write into `G`.
 - Menu: the items in `nav.tabs` are links to `#<tab>` (styled like the old buttons), so a menu opens in a new browser tab with middle click or Ctrl+click. `showTab(name, push)` in `js/ui.js` keeps the address in step (a click pushes a history entry, so Back returns to the previous menu; loading only corrects it), and the page opens on the `#tab` in the address, else the last one used. Several browser tabs stay in sync: a `storage` listener takes ticks and the game date saved by another tab, so a stale tab never saves its old copy over them. Edit mode isn't synced between tabs.
-- State: `hoi4-tool:<guideId>` holds `{ticks, open, date}` per guide, and `hoi4-tool-prefs` holds `{guide, tab, hide}`. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
+- State: progress is per playthrough: `{ticks, open, date, notes (your note per step id), note (the playthrough's notes)}`. `hoi4-tool-runs:<guideId>` lists a guide's playthroughs (`{current, runs: [{id, name, created}]}`); the first (`main`) keeps the original key `hoi4-tool:<guideId>`, so older progress becomes "Playthrough 1", and the others use `hoi4-tool:<guideId>:<runId>`. `openStore()` (`js/lists.js`) opens the current one; `js/runs.js` has the top-bar picker (switching reloads the page), "+ New playthrough", and the Notes panel (rename, notes, new, duplicate, delete). Each step has a ✎ for your own note, shown under it. `hoi4-tool-prefs` holds `{guide, tab, hide}` and the per-tab view settings. On first load, `guide.legacy` maps the old positional keys (`hoi4-ger-checklist-v1`, `g12`/`f3`/`r40`) to stable IDs. The old keys are left in place.
 - `.claude/launch.json` serves the folder on port 8765 (`python -m http.server`) for previewing.
 
 Known weak spots:
-- Progress is per browser and doesn't follow the user between PCs.
+- Progress (and every playthrough) is per browser and doesn't follow the user between PCs.
 - The game patch for the Germany guide isn't recorded (`meta.patch: null`), and the UI says so.
 - Most Germany phase dates are estimates (`approx: true`, shown with ≈). Only a few are anchored by the guide (see `meta.datesNote`).
 - The focus tree is from patch 1.19.1, likely newer than the video. Five guide focuses have prerequisites the guide never takes (Sea Lion, Tannenbaum, Reintegrate Luxemburg, Loyalty to the Führer, Autarky Achieved); the tree assumes they were bypassed and says so in the tooltip.
@@ -86,7 +86,7 @@ Same shared rules as above. Each item is its own branch and commit.
    - A tab listing the decisions to take.
    - A tab for Laws & Government, Research & Production and Military Staff (advisors).
 
-Still open from the old roadmap, after the lists above: save slots per playthrough plus notes, political power planner, progress that follows the user between PCs.
+Still open from the old roadmap, after the lists above: political power planner, progress that follows the user between PCs. (Done: save slots per playthrough plus notes.)
 
 Keep the site static; host on GitHub Pages.
 

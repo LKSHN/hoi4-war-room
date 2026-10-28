@@ -1080,3 +1080,100 @@ label.item.done .shotbtn {
   font-size: 14px;
   margin: 0;
 }
+
+/* playthroughs and notes */
+#runBtn.has::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--brass-lt);
+}
+
+.runpanel {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0;
+  padding: 10px 12px;
+  background: linear-gradient(180deg, #2b2d26, #1d1f1a);
+  border: 1px solid var(--brass);
+  box-shadow: var(--bevel), var(--drop);
+}
+
+.runhead,
+.runtools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.runname {
+  max-width: 260px;
+  font-weight: 600;
+}
+
+.runinfo {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.runnote {
+  width: 100%;
+  min-height: 90px;
+  box-sizing: border-box;
+}
+
+/* your note on a step */
+.notebtn {
+  margin-left: 6px;
+  padding: 0 5px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+  opacity: 0;
+}
+
+li:hover .notebtn,
+.notebtn:focus-visible,
+.notebtn.has {
+  opacity: 1;
+}
+
+.notebtn.has {
+  color: var(--brass-lt);
+}
+
+@media (hover: none) {
+  .notebtn {
+    opacity: .7;
+  }
+}
+
+.mynote {
+  margin: 2px 0 6px 38px;
+  padding: 3px 8px;
+  font-size: 13px;
+  color: var(--brass-lt);
+  white-space: pre-wrap;
+  border-left: 2px solid var(--brass);
+  background: rgba(201, 162, 74, .07);
+}
+
+.mynote-ed {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 2px 0 6px 38px;
+}
+
+.mynote-ed textarea {
+  flex: 1;
+  min-width: 0;
+}

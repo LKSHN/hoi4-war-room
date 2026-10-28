@@ -35,6 +35,7 @@ function start() {
   document.getElementById("gDates").textContent = M.datesNote || "";
 
   openStore();
+  buildRuns();
   projectFocuses();
   prepResearch();
   document.querySelector('[data-res="date"]').hidden = !(G.plan || []).some(g => g.by || g.steps.some(s => s.by));

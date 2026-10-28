@@ -1,16 +1,32 @@
 /*
  * Step lists (game plan, focus, research): progress, rendering, counts, the date tracker and the top bar.
  *
- * Per-guide progress: {ticks:{id:true}, open:{id:true}}
+ * Progress per playthrough: {ticks:{id:true}, open:{id:true}, date?, notes?:{id:text}, note?}. A guide can have several
+ * playthroughs, listed in hoi4-tool-runs:<guideId> ({current, runs:[{id, name, created}]}); the first one ("main")
+ * keeps the original key hoi4-tool:<guideId>, the others get hoi4-tool:<guideId>:<runId>.
  */
 
-let storeKey, store;
+let storeKey, store, runs;
 const save = () => put(storeKey, store);
+const runsKey = () => "hoi4-tool-runs:" + G.meta.id;
+const runStoreKey = id => "hoi4-tool:" + G.meta.id + (id === "main" ? "" : ":" + id);
 
 function openStore() {
-  storeKey = "hoi4-tool:" + G.meta.id;
+  runs = load(runsKey(), null);
+  if (!runs || !(runs.runs || []).length) runs = {current: "main", runs: [{id: "main", name: "Playthrough 1"}]};
+  if (!runs.runs.some(r => r.id === runs.current)) runs.current = runs.runs[0].id;
+  storeKey = runStoreKey(runs.current);
   store = load(storeKey, null);
-  if (store) return;
+  if (store) {
+    store.ticks = store.ticks || {};
+    store.open = store.open || {};
+    return;
+  }
+  if (runs.current !== "main") { // a new playthrough starts empty
+    store = {ticks: {}, open: {}};
+    save();
+    return;
+  }
   store = {
     ticks: {},
     open: {}
@@ -140,6 +156,51 @@ function build(colId, groups) {
         fd.tabIndex = 0; // hover or tap for the tech's details
         txt.appendChild(fd);
       }
+      // your own note for this step, in this playthrough
+      const pen = el("button", "notebtn");
+      pen.type = "button";
+      pen.title = "Your note for this step";
+      pen.setAttribute("aria-label", "Your note for this step");
+      pen.textContent = "✎";
+      txt.appendChild(pen);
+      const mine = el("div", "mynote");
+      const showNote = () => {
+        const t = (store.notes || {})[id] || "";
+        mine.textContent = t;
+        mine.hidden = !t;
+        pen.classList.toggle("has", !!t);
+      };
+      showNote();
+      pen.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const open = li.querySelector(".mynote-ed");
+        if (open) return open.querySelector("textarea").focus();
+        const ed = el("div", "mynote-ed"),
+          ta = el("textarea", "ed-text");
+        ta.rows = 2;
+        ta.placeholder = "Your note (saved in this playthrough)";
+        ta.value = (store.notes || {})[id] || "";
+        const done = el("button", null, "Done");
+        done.type = "button";
+        const close = () => {
+          const v = ta.value.trim();
+          store.notes = store.notes || {};
+          if (v) store.notes[id] = v;
+          else delete store.notes[id];
+          save();
+          ed.remove();
+          showNote();
+        };
+        done.addEventListener("click", close);
+        ta.addEventListener("keydown", ev => {
+          if (ev.key === "Escape" || (ev.key === "Enter" && (ev.ctrlKey || ev.metaKey))) close();
+        });
+        ed.append(ta, done);
+        mine.after(ed);
+        mine.hidden = true;
+        ta.focus();
+      });
       const cb = li.querySelector("input");
       cb.checked = !!store.ticks[id];
       cb.addEventListener("change", () => {
@@ -148,6 +209,7 @@ function build(colId, groups) {
         save();
         refresh(col);
       });
+      li.appendChild(mine);
       if (pane) li.appendChild(pane);
       list.appendChild(li);
     });

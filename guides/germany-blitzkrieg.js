@@ -18,7 +18,9 @@
    - production: {states: [{id, step (plan step id), title, mils? (military factories), img?, ts?, n?,
      lines: [{id, name, eq? (game equipment id) | design? (designs id), kind? (shown under the name), f? (factories),
      cap? (in-game factory limit), rest? (gets every factory left), n?}]}]}; lines in priority order. A line keeps its id
-     from state to state so the page can show what changed; equipment comes from meta.equipment
+     from state to state so the page can show what changed; equipment comes from meta.equipment.
+     naval: the same for dockyards: [{id, step, title, docks? (dockyards), img?, ts?, n?, lines: [{id, name, design (a ship
+     design) | eq (convoy_1), f? (dockyards), count? (ships to build), rest?, n?}]}]
    - construction: {lists: [{id, step (plan step id), title, civs? (civilian factories), uses? [{name, n}] (factories
      taken before the queue: consumer goods, trade...), img?, ts?, n?, items: [{id, state (game state id), b (building id),
      n (levels)}]}]}; items in queue order; buildings and states come from meta.construction
@@ -436,6 +438,52 @@ registerGuide({
         {"id": "pl.truck", "name": "Opel Blitz", "eq": "motorized_equipment_1", "f": 15},
         {"id": "pl.support", "name": "Support Equipment", "eq": "support_equipment_1", "f": 5}
       ]}
+    ],
+    "naval": [
+      {"id": "nav.start", "step": "plan.navy-cancel-extra-ships", "title": "Game start", "docks": 10,
+       "n": "The naval lines Germany starts with in the game files: 11 lines asking for 1 dockyard each, for 10 dockyards.", "lines":[
+        {"id": "nl.u1", "name": "Type II", "design": "design.type2", "f": 1, "count": 2},
+        {"id": "nl.u2", "name": "Type II", "design": "design.type2", "f": 1, "count": 2},
+        {"id": "nl.u3", "name": "Type II", "design": "design.type2", "f": 1, "count": 2},
+        {"id": "nl.u4", "name": "Type II", "design": "design.type2", "f": 1, "count": 2},
+        {"id": "nl.z1", "name": "Zerstörer 1934", "design": "design.z1934", "f": 1, "count": 2},
+        {"id": "nl.z2", "name": "Zerstörer 1934", "design": "design.z1934", "f": 1, "count": 2},
+        {"id": "nl.spee", "name": "Deutschland (Admiral Graf Spee)", "design": "design.deutschland", "f": 1, "count": 1},
+        {"id": "nl.hipper", "name": "Admiral Hipper", "design": "design.hipper", "f": 1, "count": 1},
+        {"id": "nl.scharnhorst", "name": "Scharnhorst", "design": "design.scharnhorst", "f": 1, "count": 1},
+        {"id": "nl.gneisenau", "name": "Scharnhorst (Gneisenau)", "design": "design.scharnhorst", "f": 1, "count": 1},
+        {"id": "nl.z34a1", "name": "Zerstörer 1934A", "design": "design.z1934a", "f": 1, "count": 4},
+        {"id": "nl.z34a2", "name": "Zerstörer 1934A", "design": "design.z1934a", "f": 1, "count": 4},
+        {"id": "nl.z34a3", "name": "Zerstörer 1934A", "design": "design.z1934a", "f": 1, "count": 4}
+      ]},
+      {"id": "nav.1936", "step": "plan.navy-cancel-extra-ships", "title": "Navy set up", "docks": 10, "img": "navy36",
+       "n": "The submarine and destroyer lines match the screenshot (1 dockyard each, one Type II per line). Its dockyard count says 4 go to capital ships, so two heavy ships get 2 each as the guide says; which two isn't shown, Scharnhorst and Gneisenau are assumed. Convoys at 1 is from the guide and isn't on screen. Admiral Hipper waits at 0 for its refit.", "lines":[
+        {"id": "nl.u1", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.u2", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.u3", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.u4", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.z1", "name": "Zerstörer 1934", "design": "design.z1934", "f": 1, "count": 2},
+        {"id": "nl.z2", "name": "Zerstörer 1934", "design": "design.z1934", "f": 1, "count": 2},
+        {"id": "nl.scharnhorst", "name": "Scharnhorst", "design": "design.scharnhorst", "f": 2, "count": 1},
+        {"id": "nl.gneisenau", "name": "Scharnhorst (Gneisenau)", "design": "design.scharnhorst", "f": 2, "count": 1},
+        {"id": "nl.spee", "name": "Deutschland (Admiral Graf Spee)", "design": "design.deutschland", "f": 0, "count": 1},
+        {"id": "nl.hipper", "name": "Admiral Hipper", "design": "design.hipper", "f": 0, "count": 1},
+        {"id": "nl.convoy", "name": "Convoy", "eq": "convoy_1", "f": 1}
+      ]},
+      {"id": "nav.hipper", "step": "plan.refit-admiral-hipper-into", "title": "Hipper refit",
+       "n": "Admiral Hipper becomes the light cruiser design and takes every new dockyard. Lines the guide doesn't mention are assumed unchanged.", "lines":[
+        {"id": "nl.u1", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.u2", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.u3", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.u4", "name": "Type II", "design": "design.type2", "f": 1, "count": 1},
+        {"id": "nl.z1", "name": "Zerstörer 1934", "design": "design.z1934", "f": 1, "count": 2},
+        {"id": "nl.z2", "name": "Zerstörer 1934", "design": "design.z1934", "f": 1, "count": 2},
+        {"id": "nl.scharnhorst", "name": "Scharnhorst", "design": "design.scharnhorst", "f": 2, "count": 1},
+        {"id": "nl.gneisenau", "name": "Scharnhorst (Gneisenau)", "design": "design.scharnhorst", "f": 2, "count": 1},
+        {"id": "nl.spee", "name": "Deutschland (Admiral Graf Spee)", "design": "design.deutschland", "f": 0, "count": 1},
+        {"id": "nl.hipper", "name": "Admiral Hipper (light cruiser refit)", "design": "design.hipper-cl", "rest": true, "count": 1},
+        {"id": "nl.convoy", "name": "Convoy", "eq": "convoy_1", "f": 1}
+      ]}
     ]
   },
 
@@ -511,11 +559,11 @@ registerGuide({
      "seen":{"maximum_speed":571.5, "air_range":975, "weight":9, "thrust":25, "air_defence":9.0, "air_agility":53.0, "reliability":0.8, "build_cost_ic":27.3}},
     {"id":"design.type2", "name":"Type II", "frame":"ship_hull_submarine_1", "role":"ship_hull_submarine",
      "modules":{"fixed_ship_torpedo_slot":"ship_torpedo_sub_1", "fixed_ship_engine_slot":"sub_ship_engine_1"},
-     "img":"navy36", "n":"Germany's starting submarine design, as in the game files. Max dockyards on the submarines in production."},
+     "img":"navy36", "n":"Germany's starting submarine design, as in the game files. Four lines are in production in 1936: see Production, Dockyards."},
     {"id":"design.z1934", "name":"Zerstörer 1934", "frame":"ship_hull_light_2", "role":"ship_hull_light",
      "modules":{"fixed_ship_battery_slot":"ship_light_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
        "fixed_ship_engine_slot":"light_ship_engine_2", "fixed_ship_torpedo_slot":"ship_torpedo_1", "mid_1_custom_slot":"ship_torpedo_1", "rear_1_custom_slot":"ship_mine_layer_1"},
-     "img":"navy36", "n":"Germany's starting destroyer design, as in the game files. Max dockyards on the destroyers in production."},
+     "img":"navy36", "n":"Germany's starting destroyer design, as in the game files. Two lines are in production in 1936: see Production, Dockyards."},
     {"id":"design.hipper", "name":"Admiral Hipper", "frame":"ship_hull_cruiser_2", "role":"ship_hull_cruiser",
      "modules":{"fixed_ship_battery_slot":"ship_medium_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
        "fixed_ship_engine_slot":"cruiser_ship_engine_2", "fixed_ship_armor_slot":"ship_armor_cruiser_2", "front_1_custom_slot":"ship_anti_air_1",
@@ -525,7 +573,21 @@ registerGuide({
      "modules":{"fixed_ship_battery_slot":"ship_light_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
        "fixed_ship_engine_slot":"cruiser_ship_engine_2", "fixed_ship_armor_slot":"ship_armor_cruiser_2", "front_1_custom_slot":"ship_light_battery_2",
        "mid_1_custom_slot":"ship_light_battery_2", "mid_2_custom_slot":"ship_light_battery_2", "rear_1_custom_slot":"ship_light_battery_2"},
-     "n":"The guide refits Admiral Hipper into \"the best light cruiser\" with Blohm & Voss (Raiding Shipbuilders) and puts every new dockyard on it, without showing the modules. These are a guess: Hipper's hull, engine and armor with light guns in every battery slot. Edit them to match yours."}
+     "n":"The guide refits Admiral Hipper into \"the best light cruiser\" with Blohm & Voss (Raiding Shipbuilders) and puts every new dockyard on it, without showing the modules. These are a guess: Hipper's hull, engine and armor with light guns in every battery slot. Edit them to match yours."},
+    {"id":"design.z1934a", "name":"Zerstörer 1934A", "frame":"ship_hull_light_2", "role":"ship_hull_light",
+     "modules":{"fixed_ship_battery_slot":"ship_light_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
+       "fixed_ship_engine_slot":"light_ship_engine_2", "fixed_ship_torpedo_slot":"ship_torpedo_1", "mid_1_custom_slot":"ship_torpedo_1", "rear_1_custom_slot":"ship_depth_charge_1"},
+     "n":"Germany's starting design, as in the game files: three lines of 4 are in production in 1936. The guide cancels them."},
+    {"id":"design.deutschland", "name":"Deutschland", "frame":"ship_hull_cruiser_panzerschiff", "role":"ship_hull_cruiser",
+     "modules":{"fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_battery_slot":"ship_heavy_battery_2", "fixed_ship_secondaries_slot":"ship_secondaries_1",
+       "fixed_ship_armor_slot":"ship_armor_cruiser_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0", "fixed_ship_engine_slot":"cruiser_ship_engine_2",
+       "rear_1_custom_slot":"ship_torpedo_1", "mid_1_custom_slot":"ship_airplane_launcher_1"},
+     "n":"Germany's starting panzerschiff design, as in the game files. Admiral Graf Spee is in production in 1936."},
+    {"id":"design.scharnhorst", "name":"Scharnhorst", "frame":"ship_hull_heavy_2", "role":"ship_hull_heavy",
+     "modules":{"fixed_ship_battery_slot":"ship_heavy_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
+       "fixed_ship_engine_slot":"heavy_ship_engine_2", "fixed_ship_secondaries_slot":"ship_secondaries_1", "fixed_ship_armor_slot":"ship_armor_bc_1",
+       "front_1_custom_slot":"ship_anti_air_1", "mid_2_custom_slot":"ship_secondaries_1", "rear_1_custom_slot":"ship_heavy_battery_2"},
+     "n":"Germany's starting battlecruiser design, as in the game files. Scharnhorst and Gneisenau are in production in 1936."}
   ],
 
   "chapters": [
@@ -556,10 +618,6 @@ registerGuide({
     {"title": "Planes & ships", "items": [
       {"type":"card", "title":"Ships",
        "text":"Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, then put every new dockyard on it. Convoys stay at 1 dockyard."}
-    ]},
-    {"title": "Economy", "layout": "narrow", "items": [
-      {"type":"fig", "img":"navy36", "title":"Naval lines, 1936",
-       "text":"Extra ships cancelled. Subs and destroyers at max, heavy ships at 2, convoys at 1."}
     ]},
     {"title": "Reference", "layout": "cards", "items": [
       {"type":"card", "title":"Advisors & spirits, in order", "ordered":true, "list":[

@@ -1,5 +1,6 @@
-"""Extract the land and air equipment a production line can build, as facts: id, name, Germany's own name for it
-(GER_<id> in localisation), archetype, year, production cost and interface category. Ships are left out.
+"""Extract the land and air equipment (and convoys) a production line can build, as facts: id, name, Germany's own name
+for it (GER_<id> in localisation), archetype, year, production cost and interface category. Warships are left out:
+they're built from designs (extract_equipment.py).
 Usage: extract_production.py <game dir> <out.js> <patch>"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
@@ -12,7 +13,7 @@ loc = load_loc(game)
 clean = make_clean(loc, load_scripted(game))
 summ = Summariser(game, loc, clean)
 isnum = lambda v: isinstance(v, str) and re.fullmatch(r"-?\d+(\.\d+)?", v) is not None
-SKIP = re.compile(r"ship_hull|convoy|mothership|floating_harbor|repair_ship|support_ship")
+SKIP = re.compile(r"ship_hull|mothership|floating_harbor|repair_ship|support_ship")
 
 raw = {}
 for path in glob.glob(os.path.join(game, "common", "units", "equipment", "*.txt")):
@@ -56,7 +57,7 @@ for eid, v in raw.items():
     if first(v, "is_archetype") == "yes":
         o["isArch"] = True
     eq[eid] = o
-head = (f"/* Land and air equipment for production lines, facts only, extracted from the HoI4 {patch} game files\n"
+head = (f"/* Land and air equipment and convoys for production lines, facts only, extracted from the HoI4 {patch} game files\n"
         f"   (common/units/equipment, localisation for Germany's own names) with every DLC enabled. cost = production cost in IC. */\n")
 write_register(out, head, "registerEquipment", {"patch": patch, "equipment": eq})
 print("equipment", len(eq))

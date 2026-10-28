@@ -1,4 +1,4 @@
-/* Land and air equipment for production lines, facts only, extracted from the HoI4 1.19.1 game files
+/* Land and air equipment and convoys for production lines, facts only, extracted from the HoI4 1.19.1 game files
    (common/units/equipment, localisation for Germany's own names) with every DLC enabled. cost = production cost in IC. */
 registerEquipment({
   "patch": "1.19.1",
@@ -329,6 +329,8 @@ registerEquipment({
       "cat": "air",
       "type": "ballistic_missile"
     },
+    "convoy": {"id":"convoy","name":"Convoy","arch":"convoy","year":1910,"cost":70.0,"cat":"other_ships","type":"convoy","isArch":true},
+    "convoy_1": {"id":"convoy_1","name":"Convoy","arch":"convoy","year":1910,"cost":70.0,"cat":"other_ships","type":"convoy"},
     "explosive_ammo_equipment": {
       "id": "explosive_ammo_equipment",
       "name": "Multi-Charge Large Caliber Gun",

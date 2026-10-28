@@ -32,7 +32,14 @@ function applyEdits() {
     note = document.getElementById("editNote");
   if (!ed || !ed.data) return;
   EDITABLE.forEach(k => {
-    if (ed.data[k]) G[k] = ed.data[k];
+    if (!ed.data[k]) return;
+    // parts the guide file gained after these edits were saved (production.naval, say) come from the file
+    const was = G[k];
+    G[k] = ed.data[k];
+    if (was && typeof was === "object" && !Array.isArray(was) && typeof G[k] === "object" && !Array.isArray(G[k]))
+      Object.keys(was).forEach(p => {
+        if (!(p in G[k])) G[k][p] = was[p];
+      });
   });
   note.hidden = false;
   note.innerHTML = "You're viewing <b>your edited version</b> of this guide" +

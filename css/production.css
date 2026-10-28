@@ -349,3 +349,17 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* naval lines: the most dockyards a line of that kind takes, red when the line asks for more */
+.pl-max {
+  font: 500 11px var(--f-mono);
+  color: var(--muted);
+}
+
+.pl-max.over {
+  color: #ff9a7f;
+}
+
+#pSubs {
+  margin-bottom: 10px;
+}

@@ -5,7 +5,7 @@
  * "base" fingerprints the original, so we can tell you when the guide file changed under your edits.
  */
 
-const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions", "production", "construction", "mios", "projects", "doctrines"];
+const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions", "production", "construction", "mios", "projects", "doctrines", "politics"];
 let G0 = null,
   EDITING = false,
   editKey = "",
@@ -376,6 +376,7 @@ function enterEdit() {
   if (MIO) renderMIO();
   if (SPROJ) renderProjects();
   if (DOC) renderDoctrines();
+  if (POL) renderPolitics();
 }
 
 function leaveEdit() {

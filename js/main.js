@@ -54,7 +54,8 @@ function start() {
   buildMIO();
   buildProjects();
   buildDoctrines();
-  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS) || (wantTab === "production" && EQUIP) || (wantTab === "construction" && CONS) || (wantTab === "mio" && MIO) || (wantTab === "projects" && SPROJ) || (wantTab === "doctrines" && DOC)) showTab(wantTab);
+  buildPolitics();
+  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS) || (wantTab === "production" && EQUIP) || (wantTab === "construction" && CONS) || (wantTab === "mio" && MIO) || (wantTab === "projects" && SPROJ) || (wantTab === "doctrines" && DOC) || (wantTab === "politics" && POL)) showTab(wantTab);
 
   const ul = document.getElementById("chapters");
   (G.chapters || []).forEach(c => {
@@ -71,7 +72,7 @@ const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
   // then the guide's game data files, one after another (focus tree, research tree)
-  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction, G.meta.mio, G.meta.projects, G.meta.doctrines].filter(Boolean) : [];
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction, G.meta.mio, G.meta.projects, G.meta.doctrines, G.meta.politics].filter(Boolean) : [];
   const next = () => {
     const f = files.shift();
     if (!f) return start();

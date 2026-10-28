@@ -31,6 +31,8 @@
    - doctrines: {folders: [{id, folder (game folder id), grand (grand doctrine id), step? (plan step id), img?, ts?, n?,
      subs: [{track (track id), sub (subdoctrine id)}] in the order the guide takes them}], spirits: [{id, spirit (game
      spirit id), step?, n?}], spiritsNote?}; the doctrines and spirits come from meta.doctrines
+   - politics: {picks: [{id, kind ("idea": a law or company, "advisor", "decision"), ref (game id), step?, name? (shown
+     instead of the game's), n?}] in the order the guide takes them, note?}; the game side comes from meta.politics
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -54,6 +56,7 @@ registerGuide({
     "mio": "guides/trees/mio-1.19.1.js",
     "projects": "guides/trees/projects-1.19.1.js",
     "doctrines": "guides/trees/doctrines-1.19.1.js",
+    "politics": "guides/trees/politics-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -536,6 +539,39 @@ registerGuide({
     {"id": "sp.flame", "project": "sp_land_flamethrower_tank", "step": "res.flame-tank", "n": "Unlocks the flame tank company in the MARK template and the Flammpanzer III design."}
   ],
 
+  "politics": {
+    "picks": [
+      {"id": "po.beck", "kind": "advisor", "ref": "ludwig_beck", "step": "plan.army-organization-farm-army", "n": "Army Organization, to farm army XP."},
+      {"id": "po.schacht", "kind": "advisor", "ref": "hjalmar_schacht", "step": "plan.army-organization-farm-army"},
+      {"id": "po.prices1", "kind": "decision", "ref": "GER_guns_before_butter", "step": "plan.when-focus-unlocks-mefo"},
+      {"id": "po.prices2", "kind": "decision", "ref": "GER_arbeit_und_brot", "step": "plan.when-focus-unlocks-mefo"},
+      {"id": "po.prices3", "kind": "decision", "ref": "GER_collect_scrap_metal", "step": "plan.when-focus-unlocks-mefo"},
+      {"id": "po.prices4", "kind": "decision", "ref": "GER_ersatz_material", "step": "plan.when-focus-unlocks-mefo"},
+      {"id": "po.prices5", "kind": "decision", "ref": "GER_import_tariffs", "step": "plan.when-focus-unlocks-mefo", "n": "All the price controls except Implement Rations and Implement Wage Controls."},
+      {"id": "po.wareco", "kind": "idea", "ref": "war_economy", "step": "plan.150-pp-war-economy"},
+      {"id": "po.todt", "kind": "idea", "ref": "GER_organization_todt", "step": "plan.organisation-todt-as-industrial", "n": "When the notification shows."},
+      {"id": "po.goering", "kind": "advisor", "ref": "goering", "step": "plan.fix-trade-again-more", "n": "The Reichsmarschall."},
+      {"id": "po.workers", "kind": "decision", "ref": "improved_worker_conditions", "step": "plan.100-pp-improved-worker"},
+      {"id": "po.devwest", "kind": "decision", "ref": "GER_western_state_development", "step": "plan.decisions-develop-western-develop"},
+      {"id": "po.devcentral", "kind": "decision", "ref": "GER_central_state_development", "step": "plan.decisions-develop-western-develop"},
+      {"id": "po.seldte", "kind": "advisor", "ref": "GER_franz_seldte", "step": "plan.150-pp-reich-minister", "n": "Reich Minister of Labour."},
+      {"id": "po.raeder", "kind": "advisor", "ref": "raeder", "step": "plan.spymaster-then-decisive-battle", "n": "Decisive Battle, for navy XP."},
+      {"id": "po.guderian", "kind": "advisor", "ref": "heinz_guderian", "step": "plan.blitzkrieg-theorist-force-deploy"},
+      {"id": "po.schorner", "kind": "advisor", "ref": "ferdinand_schorner", "step": "plan.infantry-expert-cas-expert", "n": "Infantry expert."},
+      {"id": "po.sperrle", "kind": "advisor", "ref": "hugo_sperrle", "step": "plan.infantry-expert-cas-expert", "n": "CAS expert."},
+      {"id": "po.rommel", "kind": "advisor", "ref": "erwin_rommel", "step": "plan.infantry-expert-cas-expert", "n": "Armor Genius."},
+      {"id": "po.warbonds", "kind": "decision", "ref": "war_bonds", "step": "plan.war-bonds-reich-minister"},
+      {"id": "po.ribbentrop", "kind": "advisor", "ref": "joachim_von_ribbentrop", "step": "plan.war-bonds-reich-minister", "n": "The guide says Reich Minister of Foreign Affairs; on the fascist path that's Ribbentrop (Neurath holds the same role on another path)."},
+      {"id": "po.conscription", "kind": "idea", "ref": "extensive_conscription", "step": "plan.extensive-conscription-if-manpower", "n": "If manpower gets tight."},
+      {"id": "po.film", "kind": "decision", "ref": "war_propaganda_film_industry", "step": "plan.domestic-film-industry-more", "name": "Utilize Domestic Film Industry", "n": "Majors see it under this name."},
+      {"id": "po.radio", "kind": "decision", "ref": "war_propaganda_radio_industry", "step": "plan.radio-propaganda-last-develop"},
+      {"id": "po.devnorth", "kind": "decision", "ref": "GER_northern_state_development", "step": "plan.radio-propaganda-last-develop"},
+      {"id": "po.deveast", "kind": "decision", "ref": "GER_eastern_state_development", "step": "plan.radio-propaganda-last-develop"},
+      {"id": "po.devsouth", "kind": "decision", "ref": "GER_southern_state_development", "step": "plan.radio-propaganda-last-develop", "n": "The last Develop Germany decisions."}
+    ],
+    "note": "Not matched to the 1.19.1 files, so not listed: the \"security advisor\" (150 PP), the \"Spymaster\", \"the last price control measures\" and \"the new decision\" after Coal Liquefaction. Spirits (Political Loyalty, Motorization Drive) are on the Doctrines tab."
+  },
+
   "doctrines": {
     "folders": [
       {"id": "dc.land", "folder": "land", "grand": "new_mobile_warfare", "step": "plan.favourite-tactic-then-grand", "img": "land", "ts": "9:40",
@@ -637,25 +673,6 @@ registerGuide({
        "text":"Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, then put every new dockyard on it. Convoys stay at 1 dockyard."}
     ]},
     {"title": "Reference", "layout": "cards", "items": [
-      {"type":"card", "title":"Advisors & spirits, in order", "ordered":true, "list":[
-        "Army Organization (army XP farm)",
-        "Mefo Bills architect",
-        "Political Loyalty (20 army XP)",
-        "War Economy (150 PP)",
-        "Organisation Todt as industrial concern",
-        "Reichsmarschall specialist",
-        "Improved Worker Conditions (100 PP)",
-        "Air spirits",
-        "Reich Minister of Labour (150 PP)",
-        "Security advisor (150 PP), spies to quiet network",
-        "Motorization Drive (60 army XP)",
-        "Spymaster",
-        "Decisive Battle expert (navy XP)",
-        "Blitzkrieg theorist",
-        "Infantry expert, CAS expert, Armor Genius",
-        "War bonds, Reich Minister of Foreign Affairs",
-        "Extensive Conscription, Domestic Film Industry, Radio Propaganda"
-      ]},
       {"type":"card", "title":"WW2 air & naval setup", "list":[
         "Destroyers on patrol, engage at low risk. Submarines convoy-raid the same sea.",
         "Capital ships on strike force in the best harbor.",

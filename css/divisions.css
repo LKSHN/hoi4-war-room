@@ -159,10 +159,12 @@
 
 .tcell {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  min-height: 42px;
-  padding: 4px;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 3px 2px;
   min-width: 0;
   background: linear-gradient(180deg, #202219, #121410);
   border: 1px solid #4b4e3d;
@@ -176,31 +178,116 @@
 
 .tcell .dslot-ico {
   flex: none;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   color: #cfe7c4;
   background: radial-gradient(circle at 35% 30%, #6a7d55, #2b3a22 75%);
 }
 
 .tcell .dslot-ico svg {
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
 }
 
 .tabbr {
-  font: 600 11px var(--f-mono);
+  max-width: 100%;
+  font: 600 10px var(--f-mono);
+  text-align: center;
   color: #ece7d8;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.tcell .ed-select {
-  flex: 1;
-  min-width: 0;
-  max-width: none;
-  font-size: 11.5px;
-  padding: 2px 3px;
+button.tcell {
+  width: 100%;
+  text-align: center;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+button.tcell:hover {
+  border-color: var(--brass);
+}
+
+.tcell.picked {
+  border-color: var(--brass-lt);
+  box-shadow: 0 0 0 1px var(--brass-lt), 0 0 10px rgba(240, 213, 138, .35);
+  opacity: 1;
+}
+
+/* battalion picker under the grid (edit mode) */
+.tpick {
+  max-height: 360px;
+  overflow: auto;
+  padding: 8px 10px 10px;
+  background: linear-gradient(180deg, #1f211b, #161814);
+  border: 1px solid #4b4e3d;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, .8);
+}
+
+.tpick .dsmall {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.tpick-h {
+  position: sticky;
+  top: -8px;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: -8px -10px 4px;
+  padding: 8px 10px 6px;
+  background: #1f211b;
+  border-bottom: 1px solid #3b3e31;
+}
+
+.tpick-h b {
+  margin-right: auto;
+  font-family: var(--f-display);
+  font-size: 14px;
+  color: var(--brass-lt);
+}
+
+.tpick-g {
+  margin: 8px 0 4px;
+  font: 500 11px var(--f-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tpick-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px;
+}
+
+.tpick-list button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 7px 3px 3px;
+  text-align: left;
+  font-size: 12.5px;
+}
+
+.tpick-list .dslot-ico {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  color: #cfe7c4;
+  background: radial-gradient(circle at 35% 30%, #6a7d55, #2b3a22 75%);
+}
+
+.tpick-list .dslot-ico svg {
+  width: 16px;
+  height: 16px;
 }
 
 .editing .tcell.empty {

@@ -6,7 +6,34 @@
  * is calculated; attack and defense come from equipment and research, so the guide's in-game numbers are shown for those.
  */
 
-let tplSel = 0;
+let tplSel = 0,
+  tplPick = null; // the template slot being filled in edit mode: {kind: "support", i} or {kind: "combat", c, r}
+
+// battalion groups, in the order the game's picker lists them
+const UNIT_GROUPS = [["infantry", "Infantry"], ["mobile", "Mobile"], ["armor", "Armor"], ["combat_support", "Combat support"],
+  ["mobile_combat_support", "Mobile combat support"], ["armor_combat_support", "Armor combat support"]];
+const slotName = s => s.kind === "support" ? "Support company " + (s.i + 1) : "Combat column " + (s.c + 1) + ", row " + (s.r + 1);
+const slotUnit = (t, s) => s.kind === "support" ? (t.support || [])[s.i] : ((t.combat || [])[s.c] || [])[s.r];
+
+// put a unit (or null) in a slot; columns stack from the top like in game, so empty rows close up
+function setSlot(t, s, v) {
+  if (s.kind === "support") {
+    t.support[s.i] = v;
+    t.support = t.support.filter(Boolean);
+    return;
+  }
+  t.combat[s.c] = t.combat[s.c] || [];
+  t.combat[s.c][s.r] = v;
+  t.combat = Array.from(t.combat, col => (col || []).filter(Boolean));
+  while (t.combat.length && !t.combat[t.combat.length - 1].length) t.combat.pop();
+}
+
+// after filling a slot, move on to the next free one in the same column, so a column fills in a few clicks
+function nextSlot(t, s) {
+  if (s.kind === "support") return t.support.length < 5 ? {kind: "support", i: t.support.length} : null;
+  const n = (t.combat[s.c] || []).length;
+  return n < 5 ? {kind: "combat", c: s.c, r: n} : null;
+}
 const tplUnits = t => [...(t.support || []), ...(t.combat || []).flat()].filter(Boolean).map(id => UNITS.units[id]).filter(Boolean);
 
 function tplStats(t) {
@@ -200,6 +227,7 @@ function renderTemplates() {
     b.querySelector("span:last-child").textContent = tplUnits(t).length ? "width " + num(st.combat_width) + " · " + num(st.manpower) + " men" : "battalions not set";
     b.addEventListener("click", () => {
       tplSel = i;
+      tplPick = null;
       renderTemplates();
     });
     list.appendChild(b);
@@ -217,6 +245,55 @@ function renderTemplates() {
     renderTemplates();
   }, "dadd"));
   renderTemplate(tpls[tplSel]);
+}
+
+// battalion picker for the selected slot, grouped like the game's (support companies for the support column)
+function unitPicker(t, redo) {
+  const box = el("div", "tpick");
+  if (!tplPick) {
+    box.appendChild(el("p", "dsmall", "Click a slot in the grid, then pick its battalion here."));
+    return box;
+  }
+  const s = tplPick,
+    cur = slotUnit(t, s);
+  const head = el("div", "tpick-h");
+  head.appendChild(el("b", null, esc(slotName(s))));
+  const clear = edBtn("Empty slot", "Empty this slot", () => {
+    setSlot(t, s, null);
+    redo();
+  });
+  clear.disabled = !cur;
+  head.append(clear, edBtn("Done", "Stop picking", () => {
+    tplPick = null;
+    redo();
+  }));
+  box.appendChild(head);
+  const units = Object.values(UNITS.units),
+    support = s.kind === "support";
+  const groups = support ? [["support", "Support companies"]] :
+    [...UNIT_GROUPS, ...[...new Set(units.map(u => u.group))].filter(g => g !== "support" && !UNIT_GROUPS.some(([k]) => k === g)).map(g => [g, g.replace(/_/g, " ")])];
+  groups.forEach(([g, label]) => {
+    const list = units.filter(u => u.group === g).sort((a, b) => a.name.localeCompare(b.name));
+    if (!list.length) return;
+    box.appendChild(el("div", "tpick-g", esc(label)));
+    const wrap = el("div", "tpick-list");
+    list.forEach(u => {
+      const b = el("button");
+      b.type = "button";
+      b.setAttribute("aria-pressed", u.id === cur);
+      b.innerHTML = `<span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${unitIcon(u)}"/></svg></span><span></span>`;
+      b.lastChild.textContent = u.name;
+      b.title = u.name + (u.abbr ? " (" + u.abbr + ")" : "") + " · width " + num(u.combat_width || 0) + " · " + num(u.manpower || 0) + " men";
+      b.addEventListener("click", () => {
+        setSlot(t, s, u.id);
+        tplPick = cur ? s : nextSlot(t, s); // replacing keeps the slot; filling moves on down the column
+        redo();
+      });
+      wrap.appendChild(b);
+    });
+    box.appendChild(wrap);
+  });
+  return box;
 }
 
 function renderTemplate(t) {
@@ -242,55 +319,43 @@ function renderTemplate(t) {
     n.textContent = t.name;
     left.appendChild(n);
   }
-  // support column (5) and combat grid (5 x 5), like the game
+  // support column (5) and combat grid (5 x 5), like the game. In edit mode a click selects a slot and the
+  // battalion picker under the grid fills it.
+  t.support = t.support || [];
+  t.combat = t.combat || [];
+  const same = (a, b) => !!a && !!b && a.kind === b.kind && a.i === b.i && a.c === b.c && a.r === b.r;
   const grid = el("div", "tgrid");
-  const cell = (id, pick, set) => {
+  const cell = (id, slot) => {
     const u = UNITS.units[id],
-      c = el("div", "tcell" + (id ? "" : " empty"));
+      c = el(EDITING ? "button" : "div", "tcell" + (id ? "" : " empty") + (same(slot, tplPick) ? " picked" : ""));
     c.innerHTML = `<span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${unitIcon(u)}"/></svg></span>`;
-    c.title = u ? u.name : "Empty";
+    c.appendChild(el("span", "tabbr", u ? esc(u.abbr || u.name) : ""));
+    c.title = slotName(slot) + ": " + (u ? u.name : "empty");
     if (EDITING) {
-      const sel = el("select", "ed-select");
-      sel.setAttribute("aria-label", u ? u.name : "Empty slot");
-      sel.appendChild(el("option", null, "—")).value = "";
-      Object.values(UNITS.units).filter(pick).sort((a, b) => a.name.localeCompare(b.name)).forEach(x => {
-        const o = el("option");
-        o.value = x.id;
-        o.textContent = x.name;
-        sel.appendChild(o);
+      c.type = "button";
+      c.setAttribute("aria-label", c.title);
+      c.addEventListener("click", () => {
+        tplPick = same(slot, tplPick) ? null : slot;
+        renderTemplate(t);
+        const picker = document.querySelector("#tDesigner .tpick");
+        if (picker && tplPick) picker.scrollIntoView({block: "nearest"});
       });
-      sel.value = id || "";
-      sel.addEventListener("change", () => {
-        set(sel.value || null);
-        redo();
-      });
-      c.appendChild(sel);
-    } else c.appendChild(el("span", "tabbr", u ? esc(u.abbr || u.name) : ""));
+    }
     return c;
   };
   const sup = el("div", "tsup");
   sup.appendChild(el("div", "tcol-h", "Support"));
-  t.support = t.support || [];
-  for (let i = 0; i < 5; i++) sup.appendChild(cell(t.support[i], u => u.group === "support", v => {
-    t.support[i] = v;
-    t.support = t.support.filter(Boolean);
-  }));
+  for (let i = 0; i < 5; i++) sup.appendChild(cell(t.support[i], {kind: "support", i}));
   const com = el("div", "tcombat");
   com.appendChild(el("div", "tcol-h wide", "Combat"));
-  t.combat = t.combat || [];
   for (let c = 0; c < 5; c++) {
     const col = el("div", "tcolumn");
-    for (let r = 0; r < 5; r++) {
-      col.appendChild(cell((t.combat[c] || [])[r], u => u.group !== "support", v => {
-        t.combat[c] = t.combat[c] || [];
-        t.combat[c][r] = v;
-        t.combat = t.combat.map(x => (x || []).filter(Boolean));
-      }));
-    }
+    for (let r = 0; r < 5; r++) col.appendChild(cell((t.combat[c] || [])[r], {kind: "combat", c, r}));
     com.appendChild(col);
   }
   grid.append(sup, com);
   left.appendChild(grid);
+  if (EDITING) left.appendChild(unitPicker(t, redo));
   // stats: calculated from the unit files, with the in-game value from the guide next to it
   const sheet = el("div", "dsheet");
   const col = (title, rows) => {
@@ -338,7 +403,8 @@ function renderTemplate(t) {
   right.appendChild(sheet);
   const note = el("div", "dnote");
   note.innerHTML = (t.n ? "<p></p>" : "") + "<p class='dsmall'>Width, HP, manpower, weight, suppression, recon, entrenchment, training time and equipment are exact from the patch " +
-    esc(UNITS.patch) + " unit files. ≈ values leave out research (logistics research cuts supply use). Attack, defense and speed come from equipment and research, so only the in-game values from the guide are shown.</p>";
+    esc(UNITS.patch) + " unit files. ≈ values leave out research (logistics research cuts supply use). Attack, defense and speed come from equipment and research, so only the in-game values from the guide are shown." +
+    (EDITING ? "" : " Use Edit guide to change its battalions.") + "</p>";
   if (t.n) note.querySelector("p").textContent = t.n;
   if (t.img && G.images[t.img]) {
     const b = el("button", "shotbtn");

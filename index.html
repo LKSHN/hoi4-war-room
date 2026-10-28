@@ -316,6 +316,59 @@ label.item.done .fd{color:var(--green-ink)}
 .lg.owned{background:linear-gradient(#5c8a3c,#2e4a1e)}
 @media (prefers-reduced-motion:reduce){.rt[data-state="next"]{animation:none;background:#5a4e2c}}
 
+/* equipment designer, after the in-game tank/plane designer */
+.designs{display:grid;grid-template-columns:240px minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.designs{grid-template-columns:minmax(0,1fr)}}
+.dlist{display:flex;flex-direction:column;gap:6px}
+.dcard{display:grid;grid-template-columns:40px 1fr;grid-template-rows:auto auto;column-gap:10px;align-items:center;text-align:left;padding:7px 9px;
+  background:linear-gradient(180deg,#3a3d33,#25281f);border-color:#55584a}
+.dcard .fn-ico{grid-row:1 / span 2;width:38px;height:38px}
+.dcard .fn-ico svg{width:22px;height:22px}
+.dcard b{font:600 14px var(--f-body);color:var(--ink-hi)}
+.dcard span:last-child{font:500 11px var(--f-mono);color:var(--muted)}
+.dcard[aria-pressed="true"]{border-color:var(--brass);background:linear-gradient(180deg,#4c4430,#2e2a1e);box-shadow:inset 3px 0 0 var(--brass)}
+.dadd{border-style:dashed;color:var(--brass-lt)}
+.designer{background:linear-gradient(180deg,#2e302a,#1d1f1a);border:1px solid #6b6b5a;box-shadow:var(--bevel),var(--drop);min-width:0}
+.dtitle{padding:8px 14px;text-align:center;font-family:var(--f-display);font-size:20px;letter-spacing:.3em;text-transform:uppercase;color:#ece7d8;
+  background:linear-gradient(180deg,#3d4036,#262822);border-bottom:1px solid #6b6b5a;text-shadow:0 1px 0 #000}
+.dbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:14px;padding:12px}
+@media (max-width:1180px){.dbody{grid-template-columns:minmax(0,1fr)}}
+.dleft,.dright{display:flex;flex-direction:column;gap:10px;min-width:0}
+.dhead{display:grid;gap:6px}
+.dname{font:600 15px var(--f-body);color:var(--ink-hi);padding:6px 10px;background:#14160f;border:1px solid #5d604c;border-radius:2px}
+.dhead .ed-select{max-width:none}
+.drow{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.dslot{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center;min-height:46px;padding:5px 7px;
+  background:linear-gradient(180deg,#202219,#121410);border:1px solid #4b4e3d;border-radius:2px;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
+.dslot.empty{opacity:.6}
+.dslot.req.empty{border-color:#8c3a2a;opacity:1}
+.dslot-ico{width:34px;height:34px;display:grid;place-items:center;border-radius:2px;color:#cfe0ef;background:radial-gradient(circle at 35% 30%,#5a6b7a,#26313b 75%)}
+.dslot-ico svg{width:22px;height:22px;fill:currentColor}
+.dslot-name{font:600 12px/1.2 var(--f-body);color:#ece7d8}
+.dslot .ed-select{width:100%;max-width:none;font-size:12px}
+.dups{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end;padding:4px 2px}
+.dup{display:flex;align-items:center;gap:8px;font-family:var(--f-display);color:var(--ink)}
+.dup b{min-width:22px;text-align:center;font:600 16px var(--f-mono);color:var(--brass-lt)}
+.dsheet{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:#e6dbc0;color:#2b2618;border:1px solid #8f8460;box-shadow:inset 0 0 18px rgba(120,95,40,.35)}
+@media (max-width:560px){.dsheet{grid-template-columns:minmax(0,1fr)}}
+.dcol{border-right:1px solid #b7a97f;padding-bottom:4px}
+.dcol:last-child{border-right:0}
+.dcol-h{font-family:var(--f-display);font-size:15px;padding:3px 8px;background:#cdbf98;border-bottom:1px solid #a69a72;color:#2b2618}
+.dstat{display:grid;grid-template-columns:1fr auto;column-gap:6px;padding:1px 8px;font:500 12.5px var(--f-mono)}
+.dstat span{color:#3d3626}
+.dstat b{font-weight:600;color:#1d1910;text-align:right}
+.dseen{grid-column:1 / -1;justify-self:end;font:italic 500 10.5px var(--f-mono);color:#7a6a3e}
+.dcost{align-self:end;font:600 14px var(--f-body);color:var(--ink)}
+.dcost b{color:var(--brass-lt)}
+.dcost .dseen{color:var(--muted)}
+.duse{font-size:13.5px;color:var(--muted)}
+.duse b{color:var(--ink-hi)}
+.dwarn{margin:0;padding:6px 10px 6px 26px;font-size:13px;color:#ff9a7f;background:rgba(125,49,34,.25);border:1px solid #7d3122}
+.dnote{font-size:13.5px;color:var(--ink)}
+.dnote p{margin:0 0 6px}
+.dnote .dsmall{font-size:12.5px;color:var(--muted)}
+.dnote .shotbtn{margin-left:0}
+
 /* editing the guide */
 .editbar,.editnote{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 14px;font-size:13.5px;
   background:linear-gradient(180deg,#4a4130,#2e2a1e);border:1px solid var(--brass);box-shadow:var(--bevel),var(--drop)}
@@ -446,6 +499,7 @@ label.item.done .fd{color:var(--green-ink)}
     <button role="tab" data-tab="trees" aria-selected="false">Focus &amp; research<span class="tc" data-tc="trees"></span></button>
     <button role="tab" data-tab="tree" aria-selected="false" hidden>Focus tree</button>
     <button role="tab" data-tab="restree" aria-selected="false" hidden>Research tree</button>
+    <button role="tab" data-tab="designs" aria-selected="false" hidden>Designs</button>
     <button role="tab" data-tab="builds" aria-selected="false">Builds &amp; numbers</button>
   </nav>
 
@@ -515,6 +569,13 @@ label.item.done .fd{color:var(--green-ink)}
     </section>
   </div>
 
+  <div data-panel="designs" hidden>
+    <div class="designs">
+      <aside class="dlist" id="dList" aria-label="Designs"></aside>
+      <section class="designer" id="designer"></section>
+    </div>
+  </div>
+
   <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
@@ -537,17 +598,18 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-28.3"></script>
-<script src="guides/glossary.js?v=2026-10-28.3"></script>
+<script src="guides/index.js?v=2026-10-28.4"></script>
+<script src="guides/glossary.js?v=2026-10-28.4"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-28.3";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.4";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
 function registerTree(t){ TREE = t; }
-let RES = null;
+let RES = null, DES = null;
 function registerResearch(r){ RES = r; }
+function registerDesigners(d){ DES = d; }
 
 const TAGS = {up: "UP", sp: "Special project"};
 const PREFS_KEY = "hoi4-tool-prefs";
@@ -1234,6 +1296,213 @@ document.getElementById("resCanvas").addEventListener("keydown", e => {
   if (n && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); toggleTech(n.dataset.id); }
 });
 
+/* equipment designs: tank and plane designers like in game, stats from guides/trees/designers-*.js.
+   Stats are the design's own: (base + module and upgrade adds) x (1 + multipliers). Research and MIO bonuses come on top in game. */
+let designSel = 0;
+const isPlane = d => DES.frames[d.frame] && /airframe/.test(DES.frames[d.frame].arch);
+const TANK_COLS = [["Base Stats", [["maximum_speed", "Max Speed", "km/h"], ["reliability", "Reliability", "%"]]],
+  ["Combat Stats", [["soft_attack", "Soft Attack"], ["hard_attack", "Hard Attack"], ["ap_attack", "Piercing"], ["hardness", "Hardness", "%"],
+    ["armor_value", "Armor"], ["breakthrough", "Breakthrough"], ["defense", "Defense"], ["air_attack", "Air Attack"]]],
+  ["Misc. Stats", [["fuel_capacity", "Fuel Capacity"], ["fuel_consumption", "Fuel Usage"], ["suppression", "Suppression"], ["recon", "Reconnaissance"], ["entrenchment", "Entrenchment"]]]];
+const PLANE_COLS = [["Base Stats", [["maximum_speed", "Max Speed", "km/h"], ["air_range", "Range", "km"], ["weight", "Weight"], ["thrust", "Thrust"]]],
+  ["Combat Stats", [["air_defence", "Air Defense"], ["air_attack", "Air Attack"], ["air_agility", "Agility"], ["air_superiority", "Air Superiority"],
+    ["naval_strike_attack", "Naval Attack"], ["naval_strike_targetting", "Naval Targeting"], ["air_ground_attack", "Ground Attack"], ["air_bombing", "Strat. Bombing"]]],
+  ["Misc. Stats", [["reliability", "Reliability", "%"], ["fuel_consumption", "Fuel Usage"], ["surface_detection", "Surface Detection"], ["sub_detection", "Sub Detection"], ["night_penalty", "Night Penalty", "%"]]]];
+const ROLE_LABEL = {artillery: "Artillery", flame: "Flame (Support Company)", anti_air: "Anti-Air", anti_tank: "Tank Destroyer", amphibious: "Amphibious",
+  armor: "Tank", fighter: "Fighter", cas: "CAS", naval_bomber: "Naval Bomber", interceptor: "Heavy Fighter", tactical_bomber: "Tactical Bomber",
+  strategic_bomber: "Strategic Bomber", air_transport: "Transport", suicide: "Suicide", scout_plane: "Scout Plane", maritime_patrol: "Maritime Patrol"};
+const roleLabel = a => { const t = a.type || []; return ROLE_LABEL[t[t.length - 1]] || a.name; };
+
+function frameSlots(d){
+  const f = DES.frames[d.frame]; if (!f) return {};
+  return Object.keys(f.slots || {}).length ? f.slots : (DES.archetypes[f.arch] || {}).slots || {};
+}
+// a slot also takes what the chosen modules unlock there (a medium turret lets the main armament slot take medium guns)
+function slotCats(d, slot){
+  const s = frameSlots(d)[slot]; if (!s) return [];
+  const cats = new Set(s.cats);
+  Object.values(d.modules || {}).forEach(m => { const mod = DES.modules[m]; ((mod && mod.slotcats || {})[slot] || []).forEach(c => cats.add(c)); });
+  return [...cats];
+}
+function rolesFor(d){
+  const f = DES.frames[d.frame]; if (!f) return [];
+  return Object.values(DES.archetypes).filter(a => a.id === f.arch || a.role_of === f.arch);
+}
+function designStats(d){
+  const f = DES.frames[d.frame], role = DES.archetypes[d.role] || {}, add = {...(f ? f.stats : {})}, mul = {};
+  Object.assign(add, role.set || {});
+  const put = (o, k, v) => o[k] = (o[k] || 0) + v;
+  Object.values(d.modules || {}).forEach(m => { const mod = DES.modules[m]; if (!mod) return;
+    Object.entries(mod.add).forEach(([k, v]) => put(add, k, v)); Object.entries(mod.mul).forEach(([k, v]) => put(mul, k, v)); });
+  Object.entries(d.upgrades || {}).forEach(([u, lvl]) => { const up = DES.upgrades[u]; if (!up || !lvl) return;
+    Object.entries(up.add).forEach(([k, v]) => put(add, k, v * lvl)); Object.entries(up.mul).forEach(([k, v]) => put(mul, k, v * lvl)); });
+  const out = {}; new Set([...Object.keys(add), ...Object.keys(mul)]).forEach(k => out[k] = (add[k] || 0) * (1 + (mul[k] || 0)));
+  return out;
+}
+function designWarnings(d){
+  const w = [], slots = frameSlots(d), role = DES.archetypes[d.role] || {}, types = role.type || [];
+  Object.entries(slots).forEach(([s, v]) => { if (v.req && !(d.modules || {})[s]) w.push("Required slot is empty: " + slotLabel(s)); });
+  const mods = Object.values(d.modules || {}).filter(Boolean).map(m => DES.modules[m]).filter(Boolean);
+  mods.forEach(m => {
+    if (m.allow && !m.allow.some(t => types.includes(t))) w.push(m.name + " needs the " + m.allow.map(t => ROLE_LABEL[t] || t).join(" or ") + " role");
+    if (m.forbid && m.forbid.some(t => types.includes(t))) w.push(m.name + " can't be used in this role");
+  });
+  const extra = types.filter(t => !((DES.archetypes[(DES.frames[d.frame] || {}).arch] || {}).type || []).includes(t));
+  // some roles need a module that unlocks them (a howitzer for Artillery); plane roles aren't gated this way
+  const gated = extra.length && Object.values(DES.modules).some(m => (m.allow || []).some(t => extra.includes(t)));
+  if (gated && !mods.some(m => (m.allow || []).some(t => extra.includes(t)))) w.push("No module allows the " + roleLabel(role) + " role");
+  ((DES.frames[d.frame] || {}).limits || []).forEach(l => {
+    const n = mods.filter(m => (l.match.module && (l.match.module === m.id || l.match.module === "any")) || (l.match.category && (l.match.category === m.cat || l.match.category === "any"))).length;
+    const lim = +l.n, bad = l.op === "<" ? n >= lim : l.op === ">" ? n <= lim : n !== lim;
+    if (bad && n) w.push("Too many " + (l.match.module ? (DES.modules[l.match.module] || {}).name || l.match.module : l.match.category.replace(/_/g, " ")) + " (" + n + ")");
+  });
+  const st = designStats(d);
+  if (isPlane(d) && (st.thrust || 0) < (st.weight || 0)) w.push("Weight is above thrust: the game won't let you save this design");
+  return [...new Set(w)];
+}
+const slotLabel = s => s.replace(/^fixed_/, "").replace(/_slot(_\d+)?$/, m => m.match(/\d+/) ? " " + m.match(/\d+/)[0] : "").replace(/_/g, " ");
+function modIcon(cat){
+  return /turret_type/.test(cat) ? "tank" : /howitzer|armament|flamethrower|secondary_turret/.test(cat) ? "artillery" : /suspension/.test(cat) ? "road"
+    : /armor_type/.test(cat) ? "fort" : /engine/.test(cat) ? "gear" : /radio|radar/.test(cat) ? "bolt" : /weapon/.test(cat) ? "swords"
+    : /bomb_sights|camera/.test(cat) ? "eye" : "gear";
+}
+const fmtStat = (v, unit) => unit === "%" ? (v * 100).toFixed(1) + "%" : Math.abs(v) >= 100 ? v.toFixed(1) : v.toFixed(2).replace(/\.?0+$/, "") || "0";
+
+function buildDesigns(){
+  if (!DES || !G.designs) return;
+  document.querySelector('[data-tab="designs"]').hidden = false;
+  renderDesigns();
+}
+function renderDesigns(){
+  const list = document.getElementById("dList"); list.innerHTML = "";
+  designSel = Math.min(designSel, G.designs.length - 1);
+  G.designs.forEach((d, i) => {
+    const b = el("button", "dcard"); b.type = "button"; b.setAttribute("aria-pressed", i === designSel);
+    const f = DES.frames[d.frame], role = DES.archetypes[d.role];
+    b.innerHTML = `<span class="fn-ico" data-ic="${isPlane(d) ? "plane" : "tank"}"><svg viewBox="0 0 24 24"><use href="#ic-${isPlane(d) ? "plane" : "tank"}"/></svg></span><b></b><span></span>`;
+    b.querySelector("b").textContent = d.name || "Untitled";
+    b.querySelector("span:last-child").textContent = [f ? f.name : d.frame, role ? roleLabel(role) : ""].filter(Boolean).join(" · ") + " · cost " + fmtStat(designStats(d).build_cost_ic || 0);
+    b.addEventListener("click", () => { designSel = i; renderDesigns(); });
+    list.appendChild(b);
+  });
+  if (EDITING){
+    const add = (label, plane) => list.appendChild(edBtn(label, label, () => {
+      const f = Object.values(DES.frames).find(x => plane ? x.arch === "small_plane_airframe" : x.arch === "medium_tank_chassis" && x.year >= 1936);
+      const a = DES.archetypes[f.arch];
+      G.designs.push({id: uid("design."), name: plane ? "New plane" : "New tank", frame: f.id, role: f.arch, modules: {...(a.defaults || {})},
+        upgrades: Object.fromEntries((f.upgrades || []).map(u => [u, 0]))});
+      designSel = G.designs.length - 1; saveEdits(); renderDesigns();
+    }, "dadd"));
+    add("+ New tank design", false); add("+ New plane design", true);
+  }
+  renderDesigner(G.designs[designSel]);
+}
+
+function renderDesigner(d){
+  const box = document.getElementById("designer"); box.innerHTML = "";
+  if (!d) return;
+  const plane = isPlane(d), st = designStats(d), seen = d.seen || {}, f = DES.frames[d.frame];
+  const changed = () => { saveEdits(); renderDesigns(); };
+  box.appendChild(el("div", "dtitle", plane ? "Plane Designer" : "Tank Designer"));
+  const body = el("div", "dbody"), left = el("div", "dleft"), right = el("div", "dright");
+  // name, role and frame
+  const head = el("div", "dhead");
+  if (EDITING) head.appendChild(edInput(d.name, "Design name", v => { d.name = v; saveEdits(); document.querySelector('#dList [aria-pressed="true"] b').textContent = v || "Untitled"; }, "dname"));
+  else { const n = el("div", "dname"); n.textContent = d.name; head.appendChild(n); }
+  const roleSel = el("select", "ed-select drole"); roleSel.disabled = !EDITING; roleSel.setAttribute("aria-label", "Role");
+  rolesFor(d).forEach(a => { const o = el("option"); o.value = a.id; o.textContent = roleLabel(a); roleSel.appendChild(o); });
+  roleSel.value = d.role; roleSel.addEventListener("change", () => { d.role = roleSel.value; changed(); });
+  const frameSel = el("select", "ed-select dframe"); frameSel.disabled = !EDITING; frameSel.setAttribute("aria-label", plane ? "Airframe" : "Chassis");
+  Object.values(DES.frames).filter(x => x.arch === (f && f.arch)).sort((a, b) => a.year - b.year)
+    .forEach(x => { const o = el("option"); o.value = x.id; o.textContent = x.name + (x.year ? " (" + x.year + ")" : ""); frameSel.appendChild(o); });
+  frameSel.value = d.frame;
+  frameSel.addEventListener("change", () => {
+    d.frame = frameSel.value; const slots = frameSlots(d);
+    Object.keys(d.modules || {}).forEach(s => { if (!slots[s]) delete d.modules[s]; });   // drop modules for slots the new frame doesn't have
+    changed();
+  });
+  head.append(roleSel, frameSel);
+  left.appendChild(head);
+  // module slots: fixed ones first, like the game's top row
+  const slots = frameSlots(d), entries = Object.keys(slots);
+  const rows = plane ? [entries.filter(s => /weapon/.test(s)), entries.filter(s => !/weapon/.test(s))]
+    : [entries.filter(s => /turret|armament|special/.test(s)), entries.filter(s => !/turret|armament|special/.test(s))];
+  rows.forEach(row => {
+    const r = el("div", "drow");
+    row.forEach(s => {
+      const cur = (d.modules || {})[s], mod = DES.modules[cur], t = el("div", "dslot" + (cur ? "" : " empty") + (slots[s].req ? " req" : ""));
+      t.innerHTML = `<span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${mod ? modIcon(mod.cat) : "gear"}"/></svg></span><span class="dslot-name"></span>`;
+      t.title = slotLabel(s) + (slots[s].req ? " (required)" : "");
+      if (EDITING){
+        const sel = el("select", "ed-select"); sel.setAttribute("aria-label", slotLabel(s));
+        sel.appendChild(el("option", null, "— empty —")).value = "";
+        const cats = slotCats(d, s);
+        Object.values(DES.modules).filter(m => cats.includes(m.cat)).sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name))
+          .forEach(m => { const o = el("option"); o.value = m.id; o.textContent = m.name; sel.appendChild(o); });
+        sel.value = cur || "";
+        sel.addEventListener("change", () => { d.modules = d.modules || {}; if (sel.value) d.modules[s] = sel.value; else delete d.modules[s]; changed(); });
+        t.querySelector(".dslot-name").replaceWith(sel);
+      } else t.querySelector(".dslot-name").textContent = mod ? mod.name : (cur || "Empty");
+      r.appendChild(t);
+    });
+    left.appendChild(r);
+  });
+  // engine / armor upgrades (tanks)
+  const ups = (f && f.upgrades) || [];
+  if (ups.length){
+    const u = el("div", "dups");
+    ups.forEach(id => {
+      const up = DES.upgrades[id], lvl = (d.upgrades || {})[id] || 0, g = el("div", "dup");
+      g.appendChild(el("span", "dup-name", id.includes("engine") ? "Engine" : id.includes("armor") ? "Armor" : esc(up.name)));
+      const set = v => { d.upgrades = d.upgrades || {}; d.upgrades[id] = Math.max(0, Math.min(up.max, v)); changed(); };
+      const minus = edBtn("−", "Lower", () => set(lvl - 1)), plus = edBtn("+", "Raise", () => set(lvl + 1));
+      minus.disabled = plus.disabled = !EDITING;
+      g.append(minus, el("b", null, String(lvl)), plus);
+      u.appendChild(g);
+    });
+    left.appendChild(u);
+  }
+  // stats sheet like the game's, with the in-game value from the guide's screenshot next to it
+  const sheet = el("div", "dsheet");
+  (plane ? PLANE_COLS : TANK_COLS).forEach(([title, rowsC]) => {
+    const c = el("div", "dcol"); c.appendChild(el("div", "dcol-h", title));
+    rowsC.forEach(([k, label, unit]) => {
+      const v = st[k] || 0, row = el("div", "dstat");
+      row.innerHTML = `<span></span><b></b>`;
+      row.querySelector("span").textContent = label + ":";
+      row.querySelector("b").textContent = fmtStat(v, unit === "%" ? "%" : "") + (unit && unit !== "%" ? " " + unit : "");
+      if (seen[k] != null){ const g = el("i", "dseen"); g.textContent = "game " + fmtStat(seen[k], unit === "%" ? "%" : ""); g.title = "As shown in game in the guide (research and MIO bonuses included)"; row.appendChild(g); }
+      c.appendChild(row);
+    });
+    sheet.appendChild(c);
+  });
+  right.appendChild(sheet);
+  const cost = el("div", "dcost");
+  cost.innerHTML = "Production cost: <b></b>" + (seen.build_cost_ic != null ? " <i class='dseen'></i>" : "");
+  cost.querySelector("b").textContent = fmtStat(st.build_cost_ic || 0);
+  if (seen.build_cost_ic != null) cost.querySelector("i").textContent = "game " + fmtStat(seen.build_cost_ic);
+  right.appendChild(cost);
+  // who uses it
+  const role = DES.archetypes[d.role] || {}, users = role.usedBy || [];
+  if (users.length) right.appendChild(el("div", "duse", "Used by: " + users.map(u => "<b>" + esc(u.name) + "</b>" + (u.n ? " (" + u.n + " per battalion)" : "")).join(", ")));
+  const warns = designWarnings(d);
+  if (warns.length) right.appendChild(el("ul", "dwarn", warns.map(w => "<li>" + esc(w) + "</li>").join("")));
+  const note = el("div", "dnote");
+  note.innerHTML = (d.n ? "<p></p>" : "") + "<p class='dsmall'>Stats are the design's own, from the patch " + esc(DES.patch) + " game files. Research" +
+    (d.mio ? ", the " + esc(d.mio) + " MIO" : " and MIO") + " bonuses come on top in game, so the in-game numbers (\"game\") can be higher.</p>";
+  if (d.n) note.querySelector("p").textContent = d.n;
+  if (d.img && G.images[d.img]){
+    const im = G.images[d.img], b = el("button", "shotbtn"); b.type = "button"; b.textContent = "▸ In-game screen";
+    b.addEventListener("click", () => openLB(d.img, b)); note.appendChild(b);
+    if (d.ts && G.meta.video){ note.appendChild(document.createTextNode(" ")); note.appendChild(tsLink(d.ts)); }
+  }
+  if (EDITING){
+    note.appendChild(confirmTwice(edBtn("Delete design", "Delete this design", () => {}, "del"), () => { G.designs.splice(designSel, 1); designSel = 0; saveEdits(); renderDesigns(); }));
+  }
+  right.appendChild(note);
+  body.append(left, right); box.appendChild(body);
+}
+
 /* lightbox */
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
 let lbReturn = null;
@@ -1291,7 +1560,7 @@ pick.addEventListener("change", () => {
 
 /* editable guide: your edits are a full copy of the editable sections, saved per guide on top of the original file.
    "base" fingerprints the original, so we can tell you when the guide file changed under your edits. */
-const EDITABLE = ["plan", "focus", "research", "builds"];
+const EDITABLE = ["plan", "focus", "research", "builds", "designs"];
 let G0 = null, EDITING = false, editKey = "", saveTimer = null;
 const hashStr = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
 const sections = g => { const o = {}; EDITABLE.forEach(k => { if (g[k]) o[k] = g[k]; }); return o; };
@@ -1486,6 +1755,7 @@ function enterEdit(){
   editList("focusCol", G.focus, "focus");
   editList("researchCol", G.research, "research");
   editBuilds();
+  if (DES) renderDesigns();   // designer controls switch on in edit mode
 }
 function leaveEdit(){ saveEdits(true); location.reload(); }   // reload so the tree, dates and counts all use the edits
 
@@ -1541,7 +1811,8 @@ function start(){
   glossify(document.querySelector(".main"));
   buildTree();
   buildResearch();
-  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES)) showTab(wantTab);
+  buildDesigns();
+  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES)) showTab(wantTab);
 
   const ul = document.getElementById("chapters");
   (G.chapters || []).forEach(c => {
@@ -1556,7 +1827,7 @@ const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
   // then the guide's game data files, one after another (focus tree, research tree)
-  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree].filter(Boolean) : [];
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers].filter(Boolean) : [];
   const next = () => {
     const f = files.shift(); if (!f) return start();
     const t = document.createElement("script");

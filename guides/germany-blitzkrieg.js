@@ -9,6 +9,9 @@
      by = in-game date the group (or step) should be done by: "YYYY-MM-DD", or "YYYY-MM" for the end of that month.
      approx = true when that date is an estimate rather than stated in the guide. A step without "by" uses its group's.
      Step IDs are stable: never change or reuse one, even if the text is reworded. New steps get new IDs.
+   - designs: equipment designs {id, name, frame (game frame id), role (archetype id), modules {slot: module},
+     upgrades {upgrade: level}, img?, ts?, mio?, n?, seen? (stats as shown in game, research and MIO included)};
+     data comes from meta.designers
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -25,6 +28,7 @@ registerGuide({
     "patch": null,
     "focusTree": "guides/trees/germany-1.19.1.js",
     "researchTree": "guides/trees/research-1.19.1.js",
+    "designers": "guides/trees/designers-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -97,7 +101,7 @@ registerGuide({
       {"id":"plan.60-army-xp-motorization","t":"60 army XP: Motorization Drive"}
     ]},
     {"id":"plan-spg-design-template","title":"SPG design & template","ts":"13:57","by":"1938-04","approx":true, "steps": [
-      {"id":"plan.design-spg1-medium-chassis","t":"Design SPG1 (medium chassis, Artillery role, engine 7, armor 4) and the Flammpanzer III","n":"Details on the Builds tab","img":"spg1"},
+      {"id":"plan.design-spg1-medium-chassis","t":"Design SPG1 (medium chassis, Artillery role, engine 7, armor 4) and the Flammpanzer III","n":"Details on the Designs tab","img":"spg1"},
       {"id":"plan.production-flame-tank-1","t":"Production: flame tank 1, SPG all the rest, F1 10, C1 10"},
       {"id":"plan.queue-7-alkett-mio","t":"Queue the 7 Alkett MIO traits","img":"mio"},
       {"id":"plan.force-deploy-last-defensive","t":"Force deploy the last defensive divisions, recruit 9 armored divisions"},
@@ -298,6 +302,33 @@ registerGuide({
      "def": "The guide's armor template: **8 motorized** and **10 SPG** battalions, with recon, engineer, artillery, flame tank and logistics support. Width 36."}
   ],
 
+  "designs": [
+    {"id":"design.spg1", "name":"SPG1 (7/4)", "frame":"medium_tank_chassis_1", "role":"medium_tank_artillery_chassis",
+     "modules":{"turret_type_slot":"tank_medium_three_man_tank_turret", "main_armament_slot":"tank_medium_howitzer",
+       "special_type_slot_1":"tank_radio_2", "special_type_slot_2":"secondary_turret_hmg", "special_type_slot_3":"secondary_turret_hmg",
+       "special_type_slot_4":"wet_ammo_storage", "suspension_type_slot":"tank_christie_suspension", "armor_type_slot":"tank_riveted_armor",
+       "engine_type_slot":"tank_gasoline_engine"},
+     "upgrades":{"tank_nsb_engine_upgrade":7, "tank_nsb_armor_upgrade":4}, "img":"spg1", "ts":"13:57", "mio":"Alkett",
+     "n":"The main battalion of the MARK template. Built with the Alkett MIO. If SPGs get nerfed, put medium tanks in the same slots.",
+     "seen":{"maximum_speed":7.0, "reliability":0.663, "soft_attack":60.9, "hard_attack":1.0, "ap_attack":20.0, "armor_value":38.8, "breakthrough":30.8, "defense":2.8, "fuel_consumption":2.35, "build_cost_ic":15.2}},
+    {"id":"design.flammpanzer", "name":"Flammpanzer III", "frame":"medium_tank_chassis_1", "role":"medium_tank_flame_chassis",
+     "modules":{"turret_type_slot":"tank_light_one_man_tank_turret", "main_armament_slot":"flamethrower", "suspension_type_slot":"tank_christie_suspension",
+       "armor_type_slot":"tank_riveted_armor", "engine_type_slot":"tank_gasoline_engine"},
+     "upgrades":{"tank_nsb_engine_upgrade":6, "tank_nsb_armor_upgrade":0}, "img":"flame",
+     "n":"The flame tank support company of the MARK template. It won't save, so redo it if it's gone.",
+     "seen":{"maximum_speed":8.2, "reliability":0.682, "fuel_consumption":2.3, "build_cost_ic":5.88}},
+    {"id":"design.f2", "name":"F2", "frame":"small_plane_airframe_2", "role":"small_plane_airframe",
+     "modules":{"fixed_main_weapon_slot":"heavy_mg_4x", "fixed_auxiliary_weapon_slot_1":"heavy_mg_4x", "fixed_auxiliary_weapon_slot_2":"heavy_mg_4x",
+       "engine_type_slot":"engine_3_1x", "special_type_slot_1":"armor_plate_small", "special_type_slot_2":"self_sealing_fuel_tanks_small", "special_type_slot_3":"fuel_tanks_small"},
+     "img":"f2", "ts":"19:10", "n":"Replaces F1 at 25 factories.",
+     "seen":{"maximum_speed":675, "air_range":910, "weight":25, "thrust":25, "air_defence":19.9, "air_attack":62.1, "air_agility":53.1, "reliability":0.8, "build_cost_ic":33.15}},
+    {"id":"design.c2", "name":"C2", "frame":"small_plane_airframe_2", "role":"small_plane_cas_airframe",
+     "modules":{"fixed_main_weapon_slot":"light_mg_2x", "fixed_auxiliary_weapon_slot_1":"bomb_locks", "fixed_auxiliary_weapon_slot_2":"bomb_locks",
+       "engine_type_slot":"engine_3_1x", "special_type_slot_1":"fuel_tanks_small", "special_type_slot_2":"floats"},
+     "img":"c2", "n":"Doubles as a naval bomber over the Channel.",
+     "seen":{"maximum_speed":571.5, "air_range":975, "weight":9, "thrust":25, "air_defence":9.0, "air_agility":53.0, "reliability":0.8, "build_cost_ic":27.3}}
+  ],
+
   "chapters": [
     {"ts":"00:00","label":"Intro & setup"},
     {"ts":"04:54","label":"Early game setup & PP management"},
@@ -325,10 +356,6 @@ registerGuide({
          "**715 soft attack**, 427 breakthrough, 285 defense, 4.8 supply use"
        ],
        "text":"About 90 army XP to finish, since SPGs get no Motorization Drive discount. Recruit 9, then 12 more after the UK. If SPGs get nerfed, put medium tanks in the same slots."},
-      {"type":"fig", "img":"spg1", "title":"SPG1 (7/4)", "ts":"13:57",
-       "text":"Basic Medium Tank chassis, **Artillery** role, Alkett MIO. Engine 7, armor 4, all six modules as shown. 60.9 soft attack, cost 15.2."},
-      {"type":"fig", "img":"flame", "title":"Flammpanzer III",
-       "text":"Medium chassis, **Flame** role, flamethrower I only. Engine 6, armor 0, Christie suspension, cost 5.88. It won't save, so redo it if it's gone."},
       {"type":"fig", "img":"mio", "title":"Alkett MIO", "sub":"trait queue", "ts":"15:03",
        "text":"The small numbers next to each trait are his queue order, 1 to 7. Take the Alkett MIO for tanks and set the same queue."},
       {"type":"fig", "img":"templates", "title":"Templates",
@@ -343,10 +370,6 @@ registerGuide({
        "text":"Defensive build: Patrol Boats, Line of Battle, Capital Hunters. Carriers skipped."}
     ]},
     {"title": "Planes & ships", "items": [
-      {"type":"fig", "img":"f2", "title":"F2 fighter", "ts":"19:10",
-       "text":"Improved Small Airframe. 62 air attack, 53 agility, 675 km/h, cost 33. Replaces F1 at 25 factories."},
-      {"type":"fig", "img":"c2", "title":"C2 CAS",
-       "text":"Improved CAS airframe. 53 agility, 572 km/h, 975 km range, cost 27. Doubles as a naval bomber over the Channel."},
       {"type":"card", "title":"Ships",
        "text":"Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, then put every new dockyard on it. Convoys stay at 1 dockyard."}
     ]},

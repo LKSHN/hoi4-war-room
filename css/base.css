@@ -316,8 +316,15 @@ nav.tabs {
   padding: 2px;
 }
 
-nav.tabs button {
+nav.tabs a {
   flex: 1 1 auto;
+  border: 1px solid;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 2px rgba(0, 0, 0, .6);
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 500;
+  line-height: normal;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -333,11 +340,12 @@ nav.tabs button {
   border-color: #4b4e3d;
 }
 
-nav.tabs button:hover {
+nav.tabs a:hover {
   color: var(--ink);
+  border-color: var(--brass);
 }
 
-nav.tabs button[aria-selected="true"] {
+nav.tabs a[aria-selected="true"] {
   color: var(--brass-lt);
   border-color: var(--brass);
   background: linear-gradient(180deg, #4c4430, #2e2a1e);
@@ -351,7 +359,7 @@ nav.tabs .tc {
   font-variant-numeric: tabular-nums;
 }
 
-nav.tabs button[aria-selected="true"] .tc {
+nav.tabs a[aria-selected="true"] .tc {
   color: var(--brass);
 }
 

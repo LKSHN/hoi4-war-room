@@ -15,17 +15,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <!-- Styles, in cascade order. ?v= is the BUILD version (see js/core.js): tools/bump_build.py updates every one. -->
-<link rel="stylesheet" href="css/base.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/focus-tree.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/research-tree.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/designs.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/divisions.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/production.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/construction.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/mio.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/projects.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/edit.css?v=2026-10-28.11">
-<link rel="stylesheet" href="css/tooltip.css?v=2026-10-28.11">
+<link rel="stylesheet" href="css/base.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/focus-tree.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/research-tree.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/designs.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/divisions.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/production.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/construction.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/mio.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/projects.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/edit.css?v=2026-10-28.12">
+<link rel="stylesheet" href="css/tooltip.css?v=2026-10-28.12">
 </head>
 <body>
 
@@ -95,17 +95,18 @@
 
   <div class="layout">
   <nav class="tabs" role="tablist">
-    <button role="tab" data-tab="plan" aria-selected="true">Game plan<span class="tc" data-tc="planCol"></span></button>
-    <button role="tab" data-tab="trees" aria-selected="false">Focus &amp; research<span class="tc" data-tc="trees"></span></button>
-    <button role="tab" data-tab="tree" aria-selected="false" hidden>Focus tree</button>
-    <button role="tab" data-tab="restree" aria-selected="false" hidden>Research tree</button>
-    <button role="tab" data-tab="designs" aria-selected="false" hidden>Designs</button>
-    <button role="tab" data-tab="divisions" aria-selected="false" hidden>Divisions</button>
-    <button role="tab" data-tab="production" aria-selected="false" hidden>Production</button>
-    <button role="tab" data-tab="construction" aria-selected="false" hidden>Construction</button>
-    <button role="tab" data-tab="mio" aria-selected="false" hidden>MIOs</button>
-    <button role="tab" data-tab="projects" aria-selected="false" hidden>Special projects</button>
-    <button role="tab" data-tab="builds" aria-selected="false">Builds &amp; numbers</button>
+    <!-- Links, so a menu can be opened in a new browser tab (middle click or Ctrl+click): the page reads #tab on load. -->
+    <a role="tab" href="#plan" data-tab="plan" aria-selected="true">Game plan<span class="tc" data-tc="planCol"></span></a>
+    <a role="tab" href="#trees" data-tab="trees" aria-selected="false">Focus &amp; research<span class="tc" data-tc="trees"></span></a>
+    <a role="tab" href="#tree" data-tab="tree" aria-selected="false" hidden>Focus tree</a>
+    <a role="tab" href="#restree" data-tab="restree" aria-selected="false" hidden>Research tree</a>
+    <a role="tab" href="#designs" data-tab="designs" aria-selected="false" hidden>Designs</a>
+    <a role="tab" href="#divisions" data-tab="divisions" aria-selected="false" hidden>Divisions</a>
+    <a role="tab" href="#production" data-tab="production" aria-selected="false" hidden>Production</a>
+    <a role="tab" href="#construction" data-tab="construction" aria-selected="false" hidden>Construction</a>
+    <a role="tab" href="#mio" data-tab="mio" aria-selected="false" hidden>MIOs</a>
+    <a role="tab" href="#projects" data-tab="projects" aria-selected="false" hidden>Special projects</a>
+    <a role="tab" href="#builds" data-tab="builds" aria-selected="false">Builds &amp; numbers</a>
   </nav>
 
   <main class="main">
@@ -237,24 +238,24 @@
 
 <!-- Guide list and shared glossary. Every ?v= here matches BUILD in js/core.js so browsers never mix a new page with
      cached files: run tools/bump_build.py after changing anything in css/, js/ or guides/. -->
-<script src="guides/index.js?v=2026-10-28.11"></script>
-<script src="guides/glossary.js?v=2026-10-28.11"></script>
+<script src="guides/index.js?v=2026-10-28.12"></script>
+<script src="guides/glossary.js?v=2026-10-28.12"></script>
 <!-- The app, as plain scripts sharing one global scope, in this order (main.js last). -->
-<script src="js/core.js?v=2026-10-28.11"></script>
-<script src="js/lists.js?v=2026-10-28.11"></script>
-<script src="js/builds.js?v=2026-10-28.11"></script>
-<script src="js/glossary.js?v=2026-10-28.11"></script>
-<script src="js/focus-tree.js?v=2026-10-28.11"></script>
-<script src="js/research-tree.js?v=2026-10-28.11"></script>
-<script src="js/designs.js?v=2026-10-28.11"></script>
-<script src="js/divisions.js?v=2026-10-28.11"></script>
-<script src="js/production.js?v=2026-10-28.11"></script>
-<script src="js/construction.js?v=2026-10-28.11"></script>
-<script src="js/mio.js?v=2026-10-28.11"></script>
-<script src="js/projects.js?v=2026-10-28.11"></script>
-<script src="js/ui.js?v=2026-10-28.11"></script>
-<script src="js/edit.js?v=2026-10-28.11"></script>
-<script src="js/main.js?v=2026-10-28.11"></script>
+<script src="js/core.js?v=2026-10-28.12"></script>
+<script src="js/lists.js?v=2026-10-28.12"></script>
+<script src="js/builds.js?v=2026-10-28.12"></script>
+<script src="js/glossary.js?v=2026-10-28.12"></script>
+<script src="js/focus-tree.js?v=2026-10-28.12"></script>
+<script src="js/research-tree.js?v=2026-10-28.12"></script>
+<script src="js/designs.js?v=2026-10-28.12"></script>
+<script src="js/divisions.js?v=2026-10-28.12"></script>
+<script src="js/production.js?v=2026-10-28.12"></script>
+<script src="js/construction.js?v=2026-10-28.12"></script>
+<script src="js/mio.js?v=2026-10-28.12"></script>
+<script src="js/projects.js?v=2026-10-28.12"></script>
+<script src="js/ui.js?v=2026-10-28.12"></script>
+<script src="js/edit.js?v=2026-10-28.12"></script>
+<script src="js/main.js?v=2026-10-28.12"></script>
 
 </body>
 </html>

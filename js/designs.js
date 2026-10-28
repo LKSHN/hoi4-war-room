@@ -211,13 +211,28 @@ function designWarnings(d) {
 }
 const slotLabel = s => s.replace(/^fixed_(ship_)?/, "").replace(/^(front|mid|rear)_(\d)_custom_slot$/, "$1 $2 (custom)").replace(/_slot(_\d+)?$/, m => m.match(/\d+/) ? " " + m.match(/\d+/)[0] : "").replace(/_/g, " ");
 
-function modIcon(cat) {
-  if (/ship|deck|nav_bomber/.test(cat))
-    return /battery|secondaries|rocket/.test(cat) ? "artillery" : /torpedo/.test(cat) ? "swords" : /anti_air|deck|airplane|seaplane|nav_bomber/.test(cat) ? "plane" :
-      /armor|coating/.test(cat) ? "fort" : /engine|fuel|snorkel/.test(cat) ? "gear" : /radar|sonar|fire_control/.test(cat) ? "eye" : "ship";
-  return /turret_type/.test(cat) ? "tank" : /howitzer|armament|flamethrower|secondary_turret/.test(cat) ? "artillery" : /suspension/.test(cat) ? "road" :
-    /armor_type/.test(cat) ? "fort" : /engine/.test(cat) ? "gear" : /radio|radar/.test(cat) ? "bolt" : /weapon/.test(cat) ? "swords" :
-    /bomb_sights|camera/.test(cat) ? "eye" : "gear";
+// icon for a module tile: our own drawings (ic-m-* in the sprite), picked from the module's id and category
+const MOD_ICONS = [
+  [/flamethrower/, "m-flame"], [/turret_type/, "m-turret"], [/howitzer|close_support/, "artillery"],
+  [/rocket_launcher|rocket_rails|rocket_propelled|missile|slbm/, "m-rocket"], [/anti_air/, "m-aa"],
+  [/machine_gun|(^|_)[lh]?mg(_|$)|_mg_/, "m-mg"], [/torpedo/, "m-torpedo"],
+  [/bomb_locks|bomb_bay|bomb_release|explosive_charge|airdropped/, "m-bomb"],
+  [/main_armament|secondary_turret|cannon/, "m-cannon"], [/suspension/, "m-wheels"], [/radio/, "m-radio"],
+  [/radar/, "m-radar"], [/sonar/, "m-sonar"], [/bomb_sights|fire_control|stabilizer/, "m-sight"], [/camera/, "m-camera"],
+  [/jet_engine|rocket_engine/, "m-jet"], [/plane.*engine|engine_\d_\d+x/, "m-prop"], [/engine/, "m-engine"],
+  [/fuel|drop_tanks/, "m-fuel"], [/armor|skirts|anechoic/, "m-armor"], [/ammo|auto_loader|squeezebore/, "m-ammo"],
+  [/smoke/, "m-smoke"], [/floats/, "m-float"], [/amphibious/, "m-wave"], [/depth_charge/, "m-depth"],
+  [/mine/, "m-mine"], [/battery|secondaries/, "m-shipgun"], [/deck_space|airplane_launcher|seaplane/, "plane"],
+];
+function modIcon(mod) {
+  const key = mod.cat + " " + mod.id;
+  const hit = MOD_ICONS.find(([rx]) => rx.test(key));
+  return hit ? hit[1] : "gear";
+}
+// tier of a module from its id (tank_radio_2, engine_3_1x), shown as I, II, III on the tile like in game
+function modTier(mod) {
+  const m = /_(\d)(?:_\d+x)?$/.exec(mod.id);
+  return m && +m[1] ? ["", "I", "II", "III", "IV", "V"][+m[1]] || m[1] : "";
 }
 const fmtStat = (v, unit) => unit === "%" ? (v * 100).toFixed(1) + "%" : Math.abs(v) >= 100 ? v.toFixed(1) : v.toFixed(2).replace(/\.?0+$/, "") || "0";
 
@@ -356,46 +371,53 @@ function renderDesigner(d) {
     head.append(lab, frameSel);
   } else head.append(roleSel, frameSel);
   left.appendChild(head);
-  // module slots: fixed ones first, like the game's top row
+  // module slots like the game: a row of tiles above the blueprint, the rest below it next to the upgrades
   const slots = frameSlots(d),
     entries = Object.keys(slots);
   const rows = ship ? [entries.filter(s => /custom/.test(s)), entries.filter(s => !/custom/.test(s))] :
     plane ? [entries.filter(s => /weapon/.test(s)), entries.filter(s => !/weapon/.test(s))] :
     [entries.filter(s => /turret|armament|special/.test(s)), entries.filter(s => !/turret|armament|special/.test(s))];
-  rows.forEach(row => {
-    const r = el("div", "drow");
-    row.forEach(s => {
-      const cur = (d.modules || {})[s] === "empty" ? "" : (d.modules || {})[s],
-        mod = DES.modules[cur],
-        t = el("div", "dslot" + (cur ? "" : " empty") + (slots[s].req ? " req" : ""));
-      t.innerHTML = `<span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${mod ? modIcon(mod.cat) : "gear"}"/></svg></span><span class="dslot-name"></span>`;
-      t.title = slotLabel(s) + (slots[s].req ? " (required)" : "");
-      if (EDITING) {
-        const sel = el("select", "ed-select");
-        sel.setAttribute("aria-label", slotLabel(s));
-        sel.appendChild(el("option", null, "— empty —")).value = "";
-        const cats = slotCats(d, s);
-        Object.values(DES.modules).filter(m => cats.includes(m.cat)).sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name))
-          .forEach(m => {
-            const o = el("option");
-            o.value = m.id;
-            o.textContent = m.name;
-            sel.appendChild(o);
-          });
-        sel.value = cur || "";
-        sel.addEventListener("change", () => {
-          d.modules = d.modules || {};
-          if (sel.value) d.modules[s] = sel.value;
-          else delete d.modules[s];
-          changed();
-        });
-        t.querySelector(".dslot-name").replaceWith(sel);
-      } else t.querySelector(".dslot-name").textContent = mod ? mod.name : (cur || "Empty");
-      r.appendChild(t);
-    });
-    left.appendChild(r);
-  });
-  // engine / armor upgrades (tanks)
+  const modOf = s => {
+    const cur = (d.modules || {})[s];
+    return cur && cur !== "empty" ? cur : "";
+  };
+  const tile = s => {
+    const cur = modOf(s),
+      mod = DES.modules[cur],
+      req = slots[s].req;
+    const t = el(EDITING ? "button" : "div", "dtile" + (cur ? "" : " empty") + (req ? " req" : ""));
+    const label = slotLabel(s) + ": " + (mod ? mod.name : cur || "empty") + (req && !cur ? " (required)" : "");
+    t.title = label;
+    t.setAttribute("aria-label", label);
+    if (cur) t.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-${mod ? modIcon(mod) : "gear"}"/></svg>` +
+      (mod && modTier(mod) ? `<i>${modTier(mod)}</i>` : "");
+    if (EDITING) { // the module itself is picked in the list on the right
+      t.type = "button";
+      t.addEventListener("click", () => {
+        const sel = document.getElementById("dsel-" + s);
+        if (sel) {
+          sel.focus();
+          sel.scrollIntoView({block: "nearest"});
+        }
+      });
+    }
+    return t;
+  };
+  const tileRow = row => {
+    const r = el("div", "dtiles");
+    row.forEach(s => r.appendChild(tile(s)));
+    return r;
+  };
+  const bay = el("div", "dbay");
+  bay.appendChild(tileRow(rows[0]));
+  const blue = el("div", "dblue");
+  const outline = ship ? (/submarine/.test(f ? f.arch : "") ? "sub" : "ship") : plane ? "plane" : "tank";
+  blue.innerHTML = `<div class="dblue-name"></div><svg viewBox="0 0 240 100" aria-hidden="true"><use href="#bp-${outline}"/></svg>`;
+  blue.querySelector(".dblue-name").textContent = f ? f.name : d.frame;
+  bay.appendChild(blue);
+  const bottom = el("div", "dbottom");
+  bottom.appendChild(tileRow(rows[1]));
+  // engine / armor upgrades (tanks), XP upgrades (some ships)
   const ups = (f && f.upgrades) || [];
   if (ups.length) {
     const u = el("div", "dups");
@@ -412,11 +434,15 @@ function renderDesigner(d) {
       const minus = edBtn("−", "Lower", () => set(lvl - 1)),
         plus = edBtn("+", "Raise", () => set(lvl + 1));
       minus.disabled = plus.disabled = !EDITING;
-      g.append(minus, el("b", null, String(lvl)), plus);
+      const ctl = el("div", "dup-ctl");
+      ctl.append(minus, el("b", null, String(lvl)), plus);
+      g.appendChild(ctl);
       u.appendChild(g);
     });
-    left.appendChild(u);
+    bottom.appendChild(u);
   }
+  bay.appendChild(bottom);
+  left.appendChild(bay);
   // stats sheet like the game's, with the in-game value from the guide's screenshot next to it
   const sheet = el("div", "dsheet");
   (ship ? SHIP_COLS : plane ? PLANE_COLS : TANK_COLS).forEach(([title, rowsC]) => {
@@ -440,6 +466,44 @@ function renderDesigner(d) {
     sheet.appendChild(c);
   });
   right.appendChild(sheet);
+  // what each slot holds (the game shows this only on hover); edit mode picks modules here
+  const list = el("div", "dmods");
+  list.appendChild(el("div", "dmods-h", "Modules"));
+  [...rows[0], ...rows[1]].forEach(s => {
+    const cur = modOf(s),
+      mod = DES.modules[cur],
+      row = el("div", "dmod" + (cur ? "" : " empty") + (slots[s].req && !cur ? " req" : ""));
+    row.innerHTML = `<span class="dmod-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-${mod ? modIcon(mod) : "gear"}"/></svg></span><span class="dmod-slot"></span>`;
+    row.querySelector(".dmod-slot").textContent = slotLabel(s);
+    if (EDITING) {
+      const sel = el("select", "ed-select");
+      sel.id = "dsel-" + s;
+      sel.setAttribute("aria-label", slotLabel(s));
+      sel.appendChild(el("option", null, "— empty —")).value = "";
+      const cats = slotCats(d, s);
+      Object.values(DES.modules).filter(m => cats.includes(m.cat)).sort((a, b) => a.cat.localeCompare(b.cat) || a.name.localeCompare(b.name))
+        .forEach(m => {
+          const o = el("option");
+          o.value = m.id;
+          o.textContent = m.name;
+          sel.appendChild(o);
+        });
+      sel.value = cur;
+      sel.addEventListener("change", () => {
+        d.modules = d.modules || {};
+        if (sel.value) d.modules[s] = sel.value;
+        else delete d.modules[s];
+        changed();
+      });
+      row.appendChild(sel);
+    } else {
+      const n = el("span", "dmod-name");
+      n.textContent = mod ? mod.name : cur || (slots[s].req ? "Empty (required)" : "Empty");
+      row.appendChild(n);
+    }
+    list.appendChild(row);
+  });
+  right.appendChild(list);
   const cost = el("div", "dcost");
   cost.innerHTML = "Production cost: <b></b>" + (seen.build_cost_ic != null ? " <i class='dseen'></i>" : "");
   cost.querySelector("b").textContent = fmtStat(st.build_cost_ic || 0);

@@ -1,7 +1,8 @@
-"""Extract the tank and plane designers as facts: frames (chassis, airframes) with their module slots, limits,
+"""Extract the tank, plane and ship designers as facts: frames (chassis, airframes, hulls) with their module slots, limits,
 default modules, upgrades and base stats (resolved through archetype and parents), role variants, modules
-(category, stats, allowed roles) and upgrades (per-level stats). Every DLC enabled.
-Usage: extract_equipment.py <game dir> <out.json>"""
+(category, stats, allowed roles, categories they forbid, types they add) upgrades (per-level stats) and the ship
+classes a hull can become. Every DLC enabled.
+Usage: extract_equipment.py <game dir> <out.json | out.js> [patch]"""
 import sys, os, re, json, glob
 sys.path.insert(0, os.path.dirname(__file__))
 from pdx import parse, get, first
@@ -96,7 +97,7 @@ def limits(eid):
     return lim
 
 
-FRAME_ARCH = re.compile(r"(tank_chassis|airframe)$")
+FRAME_ARCH = re.compile(r"(tank_chassis|airframe|^ship_hull_[a-z]+)$")
 frames, archetypes = {}, {}
 for eid, v in raw.items():
     arch = first(v, "archetype")
@@ -106,7 +107,8 @@ for eid, v in raw.items():
         archetypes[eid] = {"id": eid, "name": summ.name(eid), "type": items(t) if isinstance(t, list) else ([t] if t else []),
                            "slots": slots_of(eid), "limits": limits(eid), "stats": st, "res": res,
                            "defaults": {k: x for k, _, x in (first(v, "default_modules", []) or [])}}
-    elif arch and FRAME_ARCH.search(arch) and first(v, "is_buildable") != "no":
+    elif arch and FRAME_ARCH.search(arch) and first(v, "is_buildable") != "no" and (not arch.startswith("ship_hull_") or eid.startswith("ship_hull_")):
+        # ships: only the hulls of the designer; destroyer_1 and the like are the premade ships of the old naval system
         st, res = base_stats(eid)
         if arch in roles:   # e.g. small_plane_cas_airframe: stat overrides of the role apply
             st.update(roles[arch]["set"])
@@ -139,6 +141,11 @@ for path in glob.glob(os.path.join(EQ, "modules", "*.txt")):
                           "avg": stats(first(v, "add_average_stats", []) or []),
                           **({"allow": allow} if allow else {}), **({"forbid": forbid} if forbid else {}),
                           **({"slotcats": slotcats} if slotcats else {})}
+            fc = first(v, "forbid_module_categories")
+            if isinstance(fc, list):   # a medium battery rules out light guns on the same ship
+                modules[k]["forbidcats"] = items(fc)
+            if first(v, "add_equipment_type"):   # e.g. capital_ship: a cruiser with medium guns is a heavy cruiser
+                modules[k]["addtype"] = first(v, "add_equipment_type")
 
 upgrades = {}
 for path in glob.glob(os.path.join(EQ, "upgrades", "*.txt")):
@@ -153,7 +160,7 @@ for st in {s for m in modules.values() for s in list(m["add"]) + list(m["mul"]) 
     stat_names[st] = clean(loc.get("STAT_" + st.upper(), "") or loc.get(st, "") or "") or st.replace("_", " ").capitalize()
 
 # which battalions use each archetype (sub_units ... need = { medium_tank_artillery_chassis = 40 })
-used_by = {}
+used_by, ship_units = {}, {}
 for path in glob.glob(os.path.join(game, "common", "units", "*.txt")):
     for block in get(parse(open(path, encoding="utf-8-sig", errors="replace").read()), "sub_units"):
         for uid, _, u in block:
@@ -162,6 +169,14 @@ for path in glob.glob(os.path.join(game, "common", "units", "*.txt")):
             for k, _, n in first(u, "need", []) or []:
                 if k in archetypes:
                     used_by.setdefault(k, []).append({"id": uid, "name": summ.name(uid), "n": int(float(n))})
+            # ships: the class a hull becomes (light or heavy cruiser, battleship or battlecruiser by armor)
+            ne = first(u, "need_equipment") or first(u, "need")
+            hull = [k for k, _, _ in ne or [] if k and k.startswith("ship_hull_") and k in archetypes]
+            if hull:
+                t = first(u, "type")
+                any_mods = [k for b in get(first(u, "need_equipment_modules", []) or [], "any") for k, _, _ in b if k]
+                ship_units[uid] = {"id": uid, "name": summ.name(uid), "hull": hull[0], "type": items(t) if isinstance(t, list) else [t],
+                                   **({"mods": any_mods} if any_mods else {})}
 for aid, units in used_by.items():
     archetypes[aid]["usedBy"] = units
 
@@ -173,10 +188,10 @@ modules = {k: m for k, m in modules.items() if m["cat"] in cats}
 ups_used = {u for f in frames.values() for u in f["upgrades"]}
 upgrades = {k: u for k, u in upgrades.items() if k in ups_used}
 
-data = {"archetypes": archetypes, "frames": frames, "modules": modules, "upgrades": upgrades, "statNames": stat_names}
+data = {"archetypes": archetypes, "frames": frames, "modules": modules, "upgrades": upgrades, "statNames": stat_names, "shipUnits": ship_units}
 if out.endswith(".js"):
     patch = sys.argv[3] if len(sys.argv) > 3 else "?"
-    head = (f"/* Tank and plane designers, facts only, extracted from the HoI4 {patch} game files (common/units/equipment, modules,\n"
+    head = (f"/* Tank, plane and ship designers, facts only, extracted from the HoI4 {patch} game files (common/units/equipment, modules,\n"
             f"   upgrades, common/units for which battalions use what) with every DLC enabled.\n"
             f"   Stats: (base + module and upgrade adds) x (1 + multipliers); research and MIO bonuses are not included. */\n")
     open(out, "w", encoding="utf-8", newline="\n").write(head + "registerDesigners(" + json.dumps({"patch": patch, **data}, ensure_ascii=False, separators=(",", ":")) + ");\n")
@@ -187,4 +202,7 @@ for k in ("medium_tank_chassis_1", "small_plane_airframe_2", "cas_airframe_2"):
     if k in frames:
         print(k, frames[k]["name"], frames[k]["stats"], frames[k]["upgrades"])
 print("medium artillery role:", archetypes.get("medium_tank_artillery_chassis", {}).get("type"), archetypes.get("medium_tank_artillery_chassis", {}).get("set"))
+for k in ("ship_hull_light_2", "ship_hull_cruiser_2", "ship_hull_submarine_1"):
+    print(k, frames[k]["name"], frames[k]["stats"], frames[k]["upgrades"], list(frames[k]["slots"]) or "arch slots")
+print("ship units", ship_units)
 print("medium slots:", {k: v["cats"] for k, v in archetypes["medium_tank_chassis"]["slots"].items()})

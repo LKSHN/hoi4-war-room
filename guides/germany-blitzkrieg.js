@@ -11,7 +11,8 @@
      Step IDs are stable: never change or reuse one, even if the text is reworded. New steps get new IDs.
    - designs: equipment designs {id, name, frame (game frame id), role (archetype id), modules {slot: module},
      upgrades {upgrade: level}, img?, ts?, mio?, n?, seen? (stats as shown in game, research and MIO included)};
-     data comes from meta.designers
+     data comes from meta.designers. Ships use the hull (ship_hull_*) as frame and its archetype as role; the class
+     (light or heavy cruiser...) follows from the modules
    - divisions: {templates: [{id, name, icon, support: [unit ids], combat: [columns of unit ids], img?, ts?, n?, seen?}],
      training: [{id, step (plan step id it belongs to), template, count, n?}]}; units come from meta.units
    - production: {states: [{id, step (plan step id), title, mils? (military factories), img?, ts?, n?,
@@ -507,7 +508,24 @@ registerGuide({
      "modules":{"fixed_main_weapon_slot":"light_mg_2x", "fixed_auxiliary_weapon_slot_1":"bomb_locks", "fixed_auxiliary_weapon_slot_2":"bomb_locks",
        "engine_type_slot":"engine_3_1x", "special_type_slot_1":"fuel_tanks_small", "special_type_slot_2":"floats"},
      "img":"c2", "n":"Doubles as a naval bomber over the Channel.",
-     "seen":{"maximum_speed":571.5, "air_range":975, "weight":9, "thrust":25, "air_defence":9.0, "air_agility":53.0, "reliability":0.8, "build_cost_ic":27.3}}
+     "seen":{"maximum_speed":571.5, "air_range":975, "weight":9, "thrust":25, "air_defence":9.0, "air_agility":53.0, "reliability":0.8, "build_cost_ic":27.3}},
+    {"id":"design.type2", "name":"Type II", "frame":"ship_hull_submarine_1", "role":"ship_hull_submarine",
+     "modules":{"fixed_ship_torpedo_slot":"ship_torpedo_sub_1", "fixed_ship_engine_slot":"sub_ship_engine_1"},
+     "img":"navy36", "n":"Germany's starting submarine design, as in the game files. Max dockyards on the submarines in production."},
+    {"id":"design.z1934", "name":"Zerstörer 1934", "frame":"ship_hull_light_2", "role":"ship_hull_light",
+     "modules":{"fixed_ship_battery_slot":"ship_light_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
+       "fixed_ship_engine_slot":"light_ship_engine_2", "fixed_ship_torpedo_slot":"ship_torpedo_1", "mid_1_custom_slot":"ship_torpedo_1", "rear_1_custom_slot":"ship_mine_layer_1"},
+     "img":"navy36", "n":"Germany's starting destroyer design, as in the game files. Max dockyards on the destroyers in production."},
+    {"id":"design.hipper", "name":"Admiral Hipper", "frame":"ship_hull_cruiser_2", "role":"ship_hull_cruiser",
+     "modules":{"fixed_ship_battery_slot":"ship_medium_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
+       "fixed_ship_engine_slot":"cruiser_ship_engine_2", "fixed_ship_armor_slot":"ship_armor_cruiser_2", "front_1_custom_slot":"ship_anti_air_1",
+       "mid_1_custom_slot":"ship_torpedo_1", "mid_2_custom_slot":"ship_airplane_launcher_1", "rear_1_custom_slot":"ship_medium_battery_2"},
+     "n":"Germany's starting heavy cruiser design, as in the game files. It's in production in 1936 (2 dockyards on the heavy ships), then refitted below."},
+    {"id":"design.hipper-cl", "name":"Admiral Hipper (light cruiser refit)", "frame":"ship_hull_cruiser_2", "role":"ship_hull_cruiser", "mio":"Blohm & Voss",
+     "modules":{"fixed_ship_battery_slot":"ship_light_battery_2", "fixed_ship_anti_air_slot":"ship_anti_air_1", "fixed_ship_fire_control_system_slot":"ship_fire_control_system_0",
+       "fixed_ship_engine_slot":"cruiser_ship_engine_2", "fixed_ship_armor_slot":"ship_armor_cruiser_2", "front_1_custom_slot":"ship_light_battery_2",
+       "mid_1_custom_slot":"ship_light_battery_2", "mid_2_custom_slot":"ship_light_battery_2", "rear_1_custom_slot":"ship_light_battery_2"},
+     "n":"The guide refits Admiral Hipper into \"the best light cruiser\" with Blohm & Voss (Raiding Shipbuilders) and puts every new dockyard on it, without showing the modules. These are a guess: Hipper's hull, engine and armor with light guns in every battery slot. Edit them to match yours."}
   ],
 
   "chapters": [

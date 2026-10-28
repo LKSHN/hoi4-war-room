@@ -23,6 +23,8 @@
      n (levels)}]}]}; items in queue order; buildings and states come from meta.construction
    - mios: [{id, org (game MIO id), step? (plan step id), order: [trait ids in queue order], designs?: [designs ids it's
      assigned to], img?, ts?, n?}]; trees come from meta.mio
+   - projects: [{id, project (game special project id), step? (research or plan step id), n?}]: the special projects
+     the guide recommends, in order; the full list comes from meta.projects
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -44,6 +46,7 @@ registerGuide({
     "equipment": "guides/trees/equipment-1.19.1.js",
     "construction": "guides/trees/construction-1.19.1.js",
     "mio": "guides/trees/mio-1.19.1.js",
+    "projects": "guides/trees/projects-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -473,6 +476,11 @@ registerGuide({
 
   "mios": [
     {"id": "mio.alkett", "org": "GER_alkett_organization", "step": "plan.queue-7-alkett-mio", "order": ["GER_mio_trait_hoesch_facilities", "GER_mio_trait_sturmhaubitze", "generic_mio_trait_medium_assault_gun_improvements", "generic_mio_medium_assault_gun_75_mm_43M_tank_gun", "generic_mio_armor_hardening_process_assault_guns", "generic_mio_medium_assault_gun_low_slung_superstructure_and_fighting_compartment", "GER_mio_trait_armored_superstructure_specialist"], "designs": ["design.spg1"], "img": "mio", "ts": "15:03", "n": "Pick it for the SPG after sticking with Todt, assign it to the SPG design and queue the 7 traits."}
+  ],
+
+  "projects": [
+    {"id": "sp.mev", "project": "sp_land_military_engineering_vehicles", "step": "res.military-engineering-vehicles", "n": "Unlocks the armored support vehicle that goes on top of production after Todt."},
+    {"id": "sp.flame", "project": "sp_land_flamethrower_tank", "step": "res.flame-tank", "n": "Unlocks the flame tank company in the MARK template and the Flammpanzer III design."}
   ],
 
   "designs": [

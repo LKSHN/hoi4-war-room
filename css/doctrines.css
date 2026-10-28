@@ -1,0 +1,421 @@
+/*
+ * Doctrines tab: grand doctrines, a column per track with its subdoctrine, rewards and milestone, the army/navy/air
+ * spirits, and the bonuses overview. Pick cards reuse the special projects look (.spcard, .spbanner).
+ */
+
+#docSubs {
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+/* effect lists */
+.dcfx {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+  line-height: 1.35;
+}
+
+.dcfx li {
+  position: relative;
+  padding-left: 10px;
+  color: var(--ink);
+}
+
+.dcfx li::before {
+  content: "·";
+  position: absolute;
+  left: 2px;
+  color: var(--muted);
+}
+
+.dcfx li.none {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.dcfx.small {
+  font-size: 11.5px;
+}
+
+.dcempty {
+  margin: 6px 2px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* grand doctrines */
+.dcgrands {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 8px;
+}
+
+.dcgrand {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 7px 9px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: linear-gradient(180deg, var(--node-1), var(--node-2));
+  border: 1px solid var(--node-edge);
+  border-radius: 2px;
+}
+
+button.dcgrand {
+  cursor: pointer;
+}
+
+button.dcgrand:hover {
+  border-color: var(--brass);
+}
+
+.dcgrand.picked,
+.dcsub.picked {
+  border: 1px solid var(--brass-lt);
+  background: linear-gradient(180deg, #4a4128, #2a261a);
+  box-shadow: 0 0 0 1px rgba(240, 213, 138, .35), 0 0 14px rgba(201, 162, 74, .35);
+}
+
+.dcgrand.done,
+.dcsub.done {
+  border-color: #7cc04f;
+  background: linear-gradient(180deg, #34452a, #1f2a19);
+  box-shadow: 0 0 0 1px rgba(124, 192, 79, .35), 0 0 12px rgba(124, 192, 79, .25);
+}
+
+.dcgrand.off {
+  opacity: .6;
+}
+
+.dcgrand.off:hover {
+  opacity: 1;
+}
+
+.dcbanner {
+  margin: -7px -9px 6px;
+  padding: 3px 9px;
+  font-family: var(--f-display);
+  font-size: 13px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #2b2618;
+  background: linear-gradient(180deg, #f0d58a, #c9a24a);
+  border-bottom: 1px solid #8a7440;
+}
+
+.dcgrand.done .dcbanner {
+  color: #13200c;
+  background: linear-gradient(180deg, #a9dc80, #6fa848);
+  border-bottom-color: #4f7a33;
+}
+
+.dcgrand-h,
+.dcsub-h {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dcgrand-h b,
+.dcsub-h b {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--ink-hi);
+}
+
+.dcgrand-h i,
+.dcsub-h i,
+.dcother i,
+.sptag i {
+  flex: none;
+  font: 500 11px var(--f-mono);
+  font-style: normal;
+  color: var(--muted);
+}
+
+.dcgrand-h .dslot-ico {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  color: #cfe7c4;
+  background: radial-gradient(circle at 35% 30%, #6a7d55, #2b3a22 75%);
+}
+
+.dcgrand-h .dslot-ico svg {
+  width: 19px;
+  height: 19px;
+}
+
+.dcsub-h .mnum {
+  position: static;
+  flex: none;
+}
+
+/* the guide's step, note and screenshot for a folder */
+.dcstep {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin: 8px 2px 0;
+  font-size: 13px;
+}
+
+.dcwhen {
+  color: var(--muted);
+}
+
+.dcwhen.done {
+  color: var(--green-ink);
+}
+
+.dcnote {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ink);
+}
+
+.dcstep .shotbtn {
+  margin-left: 0;
+}
+
+/* tracks */
+.dctracks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  align-items: start;
+}
+
+.dctrack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 8px;
+  background: linear-gradient(180deg, #2e302a, #1d1f1a);
+  border: 1px solid #6b6b5a;
+  box-shadow: var(--bevel), var(--drop);
+}
+
+.dctrack > :not(.dtitle) {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.dctrack .dtitle {
+  font-size: 15px;
+  letter-spacing: .14em;
+}
+
+.dcsub {
+  padding: 6px 8px;
+  background: linear-gradient(180deg, var(--node-1), var(--node-2));
+  border: 1px solid var(--node-edge);
+}
+
+.dcsel {
+  width: auto;
+  max-width: none;
+}
+
+.dcmove {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.dcmove span {
+  margin-right: auto;
+}
+
+/* rewards up the mastery bar */
+.dcladder {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dcladder::before {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: linear-gradient(180deg, #3a3d33, #23251f);
+  border: 1px solid #000;
+}
+
+.dcladder > li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 6px;
+  padding: 3px 0;
+}
+
+.dcm {
+  align-self: start;
+  z-index: 1;
+  justify-self: center;
+  min-width: 36px;
+  padding: 1px 4px;
+  text-align: center;
+  font: 600 11px var(--f-mono);
+  color: var(--brass-lt);
+  background: #14160f;
+  border: 1px solid #5d604c;
+  border-radius: 8px;
+}
+
+.dcr {
+  display: block;
+  min-width: 0;
+}
+
+.dcr b {
+  font-size: 12.5px;
+  color: var(--ink-hi);
+}
+
+.dcmile {
+  padding: 5px 8px;
+  border: 1px dashed var(--brass);
+  background: rgba(201, 162, 74, .07);
+}
+
+.dcmile b {
+  font-family: var(--f-display);
+  font-size: 13px;
+  color: var(--brass-lt);
+}
+
+.dcothers summary {
+  cursor: pointer;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.dcothers[open] summary {
+  margin-bottom: 4px;
+}
+
+.dcother {
+  margin: 0 0 5px;
+  padding: 4px 6px;
+  border-left: 2px solid var(--line);
+}
+
+.dcother b {
+  font-size: 12.5px;
+  color: var(--ink-hi);
+  margin-right: 6px;
+}
+
+/* spirits */
+.dcspirits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+  margin-top: 10px;
+}
+
+.dcspirits.haspicks .spcard:not(.picked) {
+  opacity: .6;
+}
+
+.dcspirits.haspicks .spcard:not(.picked):hover {
+  opacity: 1;
+}
+
+.dcreq {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+@media (max-width:1000px) {
+  .dcspirits {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* bonuses overview */
+.dcbsec h3 {
+  margin: 14px 0 6px;
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: normal;
+  color: var(--brass-lt);
+}
+
+.dcbcards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 8px;
+}
+
+.dcbcard {
+  padding: 6px 9px;
+  background: linear-gradient(180deg, var(--node-1), var(--node-2));
+  border: 1px solid var(--node-edge);
+}
+
+.dcbcard.done {
+  border-color: #7cc04f;
+  box-shadow: inset 3px 0 0 #7cc04f;
+}
+
+.dcb-h {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.dcb-h b {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--ink-hi);
+}
+
+.dcb-h i {
+  font: 500 11px var(--f-mono);
+  font-style: normal;
+  color: var(--muted);
+}
+
+.dcrew {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dcrew > li {
+  margin-bottom: 4px;
+}
+
+.dcrew b {
+  font-size: 12.5px;
+  color: var(--ink-hi);
+}
+
+.dcrew i {
+  font: 500 10.5px var(--f-mono);
+  font-style: normal;
+  color: var(--muted);
+}
+
+.dcrew .dcfx {
+  margin-top: 1px;
+}

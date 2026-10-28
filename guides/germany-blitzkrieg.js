@@ -28,6 +28,9 @@
      assigned to], img?, ts?, n?}]; trees come from meta.mio
    - projects: [{id, project (game special project id), step? (research or plan step id), n?}]: the special projects
      the guide recommends, in order; the full list comes from meta.projects
+   - doctrines: {folders: [{id, folder (game folder id), grand (grand doctrine id), step? (plan step id), img?, ts?, n?,
+     subs: [{track (track id), sub (subdoctrine id)}] in the order the guide takes them}], spirits: [{id, spirit (game
+     spirit id), step?, n?}], spiritsNote?}; the doctrines and spirits come from meta.doctrines
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -50,6 +53,7 @@ registerGuide({
     "construction": "guides/trees/construction-1.19.1.js",
     "mio": "guides/trees/mio-1.19.1.js",
     "projects": "guides/trees/projects-1.19.1.js",
+    "doctrines": "guides/trees/doctrines-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -532,6 +536,27 @@ registerGuide({
     {"id": "sp.flame", "project": "sp_land_flamethrower_tank", "step": "res.flame-tank", "n": "Unlocks the flame tank company in the MARK template and the Flammpanzer III design."}
   ],
 
+  "doctrines": {
+    "folders": [
+      {"id": "dc.land", "folder": "land", "grand": "new_mobile_warfare", "step": "plan.favourite-tactic-then-grand", "img": "land", "ts": "9:40",
+       "n": "Favourite tactic first, then the subdoctrines in this order. Assault Infantry is off screen to the left. Maneuver Warfare later.",
+       "subs": [{"track": "operations", "sub": "grand_assault"}, {"track": "infantry", "sub": "assault_infantry"},
+                {"track": "combat_support", "sub": "self_propelled_support"}, {"track": "armor", "sub": "streamlined_deployment"}]},
+      {"id": "dc.naval", "folder": "naval", "grand": "new_convoy_raiding", "step": "plan.naval-trade-interdiction-then", "img": "naval", "ts": "17:55",
+       "n": "Defensive build. Carriers skipped.",
+       "subs": [{"track": "screens", "sub": "patrol_boats"}, {"track": "capital_ships", "sub": "line_of_battle"}, {"track": "submarines", "sub": "capital_hunters"}]},
+      {"id": "dc.air", "folder": "air", "grand": "new_battlefield_support", "step": "plan.air-airspace-dominance-then", "img": "air", "ts": "13:10",
+       "n": "Airspace Dominance first, then Precision Naval Bombing. Operational Air Support and Coastal Air Patrol on the other tracks.",
+       "subs": [{"track": "fighter_aircraft", "sub": "air_subdoctrine_tactical_flexibility"}, {"track": "strike_aircraft", "sub": "air_subdoctrine_naval_strike_tactics"},
+                {"track": "medium_aircraft", "sub": "air_subdoctrine_operational_air_support"}, {"track": "heavy_aircraft", "sub": "air_subdoctrine_coastal_air_patrol"}]}
+    ],
+    "spirits": [
+      {"id": "ds.loyalty", "spirit": "political_loyalty_spirit", "step": "plan.at-20-army-xp"},
+      {"id": "ds.motor", "spirit": "mobile_warfare_army_spirit", "step": "plan.60-army-xp-motorization", "n": "The guide puts it at 60 army XP."}
+    ],
+    "spiritsNote": "The guide also takes \"the air spirits\" without naming them."
+  },
+
   "designs": [
     {"id":"design.spg1", "name":"SPG1 (7/4)", "frame":"medium_tank_chassis_1", "role":"medium_tank_artillery_chassis",
      "modules":{"turret_type_slot":"tank_medium_three_man_tank_turret", "main_armament_slot":"tank_medium_howitzer",
@@ -607,14 +632,6 @@ registerGuide({
   ],
 
   "builds": [
-    {"title": "Doctrines", "items": [
-      {"type":"fig", "img":"land", "wide":true, "title":"Land · Mobile Warfare", "ts":"9:40",
-       "text":"Favourite tactic first, then in order: **Grand Assault** (Operations), **Assault Infantry** (Infantry, off screen to the left), **Self-propelled Support**, **Streamlined Deployment**. Maneuver Warfare later."},
-      {"type":"fig", "img":"air", "title":"Air · Battlefield Support", "ts":"13:10",
-       "text":"Airspace Dominance first, then Precision Naval Bombing. Operational Air Support and Coastal Air Patrol on the other tracks."},
-      {"type":"fig", "img":"naval", "title":"Naval · Trade Interdiction", "ts":"17:55",
-       "text":"Defensive build: Patrol Boats, Line of Battle, Capital Hunters. Carriers skipped."}
-    ]},
     {"title": "Planes & ships", "items": [
       {"type":"card", "title":"Ships",
        "text":"Refit Admiral Hipper into the best light cruiser with Raiding Ship Builders, then put every new dockyard on it. Convoys stay at 1 dockyard."}

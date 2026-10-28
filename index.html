@@ -15,17 +15,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <!-- Styles, in cascade order. ?v= is the BUILD version (see js/core.js): tools/bump_build.py updates every one. -->
-<link rel="stylesheet" href="css/base.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/focus-tree.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/research-tree.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/designs.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/divisions.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/production.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/construction.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/mio.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/projects.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/edit.css?v=2026-10-28.19">
-<link rel="stylesheet" href="css/tooltip.css?v=2026-10-28.19">
+<link rel="stylesheet" href="css/base.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/focus-tree.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/research-tree.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/designs.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/divisions.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/production.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/construction.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/mio.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/projects.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/doctrines.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/edit.css?v=2026-10-28.25">
+<link rel="stylesheet" href="css/tooltip.css?v=2026-10-28.25">
 </head>
 <body>
 
@@ -139,6 +140,7 @@
     <a role="tab" href="#construction" data-tab="construction" aria-selected="false" hidden>Construction</a>
     <a role="tab" href="#mio" data-tab="mio" aria-selected="false" hidden>MIOs</a>
     <a role="tab" href="#projects" data-tab="projects" aria-selected="false" hidden>Special projects</a>
+    <a role="tab" href="#doctrines" data-tab="doctrines" aria-selected="false" hidden>Doctrines</a>
     <a role="tab" href="#builds" data-tab="builds" aria-selected="false">Builds &amp; numbers</a>
   </nav>
 
@@ -252,6 +254,11 @@
     <div class="sgrid" id="spGrid"></div>
   </div>
 
+  <div data-panel="doctrines" hidden>
+    <div class="subtabs" id="docSubs" role="tablist" aria-label="Doctrines"></div>
+    <div id="docView"></div>
+  </div>
+
   <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
@@ -275,24 +282,25 @@
 
 <!-- Guide list and shared glossary. Every ?v= here matches BUILD in js/core.js so browsers never mix a new page with
      cached files: run tools/bump_build.py after changing anything in css/, js/ or guides/. -->
-<script src="guides/index.js?v=2026-10-28.19"></script>
-<script src="guides/glossary.js?v=2026-10-28.19"></script>
+<script src="guides/index.js?v=2026-10-28.25"></script>
+<script src="guides/glossary.js?v=2026-10-28.25"></script>
 <!-- The app, as plain scripts sharing one global scope, in this order (main.js last). -->
-<script src="js/core.js?v=2026-10-28.19"></script>
-<script src="js/lists.js?v=2026-10-28.19"></script>
-<script src="js/builds.js?v=2026-10-28.19"></script>
-<script src="js/glossary.js?v=2026-10-28.19"></script>
-<script src="js/focus-tree.js?v=2026-10-28.19"></script>
-<script src="js/research-tree.js?v=2026-10-28.19"></script>
-<script src="js/designs.js?v=2026-10-28.19"></script>
-<script src="js/divisions.js?v=2026-10-28.19"></script>
-<script src="js/production.js?v=2026-10-28.19"></script>
-<script src="js/construction.js?v=2026-10-28.19"></script>
-<script src="js/mio.js?v=2026-10-28.19"></script>
-<script src="js/projects.js?v=2026-10-28.19"></script>
-<script src="js/ui.js?v=2026-10-28.19"></script>
-<script src="js/edit.js?v=2026-10-28.19"></script>
-<script src="js/main.js?v=2026-10-28.19"></script>
+<script src="js/core.js?v=2026-10-28.25"></script>
+<script src="js/lists.js?v=2026-10-28.25"></script>
+<script src="js/builds.js?v=2026-10-28.25"></script>
+<script src="js/glossary.js?v=2026-10-28.25"></script>
+<script src="js/focus-tree.js?v=2026-10-28.25"></script>
+<script src="js/research-tree.js?v=2026-10-28.25"></script>
+<script src="js/designs.js?v=2026-10-28.25"></script>
+<script src="js/divisions.js?v=2026-10-28.25"></script>
+<script src="js/production.js?v=2026-10-28.25"></script>
+<script src="js/construction.js?v=2026-10-28.25"></script>
+<script src="js/mio.js?v=2026-10-28.25"></script>
+<script src="js/projects.js?v=2026-10-28.25"></script>
+<script src="js/doctrines.js?v=2026-10-28.25"></script>
+<script src="js/ui.js?v=2026-10-28.25"></script>
+<script src="js/edit.js?v=2026-10-28.25"></script>
+<script src="js/main.js?v=2026-10-28.25"></script>
 
 </body>
 </html>

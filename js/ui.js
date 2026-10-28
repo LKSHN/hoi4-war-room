@@ -50,6 +50,7 @@ function showTab(name, push = false) {
   if (name === "construction" && CONS && G && G.construction) renderConstruction();
   if (name === "mio" && MIO) renderMIO();
   if (name === "projects" && SPROJ) renderProjects();
+  if (name === "doctrines" && DOC) renderDoctrines();
 }
 const currentTab = () => (tabs.find(t => t.getAttribute("aria-selected") === "true") || tabs[0]).dataset.tab;
 tabs.forEach(t => t.addEventListener("click", e => {

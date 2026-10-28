@@ -369,6 +369,42 @@ label.item.done .fd{color:var(--green-ink)}
 .dnote .dsmall{font-size:12.5px;color:var(--muted)}
 .dnote .shotbtn{margin-left:0}
 
+/* divisions: training plan rows and the division designer grid */
+.subtabs{display:flex;gap:4px;margin-bottom:10px}
+.subtabs button{font-family:var(--f-display);font-size:15px;letter-spacing:.04em;color:var(--muted);padding:7px 16px}
+.subtabs button[aria-selected="true"]{color:var(--brass-lt);border-color:var(--brass);background:linear-gradient(180deg,#4c4430,#2e2a1e);box-shadow:inset 0 -3px 0 var(--brass)}
+.dsum{padding:10px 14px;margin-bottom:10px;background:linear-gradient(180deg,var(--steel-1),var(--steel-2));border:1px solid var(--brass-dk);box-shadow:var(--bevel)}
+.dsum-h{font-family:var(--f-display);font-size:17px;color:var(--ink-hi);margin-bottom:6px}
+.dsum-t{display:flex;flex-wrap:wrap;gap:6px}
+.dsum-n{margin-top:6px;font-size:12.5px;color:var(--muted)}
+.tlink{padding:2px 9px;font-size:13px}
+.tlink b{color:var(--brass-lt)}
+.trows{display:flex;flex-direction:column;gap:4px}
+.trow{display:grid;grid-template-columns:auto auto 1fr auto;gap:4px 10px;align-items:center;padding:8px 10px;
+  background:linear-gradient(180deg,var(--node-1),var(--node-2));border:1px solid var(--node-edge)}
+.trow.done{border-color:var(--green-dk);background:linear-gradient(180deg,#2e3b24,#232d1b)}
+.trow .tcount{font:600 16px var(--f-mono);color:var(--brass-lt)}
+.trow .tname{font-weight:600}
+.trow .twhen{font:500 11.5px var(--f-mono);color:var(--muted);text-align:right}
+.trow .tstep{grid-column:2 / 4;font-size:13px;color:var(--ink)}
+.trow.done .tstep{color:var(--green-ink)}
+.trow .ttotal{font:500 11px var(--f-mono);color:var(--muted);text-align:right}
+.trow .tneed{grid-column:1 / -1;font-size:12px;color:var(--muted)}
+.trow .tstep.ed-select{grid-column:auto;max-width:360px}
+.tgrid{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start}
+.tsup,.tcolumn{display:flex;flex-direction:column;gap:5px}
+.tcombat{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.tcol-h{font-family:var(--f-display);font-size:14px;color:var(--ink);padding:2px 6px;background:linear-gradient(180deg,#3d4036,#262822);border:1px solid #55584a}
+.tcol-h.wide{grid-column:1 / -1}
+.tcell{display:flex;align-items:center;gap:6px;min-height:42px;padding:4px;min-width:0;
+  background:linear-gradient(180deg,#202219,#121410);border:1px solid #4b4e3d;border-radius:2px;box-shadow:inset 0 1px 3px rgba(0,0,0,.8)}
+.tcell.empty{opacity:.45}
+.tcell .dslot-ico{flex:none;width:30px;height:30px;color:#cfe7c4;background:radial-gradient(circle at 35% 30%,#6a7d55,#2b3a22 75%)}
+.tcell .dslot-ico svg{width:20px;height:20px}
+.tabbr{font:600 11px var(--f-mono);color:#ece7d8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tcell .ed-select{flex:1;min-width:0;max-width:none;font-size:11.5px;padding:2px 3px}
+.editing .tcell.empty{opacity:1}
+
 /* editing the guide */
 .editbar,.editnote{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:9px 14px;font-size:13.5px;
   background:linear-gradient(180deg,#4a4130,#2e2a1e);border:1px solid var(--brass);box-shadow:var(--bevel),var(--drop)}
@@ -500,6 +536,7 @@ label.item.done .fd{color:var(--green-ink)}
     <button role="tab" data-tab="tree" aria-selected="false" hidden>Focus tree</button>
     <button role="tab" data-tab="restree" aria-selected="false" hidden>Research tree</button>
     <button role="tab" data-tab="designs" aria-selected="false" hidden>Designs</button>
+    <button role="tab" data-tab="divisions" aria-selected="false" hidden>Divisions</button>
     <button role="tab" data-tab="builds" aria-selected="false">Builds &amp; numbers</button>
   </nav>
 
@@ -576,6 +613,18 @@ label.item.done .fd{color:var(--green-ink)}
     </div>
   </div>
 
+  <div data-panel="divisions" hidden>
+    <div class="subtabs" role="tablist" aria-label="Divisions">
+      <button type="button" role="tab" data-sub="training">Training plan</button>
+      <button type="button" role="tab" data-sub="templates">Templates</button>
+    </div>
+    <div id="divTraining"></div>
+    <div id="divTemplates" class="designs" hidden>
+      <aside class="dlist" id="tList" aria-label="Templates"></aside>
+      <section class="designer" id="tDesigner"></section>
+    </div>
+  </div>
+
   <div data-panel="builds" id="builds" hidden></div>
 
   <div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Screenshot">
@@ -598,11 +647,11 @@ label.item.done .fd{color:var(--green-ink)}
 <div id="tip" class="tip" role="tooltip" hidden></div>
 
 <!-- ?v= must match BUILD below. Bump both when guides/ data changes, so browsers don't mix a new page with cached data. -->
-<script src="guides/index.js?v=2026-10-28.4"></script>
-<script src="guides/glossary.js?v=2026-10-28.4"></script>
+<script src="guides/index.js?v=2026-10-28.5"></script>
+<script src="guides/glossary.js?v=2026-10-28.5"></script>
 <script>
 /* Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working. */
-const BUILD = "2026-10-28.4";   // also on the two <script src> tags above
+const BUILD = "2026-10-28.5";   // also on the two <script src> tags above
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null, TREE = null;
 function registerGuide(g){ G = g; }
@@ -610,6 +659,8 @@ function registerTree(t){ TREE = t; }
 let RES = null, DES = null;
 function registerResearch(r){ RES = r; }
 function registerDesigners(d){ DES = d; }
+let UNITS = null;
+function registerUnits(u){ UNITS = u; }
 
 const TAGS = {up: "UP", sp: "Special project"};
 const PREFS_KEY = "hoi4-tool-prefs";
@@ -1503,6 +1554,185 @@ function renderDesigner(d){
   body.append(left, right); box.appendChild(body);
 }
 
+/* divisions: training plan and templates (division designer), battalions from guides/trees/units-*.js.
+   What the unit files give exactly (width, manpower, HP, weight, suppression, recon, entrenchment, training time, equipment)
+   is calculated; attack and defense come from equipment and research, so the guide's in-game numbers are shown for those. */
+let tplSel = 0;
+const tplUnits = t => [...(t.support || []), ...(t.combat || []).flat()].filter(Boolean).map(id => UNITS.units[id]).filter(Boolean);
+function tplStats(t){
+  const us = tplUnits(t), sum = k => us.reduce((a, u) => a + (u[k] || 0), 0), s = {};
+  ["combat_width", "manpower", "max_strength", "weight", "suppression", "recon", "entrenchment", "supply_consumption"].forEach(k => s[k] = sum(k));
+  s.training_time = Math.max(0, ...us.map(u => u.training_time || 0));
+  s.max_organisation = us.length ? sum("max_organisation") / us.length : 0;
+  s.need = {}; us.forEach(u => Object.entries(u.need || {}).forEach(([e, n]) => s.need[e] = (s.need[e] || 0) + n));
+  return s;
+}
+const tplById = id => (G.divisions.templates || []).find(t => t.id === id);
+const designFor = eq => (G.designs || []).find(d => d.role === eq);
+function unitIcon(u){
+  if (!u) return "gear";
+  if (u.group === "support") return /recon|police/.test(u.id) ? "eye" : /engineer|maintenance/.test(u.id) ? "gear" : /artillery|rocket|anti/.test(u.id) ? "artillery"
+    : /logistics|train/.test(u.id) ? "road" : /flame|tank/.test(u.id) ? "tank" : /hospital/.test(u.id) ? "people" : /signal/.test(u.id) ? "bolt" : "gear";
+  return /armor/.test(u.group) && !/support/.test(u.group) ? "tank" : /support/.test(u.group) ? "artillery" : u.group === "mobile" ? "road" : "helmet";
+}
+const eqName = e => (UNITS.equipment[e] || e) + (designFor(e) ? " (" + designFor(e).name + ")" : "");
+const num = v => v >= 1000 ? Math.round(v).toLocaleString("en-GB") : +v.toFixed(2) + "";
+
+function buildDivisions(){
+  if (!UNITS || !G.divisions) return;
+  document.querySelector('[data-tab="divisions"]').hidden = false;
+  document.querySelectorAll(".subtabs [data-sub]").forEach(b => b.addEventListener("click", () => { prefs.divSub = b.dataset.sub; savePrefs(); renderDivisions(); }));
+  renderDivisions();
+}
+function renderDivisions(){
+  const sub = prefs.divSub === "templates" ? "templates" : "training";
+  document.querySelectorAll(".subtabs [data-sub]").forEach(b => b.setAttribute("aria-selected", b.dataset.sub === sub));
+  document.getElementById("divTraining").hidden = sub !== "training";
+  document.getElementById("divTemplates").hidden = sub !== "templates";
+  if (sub === "training") renderTraining(); else renderTemplates();
+}
+function openTemplate(id){ tplSel = Math.max(0, G.divisions.templates.findIndex(t => t.id === id)); prefs.divSub = "templates"; savePrefs(); renderDivisions(); }
+
+function renderTraining(){
+  const box = document.getElementById("divTraining"); box.innerHTML = "";
+  const rows = G.divisions.training || [], steps = {};
+  (G.plan || []).forEach(g => g.steps.forEach(s => steps[s.id] = {s, g}));
+  // totals over the whole plan
+  const totals = {}, need = {}; let men = 0;
+  rows.forEach(r => { const t = tplById(r.template); if (!t) return; totals[t.id] = (totals[t.id] || 0) + (+r.count || 0);
+    const st = tplStats(t); men += st.manpower * r.count; Object.entries(st.need).forEach(([e, n]) => need[e] = (need[e] || 0) + n * r.count); });
+  const sum = el("div", "dsum");
+  sum.innerHTML = "<div class='dsum-h'>Divisions to train</div><div class='dsum-t'></div><div class='dsum-n'></div>";
+  sum.querySelector(".dsum-t").innerHTML = Object.entries(totals).map(([id, n]) => `<button type="button" class="tlink" data-tpl="${esc(id)}"><b>${n}</b> × ${esc(tplById(id).name)}</button>`).join(" ");
+  sum.querySelector(".dsum-n").textContent = "Manpower " + num(men) + (Object.keys(need).length ? " · " + Object.entries(need).sort((a, b) => b[1] - a[1]).map(([e, n]) => num(n) + " " + eqName(e)).join(", ") : "") +
+    (rows.some(r => { const t = tplById(r.template); return t && !tplUnits(t).length; }) ? " · templates without battalions count as 0" : "");
+  box.appendChild(sum);
+  const table = el("div", "trows"), running = {};
+  rows.forEach((r, i) => {
+    const t = tplById(r.template), link = steps[r.step], done = !!(link && store.ticks[r.step]);
+    running[r.template] = (running[r.template] || 0) + (+r.count || 0);
+    const row = el("div", "trow" + (done ? " done" : ""));
+    const when = link ? (link.g.by ? (link.g.approx ? "≈ " : "") + "by " + fmtDate(link.g.by) : "") + " · " + link.g.title : "No plan step";
+    if (EDITING){
+      const tsel = el("select", "ed-select"); tsel.setAttribute("aria-label", "Template");
+      G.divisions.templates.forEach(x => { const o = el("option"); o.value = x.id; o.textContent = x.name; tsel.appendChild(o); });
+      tsel.value = r.template; tsel.addEventListener("change", () => { r.template = tsel.value; saveEdits(); renderTraining(); });
+      const cnt = edInput(String(r.count), "Count", v => { const n = parseInt(v, 10); if (n >= 0){ r.count = n; saveEdits(); } }, "ed-small", "5em");
+      const ssel = el("select", "ed-select tstep"); ssel.setAttribute("aria-label", "Plan step");
+      (G.plan || []).forEach(g => { const og = el("optgroup"); og.label = g.title || ""; g.steps.forEach(s => { const o = el("option"); o.value = s.id; o.textContent = s.t.slice(0, 70); og.appendChild(o); }); ssel.appendChild(og); });
+      ssel.value = r.step; ssel.addEventListener("change", () => { r.step = ssel.value; saveEdits(); renderTraining(); });
+      row.append(cnt, el("span", "tx", "×"), tsel, ssel, edText(r.n, "Note (optional)", v => { if (v) r.n = v; else delete r.n; saveEdits(); }, "ed-note"),
+        confirmTwice(edBtn("✕", "Delete", () => {}, "del"), () => { rows.splice(i, 1); saveEdits(); renderTraining(); }));
+    } else {
+      row.innerHTML = `<span class="tcount"></span><button type="button" class="tlink tname"></button><span class="twhen"></span><span class="tstep"></span><span class="ttotal"></span>`;
+      row.querySelector(".tcount").textContent = r.count + " ×";
+      row.querySelector(".tname").textContent = t ? t.name : r.template; row.querySelector(".tname").dataset.tpl = r.template;
+      row.querySelector(".twhen").textContent = when;
+      row.querySelector(".tstep").textContent = (done ? "✓ " : "") + (link ? link.s.t : "") + (r.n ? " · " + r.n : "");
+      row.querySelector(".ttotal").textContent = "total " + running[r.template];
+      if (t && tplUnits(t).length){
+        const st = tplStats(t), nd = el("div", "tneed");
+        nd.textContent = "Needs " + num(st.manpower * r.count) + " men, " + Object.entries(st.need).map(([e, n]) => num(n * r.count) + " " + eqName(e)).join(", ");
+        row.appendChild(nd);
+      }
+    }
+    table.appendChild(row);
+  });
+  box.appendChild(table);
+  if (EDITING) box.appendChild(edBtn("+ Add training", "Add a row", () => {
+    rows.push({id: uid("train."), step: (G.plan[0] || {steps: [{}]}).steps[0].id, template: G.divisions.templates[0].id, count: 1});
+    saveEdits(); renderTraining();
+  }, "dadd"));
+  box.querySelectorAll(".tlink[data-tpl]").forEach(b => b.addEventListener("click", () => openTemplate(b.dataset.tpl)));
+  const note = el("p", "foot", "Dates come from each plan step's phase, and a row counts as done when its plan step is ticked. Training takes " +
+    "the template's training time on top, so queue early.");
+  box.appendChild(note);
+}
+
+function renderTemplates(){
+  const list = document.getElementById("tList"); list.innerHTML = "";
+  const tpls = G.divisions.templates; tplSel = Math.min(tplSel, tpls.length - 1);
+  tpls.forEach((t, i) => {
+    const st = tplStats(t), b = el("button", "dcard"); b.type = "button"; b.setAttribute("aria-pressed", i === tplSel);
+    b.innerHTML = `<span class="fn-ico"><svg viewBox="0 0 24 24"><use href="#ic-${esc(t.icon || "helmet")}"/></svg></span><b></b><span></span>`;
+    b.querySelector("b").textContent = t.name;
+    b.querySelector("span:last-child").textContent = tplUnits(t).length ? "width " + num(st.combat_width) + " · " + num(st.manpower) + " men" : "battalions not set";
+    b.addEventListener("click", () => { tplSel = i; renderTemplates(); });
+    list.appendChild(b);
+  });
+  if (EDITING) list.appendChild(edBtn("+ New template", "Add a template", () => {
+    tpls.push({id: uid("tpl."), name: "New template", icon: "helmet", support: [], combat: []}); tplSel = tpls.length - 1; saveEdits(); renderTemplates();
+  }, "dadd"));
+  renderTemplate(tpls[tplSel]);
+}
+
+function renderTemplate(t){
+  const box = document.getElementById("tDesigner"); box.innerHTML = "";
+  if (!t) return;
+  const st = tplStats(t), seen = t.seen || {}, redo = () => { saveEdits(); renderTemplates(); };
+  box.appendChild(el("div", "dtitle", "Division Designer"));
+  const body = el("div", "dbody"), left = el("div", "dleft"), right = el("div", "dright");
+  if (EDITING) left.appendChild(edInput(t.name, "Template name", v => { t.name = v; saveEdits(); }, "dname"));
+  else { const n = el("div", "dname"); n.textContent = t.name; left.appendChild(n); }
+  // support column (5) and combat grid (5 x 5), like the game
+  const grid = el("div", "tgrid");
+  const cell = (id, pick, set) => {
+    const u = UNITS.units[id], c = el("div", "tcell" + (id ? "" : " empty"));
+    c.innerHTML = `<span class="dslot-ico"><svg viewBox="0 0 24 24"><use href="#ic-${unitIcon(u)}"/></svg></span>`;
+    c.title = u ? u.name : "Empty";
+    if (EDITING){
+      const sel = el("select", "ed-select"); sel.setAttribute("aria-label", u ? u.name : "Empty slot");
+      sel.appendChild(el("option", null, "—")).value = "";
+      Object.values(UNITS.units).filter(pick).sort((a, b) => a.name.localeCompare(b.name)).forEach(x => { const o = el("option"); o.value = x.id; o.textContent = x.name; sel.appendChild(o); });
+      sel.value = id || ""; sel.addEventListener("change", () => { set(sel.value || null); redo(); });
+      c.appendChild(sel);
+    } else c.appendChild(el("span", "tabbr", u ? esc(u.abbr || u.name) : ""));
+    return c;
+  };
+  const sup = el("div", "tsup"); sup.appendChild(el("div", "tcol-h", "Support"));
+  t.support = t.support || [];
+  for (let i = 0; i < 5; i++) sup.appendChild(cell(t.support[i], u => u.group === "support", v => { t.support[i] = v; t.support = t.support.filter(Boolean); }));
+  const com = el("div", "tcombat"); com.appendChild(el("div", "tcol-h wide", "Combat"));
+  t.combat = t.combat || [];
+  for (let c = 0; c < 5; c++){
+    const col = el("div", "tcolumn");
+    for (let r = 0; r < 5; r++){
+      col.appendChild(cell((t.combat[c] || [])[r], u => u.group !== "support", v => {
+        t.combat[c] = t.combat[c] || []; t.combat[c][r] = v;
+        t.combat = t.combat.map(x => (x || []).filter(Boolean));
+      }));
+    }
+    com.appendChild(col);
+  }
+  grid.append(sup, com); left.appendChild(grid);
+  // stats: calculated from the unit files, with the in-game value from the guide next to it
+  const sheet = el("div", "dsheet");
+  const col = (title, rows) => { const c = el("div", "dcol"); c.appendChild(el("div", "dcol-h", title));
+    rows.forEach(([label, v, k, approx]) => { const row = el("div", "dstat"); row.innerHTML = "<span></span><b></b>";
+      row.querySelector("span").textContent = label + ":"; row.querySelector("b").textContent = v == null ? "—" : (approx ? "≈ " : "") + v;
+      if (seen[k] != null){ const g = el("i", "dseen"); g.textContent = "game " + num(seen[k]); row.appendChild(g); }
+      c.appendChild(row); }); return c; };
+  sheet.append(
+    col("Base Stats", [["Combat width", num(st.combat_width), "combat_width"], ["HP", num(st.max_strength), "max_strength"], ["Organization", num(st.max_organisation), "max_organisation", 1],
+      ["Recon", num(st.recon), "recon"], ["Suppression", num(st.suppression), "suppression"], ["Weight", num(st.weight), "weight"], ["Supply use", num(st.supply_consumption), "supply_consumption", 1]]),
+    col("Combat Stats", [["Soft attack", null, "soft_attack"], ["Hard attack", null, "hard_attack"], ["Defense", null, "defense"], ["Breakthrough", null, "breakthrough"],
+      ["Armor", null, "armor"], ["Piercing", null, "piercing"], ["Entrenchment", num(st.entrenchment), "entrenchment"], ["Max speed", null, "maximum_speed"]]),
+    col("Equipment", [["Manpower", num(st.manpower), "manpower"], ["Training time", st.training_time + " days", "training_time"],
+      ...Object.entries(st.need).map(([e, n]) => [eqName(e), num(n), "eq:" + e])]));
+  right.appendChild(sheet);
+  const note = el("div", "dnote");
+  note.innerHTML = (t.n ? "<p></p>" : "") + "<p class='dsmall'>Width, HP, manpower, weight, suppression, recon, entrenchment, training time and equipment are exact from the patch " +
+    esc(UNITS.patch) + " unit files. ≈ values leave out research (logistics research cuts supply use). Attack, defense and speed come from equipment and research, so only the in-game values from the guide are shown.</p>";
+  if (t.n) note.querySelector("p").textContent = t.n;
+  if (t.img && G.images[t.img]){ const b = el("button", "shotbtn"); b.type = "button"; b.textContent = "▸ In-game screen"; b.addEventListener("click", () => openLB(t.img, b)); note.appendChild(b);
+    if (t.ts && G.meta.video){ note.appendChild(document.createTextNode(" ")); note.appendChild(tsLink(t.ts)); } }
+  const used = (G.divisions.training || []).filter(r => r.template === t.id).reduce((a, r) => a + (+r.count || 0), 0);
+  if (used) note.appendChild(el("p", "dsmall", "Trained in the plan: <b>" + used + "</b> divisions."));
+  if (EDITING) note.appendChild(confirmTwice(edBtn("Delete template", "Delete this template", () => {}, "del"), () => { G.divisions.templates.splice(tplSel, 1); tplSel = 0; saveEdits(); renderTemplates(); }));
+  right.appendChild(note);
+  body.append(left, right); box.appendChild(body);
+}
+
 /* lightbox */
 const lb = document.getElementById("lb"), lbImg = document.getElementById("lbImg"), lbCap = document.getElementById("lbCap");
 let lbReturn = null;
@@ -1525,6 +1755,7 @@ function showTab(name){
   prefs.tab = name; savePrefs();
   if (name === "tree") requestAnimationFrame(treeShown);
   if (name === "restree") researchShown();
+  if (name === "divisions" && UNITS && G && G.divisions) renderDivisions();   // ticks on the plan change what's done
 }
 tabs.forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
 const wantTab = (location.hash || "").slice(1) || prefs.tab || "plan";   // the tree tab only exists once the guide has loaded
@@ -1560,7 +1791,7 @@ pick.addEventListener("change", () => {
 
 /* editable guide: your edits are a full copy of the editable sections, saved per guide on top of the original file.
    "base" fingerprints the original, so we can tell you when the guide file changed under your edits. */
-const EDITABLE = ["plan", "focus", "research", "builds", "designs"];
+const EDITABLE = ["plan", "focus", "research", "builds", "designs", "divisions"];
 let G0 = null, EDITING = false, editKey = "", saveTimer = null;
 const hashStr = s => { let h = 5381; for (let i = 0; i < s.length; i++) h = (h * 33 ^ s.charCodeAt(i)) >>> 0; return h.toString(36); };
 const sections = g => { const o = {}; EDITABLE.forEach(k => { if (g[k]) o[k] = g[k]; }); return o; };
@@ -1756,6 +1987,7 @@ function enterEdit(){
   editList("researchCol", G.research, "research");
   editBuilds();
   if (DES) renderDesigns();   // designer controls switch on in edit mode
+  if (UNITS && G.divisions) renderDivisions();
 }
 function leaveEdit(){ saveEdits(true); location.reload(); }   // reload so the tree, dates and counts all use the edits
 
@@ -1812,7 +2044,8 @@ function start(){
   buildTree();
   buildResearch();
   buildDesigns();
-  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES)) showTab(wantTab);
+  buildDivisions();
+  if ((wantTab === "tree" && TREE) || (wantTab === "restree" && RES) || (wantTab === "designs" && DES) || (wantTab === "divisions" && UNITS)) showTab(wantTab);
 
   const ul = document.getElementById("chapters");
   (G.chapters || []).forEach(c => {
@@ -1827,7 +2060,7 @@ const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
   // then the guide's game data files, one after another (focus tree, research tree)
-  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers].filter(Boolean) : [];
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units].filter(Boolean) : [];
   const next = () => {
     const f = files.shift(); if (!f) return start();
     const t = document.createElement("script");

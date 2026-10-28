@@ -12,6 +12,8 @@
    - designs: equipment designs {id, name, frame (game frame id), role (archetype id), modules {slot: module},
      upgrades {upgrade: level}, img?, ts?, mio?, n?, seen? (stats as shown in game, research and MIO included)};
      data comes from meta.designers
+   - divisions: {templates: [{id, name, icon, support: [unit ids], combat: [columns of unit ids], img?, ts?, n?, seen?}],
+     training: [{id, step (plan step id it belongs to), template, count, n?}]}; units come from meta.units
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -29,6 +31,7 @@ registerGuide({
     "focusTree": "guides/trees/germany-1.19.1.js",
     "researchTree": "guides/trees/research-1.19.1.js",
     "designers": "guides/trees/designers-1.19.1.js",
+    "units": "guides/trees/units-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },
@@ -302,6 +305,37 @@ registerGuide({
      "def": "The guide's armor template: **8 motorized** and **10 SPG** battalions, with recon, engineer, artillery, flame tank and logistics support. Width 36."}
   ],
 
+  "divisions": {
+    "templates": [
+      {"id":"tpl.lucas", "name":"LUCAS (INF)", "icon":"helmet", "support":[], "combat":[],
+       "n":"Infantry, used for most of the 45 infantry divisions queued in 1936. Its battalions aren't shown in the guide: fill them in with Edit guide."},
+      {"id":"tpl.mark", "name":"MARK (ARM)", "icon":"tank", "img":"template", "ts":"16:55",
+       "support":["mot_recon", "engineer", "artillery", "medium_flame_tank", "logistics_company"],
+       "combat":[["motorized","motorized","motorized","motorized"], ["motorized","motorized","motorized","motorized"],
+         ["medium_sp_artillery_brigade","medium_sp_artillery_brigade","medium_sp_artillery_brigade","medium_sp_artillery_brigade"],
+         ["medium_sp_artillery_brigade","medium_sp_artillery_brigade","medium_sp_artillery_brigade","medium_sp_artillery_brigade"],
+         ["medium_sp_artillery_brigade","medium_sp_artillery_brigade"]],
+       "n":"Final template, Apr 1938. About 90 army XP to finish, since SPGs get no Motorization Drive discount. If SPGs get nerfed, put medium tanks in the same slots.",
+       "seen":{"maximum_speed":7.0, "max_strength":213.2, "max_organisation":23.9, "supply_consumption":4.81, "soft_attack":714.9, "hard_attack":20.8,
+         "defense":285.0, "breakthrough":426.9, "armor":25.8, "piercing":14.3, "manpower":16500, "training_time":180, "combat_width":36}},
+      {"id":"tpl.gatorcat", "name":"GATORCAT (MOT)", "icon":"road", "support":[], "combat":[],
+       "n":"Motorized, used less. Its battalions aren't shown in the guide."},
+      {"id":"tpl.andrew", "name":"ANDREW (ALP)", "icon":"helmet", "support":[], "combat":[],
+       "n":"Mountaineers, unused in the guide."},
+      {"id":"tpl.def", "name":"DEF (Austrian infantry)", "icon":"fort", "support":[], "combat":[], "img":"templates",
+       "n":"The Austrian infantry template, for the 48 defensive divisions. Its full name is hidden in the screenshot, and its battalions aren't shown."},
+      {"id":"tpl.cav", "name":"CAV", "icon":"road", "support":[], "combat":[["cavalry"]],
+       "n":"One cavalry battalion, for garrisons (occupation law Local Police Force)."}
+    ],
+    "training": [
+      {"id":"train.inf-1", "step":"plan.split-off-armored-divisions", "template":"tpl.lucas", "count":21},
+      {"id":"train.inf-2", "step":"plan.queue-another-24-infantry", "template":"tpl.lucas", "count":24},
+      {"id":"train.def", "step":"plan.recruit-42-more-defensive", "template":"tpl.def", "count":42, "n":"48 defensive divisions in total"},
+      {"id":"train.arm-1", "step":"plan.force-deploy-last-defensive", "template":"tpl.mark", "count":9},
+      {"id":"train.arm-2", "step":"plan.production-infantry-c2-f2", "template":"tpl.mark", "count":12, "n":"After the UK falls"}
+    ]
+  },
+
   "designs": [
     {"id":"design.spg1", "name":"SPG1 (7/4)", "frame":"medium_tank_chassis_1", "role":"medium_tank_artillery_chassis",
      "modules":{"turret_type_slot":"tank_medium_three_man_tank_turret", "main_armament_slot":"tank_medium_howitzer",
@@ -347,19 +381,8 @@ registerGuide({
 
   "builds": [
     {"title": "Panzer division", "items": [
-      {"type":"fig", "img":"template", "wide":true, "title":"MARK (ARM)", "sub":"final template, Apr 1938 · width 36", "ts":"16:55",
-       "pins":[[1.2,40],[9.4,40],[24.6,40],[79.5,11.5]],
-       "legend":[
-         "**Support:** motorized recon, engineers, artillery, flame tank, logistics",
-         "**8 motorized** in the first two columns",
-         "**10 medium SP artillery**: 4 + 4 + 2",
-         "**715 soft attack**, 427 breakthrough, 285 defense, 4.8 supply use"
-       ],
-       "text":"About 90 army XP to finish, since SPGs get no Motorization Drive discount. Recruit 9, then 12 more after the UK. If SPGs get nerfed, put medium tanks in the same slots."},
       {"type":"fig", "img":"mio", "title":"Alkett MIO", "sub":"trait queue", "ts":"15:03",
-       "text":"The small numbers next to each trait are his queue order, 1 to 7. Take the Alkett MIO for tanks and set the same queue."},
-      {"type":"fig", "img":"templates", "title":"Templates",
-       "text":"Infantry, armor, motorized, mountain, the Austrian infantry for defense, and a 1-battalion cavalry template for garrisons."}
+       "text":"The small numbers next to each trait are his queue order, 1 to 7. Take the Alkett MIO for tanks and set the same queue."}
     ]},
     {"title": "Doctrines", "items": [
       {"type":"fig", "img":"land", "wide":true, "title":"Land · Mobile Warfare", "ts":"9:40",

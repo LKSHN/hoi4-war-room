@@ -74,8 +74,8 @@ function goNextTech(flash = true) {
     rv = document.getElementById("resView");
   if (!n) return;
   rv.scrollTo({
-    left: n.offsetLeft + n.offsetWidth / 2 - rv.clientWidth / 2,
-    top: n.offsetTop + n.offsetHeight / 2 - rv.clientHeight / 2,
+    left: (n.offsetLeft + n.offsetWidth / 2) * resScale - rv.clientWidth / 2,
+    top: (n.offsetTop + n.offsetHeight / 2) * resScale - rv.clientHeight / 2,
     behavior: flash && !matchMedia("(prefers-reduced-motion: reduce)").matches ? "smooth" : "auto"
   });
   if (flash) {
@@ -93,6 +93,7 @@ function renderFolder(fid) {
   Object.keys(RNODE).forEach(k => delete RNODE[k]);
   canvas.style.width = f.w + "px";
   canvas.style.height = f.h + "px";
+  applyResScale();
   document.querySelectorAll("#resFolders .fbtn").forEach(b => b.setAttribute("aria-selected", b.dataset.folder === fid));
   // each card is as wide as the gap to its nearest neighbour on the right allows
   const H = 56;
@@ -250,6 +251,50 @@ const endResDrag = () => {
   rv.classList.remove("panning");
 };
 rv.addEventListener("pointerup", endResDrag);
+
+// zoom, like the focus tree: the wheel zooms around the pointer, the buttons around the middle of the view.
+// The canvas is scaled with a transform and #resSizer takes the scaled size, so scrolling still covers it all.
+let resScale = prefs.resZoom || 1;
+
+function applyResScale() {
+  const canvas = document.getElementById("resCanvas"),
+    sizer = document.getElementById("resSizer");
+  canvas.style.transform = resScale === 1 ? "" : `scale(${resScale})`;
+  sizer.style.width = parseFloat(canvas.style.width) * resScale + "px";
+  sizer.style.height = parseFloat(canvas.style.height) * resScale + "px";
+}
+
+function zoomRes(f, mx, my) {
+  const s0 = resScale,
+    s1 = Math.min(1.6, Math.max(.3, s0 * f));
+  if (s1 === s0) return;
+  const px = (rv.scrollLeft + mx) / s0,   // the tree point under the pointer stays under it
+    py = (rv.scrollTop + my) / s0;
+  resScale = s1;
+  prefs.resZoom = s1;
+  savePrefs();
+  applyResScale();
+  rv.scrollLeft = px * s1 - mx;
+  rv.scrollTop = py * s1 - my;
+  hideTip();
+}
+
+rv.addEventListener("wheel", e => {
+  e.preventDefault();
+  const r = rv.getBoundingClientRect(),
+    dy = e.deltaY * (e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 400 : 1);   // lines or pages on some mice
+  zoomRes(Math.exp(-dy * .0015), e.clientX - r.left, e.clientY - r.top);
+}, {
+  passive: false
+});
+document.querySelectorAll("[data-rzoom]").forEach(b => b.addEventListener("click", () =>
+  zoomRes(+b.dataset.rzoom > 0 ? 1.25 : .8, rv.clientWidth / 2, rv.clientHeight / 2)));
+document.getElementById("resFit").addEventListener("click", () => {
+  const f = RES && RES.folders.find(x => x.id === resFolder);
+  if (!f) return;
+  zoomRes(Math.min(rv.clientWidth / f.w, rv.clientHeight / f.h) / resScale, 0, 0);
+  rv.scrollTo(0, 0);
+});
 rv.addEventListener("pointercancel", endResDrag);
 document.getElementById("resCanvas").addEventListener("click", e => {
   if (panning) return;

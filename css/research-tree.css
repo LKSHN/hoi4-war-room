@@ -78,6 +78,13 @@
 
 .rescanvas {
   position: relative;
+  transform-origin: 0 0;
+}
+
+/* takes the zoomed size of the canvas, so the scrollbars match what's shown */
+.ressizer {
+  position: relative;
+  overflow: hidden;
 }
 
 .rlab {

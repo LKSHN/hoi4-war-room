@@ -73,7 +73,7 @@ const s = document.createElement("script");
 s.src = versioned(entry.file);
 s.onload = () => {
   // then the guide's game data files, one after another (focus tree, research tree)
-  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction, G.meta.mio, G.meta.projects, G.meta.doctrines, G.meta.politics].filter(Boolean) : [];
+  const files = G && G.meta ? [G.meta.focusTree, G.meta.researchTree, G.meta.designers, G.meta.units, G.meta.equipment, G.meta.construction, G.meta.mio, G.meta.projects, G.meta.doctrines, G.meta.politics, G.meta.pp].filter(Boolean) : [];
   const next = () => {
     const f = files.shift();
     if (!f) return start();

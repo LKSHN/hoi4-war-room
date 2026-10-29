@@ -6,7 +6,7 @@
  * laws and companies ("idea"), advisors and decisions, each tied to a plan step; a pick is done when its step is ticked.
  */
 
-const POL_SUBS = [["picks", "Guide's picks"], ["government", "Government"], ["research_production", "Research & Production"],
+const POL_SUBS = [["picks", "Guide's picks"], ["pp", "Political power"], ["government", "Government"], ["research_production", "Research & Production"],
   ["military_staff", "Military Staff"], ["decisions", "Decisions"]];
 const POL_ICON = {idea: "flag", advisor: "people", decision: "star"};
 const DESIGN_SLOTS = ["tank_manufacturer", "naval_manufacturer", "aircraft_manufacturer", "materiel_manufacturer"];
@@ -43,6 +43,7 @@ function renderPolitics() {
   const box = document.getElementById("polView");
   box.innerHTML = "";
   if (sub === "picks") renderPolPicks(box);
+  else if (sub === "pp") renderPP(box);
   else if (sub === "decisions") renderDecisions(box);
   else renderGovTab(box, POL.tabs.find(t => t.id === sub));
 }

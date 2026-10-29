@@ -32,7 +32,9 @@
      subs: [{track (track id), sub (subdoctrine id)}] in the order the guide takes them}], spirits: [{id, spirit (game
      spirit id), step?, n?}], spiritsNote?}; the doctrines and spirits come from meta.doctrines
    - politics: {picks: [{id, kind ("idea": a law or company, "advisor", "decision"), ref (game id), step?, name? (shown
-     instead of the game's), n?}] in the order the guide takes them, note?}; the game side comes from meta.politics
+     instead of the game's), n?}] in the order the guide takes them, note?, pp?: {start? (political power on 1 Jan 1936),
+     stability? (0-1, assumed for the whole plan), extra? (other gain %, e.g. difficulty)}}; the game side comes from
+     meta.politics, and the political power planner's numbers from meta.pp
    - glossary: tooltip terms specific to this guide, same shape as guides/glossary.js (same id overrides)
    - chapters: [{ts, label}]
    - builds: sections {title, layout?("narrow"|"cards"), items:[fig|card]}. Text fields allow **bold**.
@@ -57,6 +59,7 @@ registerGuide({
     "projects": "guides/trees/projects-1.19.1.js",
     "doctrines": "guides/trees/doctrines-1.19.1.js",
     "politics": "guides/trees/politics-1.19.1.js",
+    "pp": "guides/trees/pp-1.19.1.js",
     "source": "From the video's description and transcript. Designs, template, build queues and doctrines were read from the video frames.",
     "datesNote": "Phase dates marked ≈ are estimates. The guide only pins a few: production after Todt in Nov 1936, the construction queue in Jun 1937, the final template in Apr 1938, the Allies down by May 1940 and Barbarossa by Aug 1941."
   },

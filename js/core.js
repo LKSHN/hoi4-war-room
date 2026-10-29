@@ -4,7 +4,7 @@
  * Guide files call registerGuide() when their <script> loads. Script tags (not fetch) keep file:// working.
  */
 
-const BUILD = "2026-10-28.31"; // also the ?v= on every css/js/guides tag in index.html: tools/bump_build.py sets them all
+const BUILD = "2026-10-28.33"; // also the ?v= on every css/js/guides tag in index.html: tools/bump_build.py sets them all
 const versioned = u => u + (u.includes("?") ? "&" : "?") + "v=" + BUILD;
 let G = null,
   TREE = null;
@@ -28,10 +28,15 @@ function registerDesigners(d) {
 }
 let SPROJ = null,
   DOC = null,
-  POL = null;
+  POL = null,
+  PPD = null;
 
 function registerPolitics(p) {
   POL = p;
+}
+
+function registerPP(p) {
+  PPD = p;
 }
 
 function registerDoctrines(d) {

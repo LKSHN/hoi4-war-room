@@ -268,3 +268,224 @@
 .pcat.haspicks .spcard:not(.picked) {
   opacity: .62;
 }
+
+/* political power planner */
+.ppsrc {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px 18px;
+  margin: 8px 0 4px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+
+.ppsrc li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--line);
+}
+
+.ppsrc b {
+  font: 600 12.5px var(--f-mono);
+  color: var(--brass-lt);
+  white-space: nowrap;
+}
+
+.ppcfg,
+.ppnow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  margin-top: 8px;
+}
+
+.ppcfg label {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.ppcfg .ed-input,
+.ppnow .ed-input {
+  width: 90px;
+}
+
+.ppnow-h {
+  font: 600 11px var(--f-mono);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--brass);
+}
+
+.ppnow .dsmall {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.ppchart .dsmall {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ppsvg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ppsvg .g {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.ppsvg .gy {
+  stroke: #5a5d4a;
+  stroke-width: 1;
+}
+
+.ppsvg .ax {
+  font: 500 11px var(--f-mono);
+  fill: var(--muted);
+}
+
+.ppsvg .ln {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2;
+}
+
+.ppsvg .today {
+  stroke: var(--ink-hi);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.ppsvg .buy line {
+  stroke: var(--brass);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 2;
+}
+
+.ppsvg .buy circle {
+  fill: var(--brass);
+  stroke: #1d1f1a;
+  stroke-width: 1.5;
+}
+
+.ppsvg .buy text {
+  font: 700 9.5px var(--f-mono);
+  fill: #1d1f1a;
+  pointer-events: none;
+}
+
+.ppsvg .buy.late circle {
+  fill: #ff9a7f;
+}
+
+.pppicks {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pppicks > li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: 4px 10px;
+  align-items: baseline;
+  padding: 5px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ppn {
+  font: 600 12px var(--f-mono);
+  color: var(--brass);
+  text-align: right;
+}
+
+.ppat {
+  font: 600 12.5px var(--f-mono);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.pppicks > li.done .ppat,
+.pppicks > li.done b {
+  color: var(--green-ink);
+}
+
+.pppicks > li.late .ppat,
+.pppicks > li.never .ppat {
+  color: #ff9a7f;
+}
+
+.pppicks > li.nocost .ppat {
+  color: var(--muted);
+}
+
+.ppchanges > summary {
+  cursor: pointer;
+  font-size: 13.5px;
+}
+
+.ppch {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+}
+
+.ppch li {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 14em) minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  padding: 3px 0;
+  border-bottom: 1px dotted var(--line);
+}
+
+.ppch span,
+.ppch em {
+  font: 500 12px var(--f-mono);
+  font-style: normal;
+  color: var(--muted);
+}
+
+.ppch em {
+  color: var(--brass-lt);
+}
+
+.ppch i {
+  font-style: normal;
+}
+
+@media (max-width: 640px) {
+  .ppchart {
+    overflow-x: auto;
+  }
+
+  .ppsvg {
+    min-width: 600px;
+  }
+
+  .pppicks > li {
+    grid-template-columns: 22px minmax(0, 1fr);
+  }
+
+  .pppicks > li .ppat {
+    grid-column: 2;
+    white-space: normal;
+  }
+
+  .ppch li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .ppch b,
+  .ppch i {
+    grid-column: 1 / -1;
+  }
+}
